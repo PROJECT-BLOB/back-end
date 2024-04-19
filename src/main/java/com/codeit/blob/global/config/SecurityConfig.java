@@ -1,0 +1,49 @@
+package com.codeit.blob.global.config;
+
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class SecurityConfig {
+
+    private static final String[] PERMIT_URL = {};
+
+    @Bean
+    @Profile("default")
+    public SecurityFilterChain defaultConfig(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable);
+        http.cors(AbstractHttpConfigurer::disable);
+
+        http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+
+        http.authorizeHttpRequests(request -> request
+                .requestMatchers(PathRequest.toH2Console()).permitAll()
+                .requestMatchers(PERMIT_URL).permitAll()
+                .anyRequest().permitAll());
+
+        http.formLogin(AbstractHttpConfigurer::disable);
+        http.httpBasic(AbstractHttpConfigurer::disable);
+        return http.build();
+    }
+
+    @Bean
+    @Profile("dev")
+    public SecurityFilterChain devConfig(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable);
+        http.cors(AbstractHttpConfigurer::disable);
+
+        http.authorizeHttpRequests(request -> request
+                .requestMatchers(PERMIT_URL).permitAll()
+                .anyRequest().authenticated());
+
+        http.formLogin(AbstractHttpConfigurer::disable);
+        http.httpBasic(AbstractHttpConfigurer::disable);
+        return http.build();
+    }
+}
