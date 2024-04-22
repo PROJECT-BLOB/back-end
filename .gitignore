@@ -5,7 +5,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-!**/src/main/resources/config/
+/src/main/resources/config
 
 
 ### STS ###
@@ -38,3 +38,4 @@ out/
 
 ### VS Code ###
 .vscode/
+
