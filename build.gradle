@@ -37,6 +37,7 @@ dependencies {
 	// DB
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	runtimeOnly 'com.h2database:h2'
+	implementation 'org.hibernate:hibernate-spatial:6.1.7.Final'
 
 	// lombok
 	compileOnly 'org.projectlombok:lombok'
@@ -55,6 +56,9 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	// S3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 tasks.named('test') {

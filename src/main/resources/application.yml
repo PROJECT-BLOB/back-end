@@ -6,7 +6,7 @@ spring:
   config:
     activate:
       on-profile: default
-    import: classpath:config/oauth-config.yml
+    import: classpath:config/oauth-config.yml, classpath:config/s3-config.yml
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
