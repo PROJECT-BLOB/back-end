@@ -1,7 +1,7 @@
-package com.codeit.blob.account.controller;
+package com.codeit.blob.user.controller;
 
-import com.codeit.blob.account.request.AccountRequest;
-import com.codeit.blob.account.service.AccountService;
+import com.codeit.blob.user.request.UserRequest;
+import com.codeit.blob.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/account")
-public class AccountController {
-    private final AccountService accountService;
+public class UserController {
+    private final UserService userService;
 
     @PostMapping
     public void createAccount(
-            @RequestBody AccountRequest accountRequest
+            @RequestBody UserRequest userRequest
     ) {
-        accountService.join(accountRequest);
+        userService.join(userRequest);
     }
 }

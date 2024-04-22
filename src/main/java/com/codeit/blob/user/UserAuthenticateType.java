@@ -1,4 +1,4 @@
-package com.codeit.blob.account;
+package com.codeit.blob.user;
 
 public enum UserAuthenticateType {
     NORMAL,

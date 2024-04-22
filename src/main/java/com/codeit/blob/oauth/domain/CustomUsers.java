@@ -1,6 +1,6 @@
 package com.codeit.blob.oauth.domain;
 
-import com.codeit.blob.account.domain.Users;
+import com.codeit.blob.user.domain.Users;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

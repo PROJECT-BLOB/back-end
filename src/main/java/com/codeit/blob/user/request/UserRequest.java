@@ -1,12 +1,12 @@
-package com.codeit.blob.account.request;
+package com.codeit.blob.user.request;
 
-import com.codeit.blob.account.UserAuthenticateType;
+import com.codeit.blob.user.UserAuthenticateType;
 import com.codeit.blob.oauth.OauthType;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class AccountRequest {
+public class UserRequest {
     private final String oauthId;
     private final String email;
     private final String blobId;
@@ -16,7 +16,7 @@ public class AccountRequest {
     private final OauthType oauthType;
 
     @Builder
-    public AccountRequest(String oauthId, String email, String blobId, String nickName, String profileUrl, UserAuthenticateType userAuthenticateType, OauthType oauthType) {
+    public UserRequest(String oauthId, String email, String blobId, String nickName, String profileUrl, UserAuthenticateType userAuthenticateType, OauthType oauthType) {
         this.oauthId = oauthId;
         this.email = email;
         this.blobId = blobId;

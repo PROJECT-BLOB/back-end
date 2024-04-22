@@ -1,6 +1,6 @@
-package com.codeit.blob.account.domain;
+package com.codeit.blob.user.domain;
 
-import com.codeit.blob.account.UserAuthenticateType;
+import com.codeit.blob.user.UserAuthenticateType;
 import com.codeit.blob.global.domain.BaseTimeEntity;
 import com.codeit.blob.oauth.OauthType;
 import jakarta.persistence.*;

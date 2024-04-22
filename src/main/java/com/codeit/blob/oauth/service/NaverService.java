@@ -1,12 +1,11 @@
 package com.codeit.blob.oauth.service;
 
-import com.codeit.blob.account.UserAuthenticateType;
-import com.codeit.blob.account.request.AccountRequest;
-import com.codeit.blob.oauth.OauthType;
+import com.codeit.blob.user.UserAuthenticateType;
+import com.codeit.blob.user.request.UserRequest;
 import com.codeit.blob.oauth.dto.naver.NaverDto;
 import com.codeit.blob.oauth.dto.naver.NaverUserDto;
 import com.codeit.blob.oauth.provider.OauthProperties;
-import com.codeit.blob.account.repository.AccountRepository;
+import com.codeit.blob.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
@@ -22,11 +21,11 @@ import java.nio.charset.StandardCharsets;
 
 @Service
 public class NaverService extends OauthService {
-    private final AccountRepository accountRepository;
+    private final UserRepository userRepository;
 
-    public NaverService(@Qualifier("naverProperties") OauthProperties properties, AccountRepository accountRepository) {
+    public NaverService(@Qualifier("naverProperties") OauthProperties properties, UserRepository userRepository) {
         super(properties);
-        this.accountRepository = accountRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -47,12 +46,12 @@ public class NaverService extends OauthService {
         WebClient.create().post()
                 .uri("http://localhost:8080/account")
                 .bodyValue(
-                        AccountRequest.builder()
+                        UserRequest.builder()
                                 .oauthId(userInfo.getId())
                                 .email(userInfo.getEmail())
                                 .profileUrl(userInfo.getProfile())
                                 .userAuthenticateType(UserAuthenticateType.BLOCKED)
-                                .oauthType(OauthType.NAVER)
+                                .oauthType(properties.getOauthType())
                                 .build()
                 ).retrieve()
                 .bodyToMono(Void.class)
