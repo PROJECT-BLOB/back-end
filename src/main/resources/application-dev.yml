@@ -26,3 +26,17 @@ spring:
       enabled: false
       settings:
         web-allow-others: false
+
+oauth2:
+  google:
+    client-id: ${OAUTH2_GOOGLE_CLIENT_ID}
+    secret-key: ${OAUTH2_GOOGLE_SECRET_KEY}
+    redirect-url: ${OAUTH2_GOOGLE_REDIRECT_URL}
+  kakao:
+    client-id: ${OAUTH2_KAKAO_CLIENT_ID}
+    secret-key: ${OAUTH2_KAKAO_SECRET_KEY}
+    redirect-url: ${OAUTH2_KAKAO_REDIRECT_URL}
+  naver:
+    client-id: ${OAUTH2_NAVER_CLIENT_ID}
+    secret-key: ${OAUTH2_NAVER_SECRET_KEY}
+    redirect-url: ${OAUTH2_NAVER_REDIRECT_URL}
