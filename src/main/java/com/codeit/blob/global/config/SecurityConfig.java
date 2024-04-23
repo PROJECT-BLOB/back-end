@@ -1,9 +1,5 @@
 package com.codeit.blob.global.config;
 
-import com.codeit.blob.global.filter.JwtAuthenticationFilter;
-import com.codeit.blob.global.filter.JwtExceptionHandler;
-import com.codeit.blob.oauth.jwt.JwtProvider;
-import com.codeit.blob.user.repository.UserRepository;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
@@ -42,7 +37,7 @@ public class SecurityConfig {
 
     @Bean
     @Profile("dev")
-    public SecurityFilterChain devConfig(HttpSecurity http, UserRepository userRepository, JwtProvider provider) throws Exception {
+    public SecurityFilterChain devConfig(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(AbstractHttpConfigurer::disable);
 
@@ -50,9 +45,9 @@ public class SecurityConfig {
                 .requestMatchers(PERMIT_URL).permitAll()
                 .anyRequest().authenticated());
 
-        http
-                .addFilterBefore(new JwtAuthenticationFilter(provider, userRepository), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtExceptionHandler(), JwtAuthenticationFilter.class);
+//        http
+//                .addFilterBefore(new JwtAuthenticationFilter(provider, userRepository), UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(new JwtExceptionHandler(), JwtAuthenticationFilter.class);
 
 
         http.formLogin(AbstractHttpConfigurer::disable);
