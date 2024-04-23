@@ -18,12 +18,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private static final String[] PERMIT_URL = {
-            "/v3/**", "/swagger-ui/**", "/v3/api-docs/**",
+            "/v3/**", "/swagger-ui/**"
     };
 
     @Bean
     @Profile("default")
-    public SecurityFilterChain defaultConfig(HttpSecurity http, UserRepository userRepository, JwtProvider provider) throws Exception {
+    public SecurityFilterChain defaultConfig(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(AbstractHttpConfigurer::disable);
 
@@ -32,11 +32,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .requestMatchers(PERMIT_URL).permitAll()
-                .anyRequest().permitAll());
+                .anyRequest().authenticated());
 
-//        http
-//                .addFilterBefore(new JwtAuthenticationFilter(provider, userRepository), UsernamePasswordAuthenticationFilter.class)
-//                .addFilterBefore(new JwtExceptionHandler(), JwtAuthenticationFilter.class);
 
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
@@ -45,13 +42,17 @@ public class SecurityConfig {
 
     @Bean
     @Profile("dev")
-    public SecurityFilterChain devConfig(HttpSecurity http) throws Exception {
+    public SecurityFilterChain devConfig(HttpSecurity http, UserRepository userRepository, JwtProvider provider) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(PERMIT_URL).permitAll()
                 .anyRequest().authenticated());
+
+        http
+                .addFilterBefore(new JwtAuthenticationFilter(provider, userRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtExceptionHandler(), JwtAuthenticationFilter.class);
 
 
         http.formLogin(AbstractHttpConfigurer::disable);
