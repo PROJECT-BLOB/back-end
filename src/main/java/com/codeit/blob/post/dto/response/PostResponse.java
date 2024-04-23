@@ -1,7 +1,7 @@
-package com.codeit.blob.domain.post.dto.response;
+package com.codeit.blob.post.dto.response;
 
-import com.codeit.blob.domain.post.domain.entity.Post;
-import com.codeit.blob.domain.post.domain.entity.PostImage;
+import com.codeit.blob.post.domain.entity.Post;
+import com.codeit.blob.post.domain.entity.PostImage;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 

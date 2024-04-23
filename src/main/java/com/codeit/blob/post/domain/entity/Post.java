@@ -1,8 +1,8 @@
-package com.codeit.blob.domain.post.domain.entity;
+package com.codeit.blob.post.domain.entity;
 
 import com.codeit.blob.global.domain.BaseTimeEntity;
-import com.codeit.blob.domain.post.domain.enums.Category;
-import com.codeit.blob.domain.post.domain.enums.Subcategory;
+import com.codeit.blob.post.domain.enums.Category;
+import com.codeit.blob.post.domain.enums.Subcategory;
 import com.codeit.blob.user.domain.Users;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -59,8 +59,7 @@ public class Post extends BaseTimeEntity {
             Users author,
             City city,
             Point location,
-            Point actualLocation,
-            List<PostImage> postImages
+            Point actualLocation
     ) {
         this.title = title;
         this.content = content;
@@ -71,11 +70,15 @@ public class Post extends BaseTimeEntity {
         this.location = location;
         this.distFromActual = calculateDistance(location, actualLocation);
         this.views = 0L;
-        this.postImages = postImages;
     }
 
     public void incrementView(){
         this.views++;
+    }
+
+    public void addImage(PostImage img){
+        postImages.add(img);
+        img.setPost(this);
     }
 
     private Long calculateDistance(Point point1, Point point2){

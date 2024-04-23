@@ -1,4 +1,4 @@
-package com.codeit.blob.domain.post.dto.response;
+package com.codeit.blob.post.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

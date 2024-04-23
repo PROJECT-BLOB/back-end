@@ -1,4 +1,4 @@
-package com.codeit.blob.domain.post.domain.entity;
+package com.codeit.blob.post.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,5 +21,9 @@ public class PostImage {
 
     public PostImage(String url) {
         this.url = url;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
     }
 }

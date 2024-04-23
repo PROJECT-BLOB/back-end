@@ -1,6 +1,6 @@
-package com.codeit.blob.domain.post.domain.entity;
+package com.codeit.blob.post.domain.entity;
 
-import com.codeit.blob.domain.post.domain.enums.Country;
+import com.codeit.blob.post.domain.enums.Country;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

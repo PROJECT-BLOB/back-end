@@ -1,6 +1,6 @@
-package com.codeit.blob.domain.post.repository;
+package com.codeit.blob.post.repository;
 
-import com.codeit.blob.domain.post.domain.entity.Post;
+import com.codeit.blob.post.domain.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

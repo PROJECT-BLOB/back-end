@@ -1,4 +1,4 @@
-package com.codeit.blob.domain.post.domain.enums;
+package com.codeit.blob.post.domain.enums;
 
 import java.util.Arrays;
 

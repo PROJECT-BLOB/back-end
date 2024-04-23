@@ -1,4 +1,4 @@
-package com.codeit.blob.domain.post.dto.request;
+package com.codeit.blob.post.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
