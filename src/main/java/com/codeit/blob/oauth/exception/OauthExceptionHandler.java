@@ -1,12 +1,10 @@
 package com.codeit.blob.oauth.exception;
 
-import com.codeit.blob.jwt.exception.JwtExpiredException;
+import com.codeit.blob.global.domain.ErrorResponse;
 import com.codeit.blob.jwt.exception.JwtStatus;
 import io.jsonwebtoken.ExpiredJwtException;
-import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.security.SignatureException;
@@ -15,22 +13,13 @@ import java.security.SignatureException;
 public class OauthExceptionHandler {
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<ErrorResponse> expiredJwtExceptionHandler(ExpiredJwtException e) {
-        return ResponseEntity.status(402).body(new ErrorResponse(JwtStatus.JWT_EXPIRED));
+        JwtStatus status = JwtStatus.JWT_EXPIRED;
+        return ResponseEntity.status(402).body(new ErrorResponse(status.getStatus(), status.getMessage()));
     }
 
     @ExceptionHandler(SignatureException.class)
     public ResponseEntity<ErrorResponse> signatureExceptionHandler(SignatureException e) {
-        return ResponseEntity.status(402).body(new ErrorResponse(JwtStatus.JWT_VALIDATED_FAIL));
-    }
-
-    @Getter
-    public static class ErrorResponse {
-        private final int status;
-        private final String message;
-
-        public ErrorResponse(JwtStatus status) {
-            this.status = status.getStatus();
-            this.message = status.getMessage();
-        }
+        JwtStatus status = JwtStatus.JWT_VALIDATED_FAIL;
+        return ResponseEntity.status(402).body(new ErrorResponse(status.getStatus(), status.getMessage()));
     }
 }

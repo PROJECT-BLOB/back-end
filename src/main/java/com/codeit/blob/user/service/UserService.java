@@ -30,35 +30,27 @@ public class UserService {
         );
         userRepository.save(users);
 
-        return UserResponse.builder()
-                .users(users)
-                .build();
+        return new UserResponse(users);
     }
 
     public UserResponse findByOauthId(String oauthId) {
         Users users = userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 아이디 입니다."));
 
-        return UserResponse.builder()
-                .users(users)
-                .build();
+        return new UserResponse(users);
     }
 
     public UserResponse findByBlobId(String blobId) {
         Users users = userRepository.findByBlobId(blobId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 아이디 입니다."));
 
-        return UserResponse.builder()
-                .users(users)
-                .build();
+        return new UserResponse(users);
     }
 
     public UserResponse findByRefreshToken(String refreshToken) {
         Users users = userRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 아이디 입니다."));
 
-        return UserResponse.builder()
-                .users(users)
-                .build();
+        return new UserResponse(users);
     }
 }

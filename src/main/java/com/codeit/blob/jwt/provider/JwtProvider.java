@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -16,9 +17,11 @@ import java.util.function.Function;
 @Component
 public class JwtProvider {
     public static final String JWT_PREFIX = "Bearer ";
-    private static final String SECRET_KEY = "asdfadfasfasfsadfasfasdfasdfasfasdfsdfasdfasdfasfasdfafasfasdfasd";
-    private static final long ACCESS_EXPIRE_DATE = 1000L * 30;
-    private static final long REFRESH_EXPIRE_DATE = 1000L * 60;
+
+    @Value("${oauth2.jwt.secret-key}")
+    private String secretKey;
+    private static final long ACCESS_EXPIRE_DATE = 1000L * 60 * 60;
+    private static final long REFRESH_EXPIRE_DATE = 1000L * 60 * 60 * 2;
 
     public String generateAccessToken(Map<String, Object> extractClaims) {
         return Jwts.builder()
@@ -63,7 +66,7 @@ public class JwtProvider {
 
 
     private Key getSignKey() {
-        byte[] decode = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] decode = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(decode);
     }
 }

@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+// TODO KDY Json Property 설정 필요
 public class KakaoUserDto {
     private String id;
     private KakaoAccount kakaoAccount;

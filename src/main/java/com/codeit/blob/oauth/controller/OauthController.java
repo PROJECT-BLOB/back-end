@@ -58,6 +58,7 @@ public class OauthController {
     public ResponseEntity<Object> refresh(
             HttpServletRequest request
     ) {
+        //TODO KDY 리팩토링 필요
         String refreshToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (!jwtProvider.isTokenExpired(refreshToken)) {
             Users users = userRepository.findByRefreshToken(refreshToken)

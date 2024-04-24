@@ -1,11 +1,11 @@
 package com.codeit.blob.jwt.exception;
 
+import com.codeit.blob.global.domain.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -34,28 +34,32 @@ public class JwtExceptionHandler extends OncePerRequestFilter {
     //Jwt 만료 처리
     private void jwtExpiredExceptionHandler(HttpServletResponse response) {
         log.error("---[Expired Jwt Token]---");
-        ErrorResponse errorResponse = new ErrorResponse(JwtStatus.JWT_EXPIRED);
+        JwtStatus status = JwtStatus.JWT_EXPIRED;
+        ErrorResponse errorResponse = new ErrorResponse(status.getStatus(), status.getMessage());
         setResponse(response, errorResponse);
     }
 
     //Jwt 유효성 검사 실패 처리
     private void jwtValidationExceptionHandler(HttpServletResponse response) {
         log.error("---[Jwt Validation Fail]---");
-        ErrorResponse errorResponse = new ErrorResponse(JwtStatus.JWT_VALIDATED_FAIL);
+        JwtStatus status = JwtStatus.JWT_VALIDATED_FAIL;
+        ErrorResponse errorResponse = new ErrorResponse(status.getStatus(), status.getMessage());
         setResponse(response, errorResponse);
     }
 
     //인증하지 않은 회원 실패 처리
     private void userNotValidationExceptionExceptionHandler(HttpServletResponse response) {
         log.error("---[User Must Need Validation]---");
-        ErrorResponse errorResponse = new ErrorResponse(JwtStatus.USER_NOT_VALIDATED);
+        JwtStatus status = JwtStatus.USER_NOT_VALIDATED;
+        ErrorResponse errorResponse = new ErrorResponse(status.getStatus(), status.getMessage());
         setResponse(response, errorResponse);
     }
 
     //미처리 에러
     private void illegalArgumentExceptionHandler(HttpServletResponse response) {
         log.error("---[Illegal Argument Exception]---");
-        ErrorResponse errorResponse = new ErrorResponse(JwtStatus.ILLEGAL_ARGUMENT_ERROR);
+        JwtStatus status = JwtStatus.ILLEGAL_ARGUMENT_ERROR;
+        ErrorResponse errorResponse = new ErrorResponse(status.getStatus(), status.getMessage());
         setResponse(response, errorResponse);
     }
 
@@ -69,17 +73,6 @@ public class JwtExceptionHandler extends OncePerRequestFilter {
             response.getWriter().write(json);
         } catch (Exception e) {
             log.error("---[Object Mapper Error : {}]---", e.getStackTrace(), e);
-        }
-    }
-
-    @Getter
-    private static class ErrorResponse {
-        private final int status;
-        private final String message;
-
-        public ErrorResponse(JwtStatus jwtStatus) {
-            this.status = jwtStatus.getStatus();
-            this.message = jwtStatus.getMessage();
         }
     }
 }

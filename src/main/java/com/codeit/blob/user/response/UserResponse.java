@@ -13,7 +13,6 @@ public class UserResponse {
     private final String profileUrl;
     private final UserAuthenticateState state;
 
-    @Builder
     public UserResponse(Users users) {
         this.email = users.getEmail();
         this.blobId = users.getBlobId();

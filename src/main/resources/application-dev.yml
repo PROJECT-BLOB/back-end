@@ -40,3 +40,5 @@ oauth2:
     client-id: ${OAUTH2_NAVER_CLIENT_ID}
     secret-key: ${OAUTH2_NAVER_SECRET_KEY}
     redirect-url: ${OAUTH2_NAVER_REDIRECT_URL}
+  jwt:
+    secret-key: ${OAUTH2_JWT_SECRET_KEY}
