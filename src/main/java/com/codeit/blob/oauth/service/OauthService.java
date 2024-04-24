@@ -1,33 +1,17 @@
 package com.codeit.blob.oauth.service;
 
 import com.codeit.blob.oauth.OauthType;
-import com.codeit.blob.oauth.provider.OauthProperties;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.UriComponentsBuilder;
+import com.codeit.blob.oauth.response.OauthResponse;
 
-@Slf4j
-public abstract class OauthService {
-    protected final OauthProperties properties;
-    public final OauthType oauthType;
+public interface OauthService {
 
-    public OauthService(OauthProperties properties) {
-        this.properties = properties;
-        this.oauthType = properties.getOauthType();
-    }
+    OauthType getOauthType();
 
-    public String createLoginUrl() {
-        return UriComponentsBuilder.fromHttpUrl(properties.getAuthUrl())
-                .queryParam("client_id", properties.getClientId())
-                .queryParam("redirect_uri", properties.getRedirectUrl())
-                .queryParam("scope", properties.getScope())
-                .queryParam("response_type", "code")
-                .toUriString();
-    }
+    String createLoginUrl();
 
-    public abstract Object createToken(String code);
+    OauthResponse createToken(String code);
 
-    public abstract Object getOauthToken(String code);
+    Object getOauthToken(String code);
 
-    public abstract Object getUserInfo(String oauthToken);
+    Object getUserInfo(String oauthToken);
 }

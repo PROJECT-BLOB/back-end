@@ -1,13 +1,24 @@
 package com.codeit.blob.oauth.controller;
 
+import com.codeit.blob.jwt.exception.JwtExpiredException;
 import com.codeit.blob.oauth.OauthType;
+import com.codeit.blob.jwt.provider.JwtProvider;
+import com.codeit.blob.oauth.response.OauthResponse;
 import com.codeit.blob.oauth.service.OauthManager;
 import com.codeit.blob.oauth.service.OauthService;
+import com.codeit.blob.user.domain.Users;
+import com.codeit.blob.user.repository.UserRepository;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/oauth")
@@ -16,12 +27,15 @@ import org.springframework.web.bind.annotation.*;
 public class OauthController {
 
     private final OauthManager manager;
+    private final JwtProvider jwtProvider;
+    private final UserRepository userRepository;
+
 
     @GetMapping("/{type}")
     public ResponseEntity<String> createLoginPage(
             @PathVariable("type") String oauthType
     ) {
-        OauthType type = OauthType.valueOf(oauthType.toUpperCase());
+        OauthType type = OauthType.toOauthType(oauthType);
         OauthService oauthService = manager.getService(type);
         return ResponseEntity.ok(oauthService.createLoginUrl());
     }
@@ -32,8 +46,30 @@ public class OauthController {
             @PathVariable(name = "type") String oauthType,
             @RequestParam(name = "code") String code
     ) {
-        OauthType type = OauthType.valueOf(oauthType.toUpperCase());
+        OauthType type = OauthType.toOauthType(oauthType);
         OauthService oauthService = manager.getService(type);
-        return ResponseEntity.ok(oauthService.createToken(code));
+        OauthResponse tokenResponse = oauthService.createToken(code);
+
+        return ResponseEntity.ok()
+                .body(tokenResponse);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<Object> refresh(
+            HttpServletRequest request
+    ) {
+        String refreshToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (!jwtProvider.isTokenExpired(refreshToken)) {
+            Users users = userRepository.findByRefreshToken(refreshToken)
+                    .orElseThrow(JwtExpiredException::new);
+
+            if (jwtProvider.isTokenValid(refreshToken, users)) {
+                Map<String, Object> extractClaims = new HashMap<>();
+                extractClaims.put("oauthId", users.getOauthId());
+                return ResponseEntity.ok(jwtProvider.generateAccessToken(extractClaims));
+            }
+        }
+
+        throw new IllegalArgumentException("Access Token 재발급 실패");
     }
 }

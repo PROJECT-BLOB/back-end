@@ -1,31 +1,64 @@
 package com.codeit.blob.user.service;
 
+import com.codeit.blob.user.UserAuthenticateState;
 import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.repository.UserRepository;
 import com.codeit.blob.user.request.UserRequest;
+import com.codeit.blob.user.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Users join(UserRequest userRequest) {
+    public UserResponse validationUser(UserRequest userRequest) {
         Users users = userRepository.findByOauthId(userRequest.getOauthId())
-                .orElseGet(() -> Users.builder()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 아이디 입니다."));
+
+        users.changeUser(
+                users.toBuilder()
                         .oauthId(userRequest.getOauthId())
-                        .email(userRequest.getEmail())
                         .blobId(userRequest.getBlobId())
                         .nickName(userRequest.getNickName())
-                        .profileUrl(userRequest.getProfileUrl())
-                        .userAuthenticateType(userRequest.getUserAuthenticateType())
-                        .oauthType(userRequest.getOauthType())
-                        .build());
+                        .state(UserAuthenticateState.NORMAL)
+                        .build()
+        );
+        userRepository.save(users);
 
-        Users save = userRepository.save(users);
-        return save;
+        return UserResponse.builder()
+                .users(users)
+                .build();
+    }
+
+    public UserResponse findByOauthId(String oauthId) {
+        Users users = userRepository.findByOauthId(oauthId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 아이디 입니다."));
+
+        return UserResponse.builder()
+                .users(users)
+                .build();
+    }
+
+    public UserResponse findByBlobId(String blobId) {
+        Users users = userRepository.findByBlobId(blobId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 아이디 입니다."));
+
+        return UserResponse.builder()
+                .users(users)
+                .build();
+    }
+
+    public UserResponse findByRefreshToken(String refreshToken) {
+        Users users = userRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 아이디 입니다."));
+
+        return UserResponse.builder()
+                .users(users)
+                .build();
     }
 }

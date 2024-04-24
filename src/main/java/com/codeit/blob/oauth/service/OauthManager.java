@@ -17,7 +17,7 @@ public class OauthManager {
     public OauthManager(Set<OauthService> services) {
         enumMap = new EnumMap<>(OauthType.class);
         Assert.notEmpty(services, "oauth provider must not empty");
-        services.forEach(service -> enumMap.put(service.oauthType, service));
+        services.forEach(service -> enumMap.put(service.getOauthType(), service));
     }
 
     public OauthService getService(@NonNull OauthType oauthType) {
