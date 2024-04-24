@@ -1,8 +1,7 @@
-package com.codeit.blob.post.domain.entity;
+package com.codeit.blob.post.domain;
 
+import com.codeit.blob.city.domain.City;
 import com.codeit.blob.global.domain.BaseTimeEntity;
-import com.codeit.blob.post.domain.enums.Category;
-import com.codeit.blob.post.domain.enums.Subcategory;
 import com.codeit.blob.user.domain.Users;
 import jakarta.persistence.*;
 import lombok.Builder;

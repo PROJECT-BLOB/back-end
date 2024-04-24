@@ -1,5 +1,6 @@
-package com.codeit.blob.post.domain.entity;
+package com.codeit.blob.post.domain;
 
+import com.codeit.blob.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

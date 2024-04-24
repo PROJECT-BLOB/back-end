@@ -1,4 +1,4 @@
-package com.codeit.blob.post.domain.enums;
+package com.codeit.blob.city.domain;
 
 // REF: https://developers.google.com/maps/coverage?hl=ko (2024.04.17)
 

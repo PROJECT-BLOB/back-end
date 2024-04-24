@@ -1,9 +1,12 @@
 package com.codeit.blob.post.service;
 
-import com.codeit.blob.post.domain.entity.Post;
-import com.codeit.blob.post.domain.entity.PostImage;
-import com.codeit.blob.post.domain.enums.Category;
-import com.codeit.blob.post.domain.enums.Subcategory;
+import com.codeit.blob.city.domain.City;
+import com.codeit.blob.city.domain.Country;
+import com.codeit.blob.city.service.CityService;
+import com.codeit.blob.post.domain.Post;
+import com.codeit.blob.post.domain.PostImage;
+import com.codeit.blob.post.domain.Category;
+import com.codeit.blob.post.domain.Subcategory;
 import com.codeit.blob.post.dto.request.CreatePostRequest;
 import com.codeit.blob.post.dto.response.DeletePostResponse;
 import com.codeit.blob.post.dto.response.PostResponse;
@@ -26,6 +29,7 @@ public class PostService {
 
     private final PostJpaRepository postJpaRepository;
     private final PostImageJpaRepository imageJpaRepository;
+    private final CityService cityService;
 
     @Transactional
     public PostResponse createPost(CustomUsers userDetails, CreatePostRequest request, List<String> imgPaths) {
@@ -34,13 +38,19 @@ public class PostService {
         Point point = geometryFactory.createPoint(new Coordinate(request.getLng(), request.getLat()));
         Point actualPoint = geometryFactory.createPoint(new Coordinate(request.getActualLng(), request.getActualLat()));
 
+        Country country = Country.getInstance(request.getCountry());
+        City city = cityService.findCityByCountryAndName(country, request.getCity());
+        if (city == null){
+            city = cityService.createCity(country, request.getCity());
+        }
+
         Post post = Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .category(Category.getInstance(request.getCategory()))
                 .subcategory(Subcategory.getInstance(request.getSubcategory()))
-                .author(userDetails.getUsers())
-                .city(null) // TODO
+                .author(null) //TODO
+                .city(city)
                 .location(point)
                 .actualLocation(actualPoint)
                 .build();

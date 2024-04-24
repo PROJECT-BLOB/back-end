@@ -1,6 +1,6 @@
-package com.codeit.blob.post.domain.entity;
+package com.codeit.blob.city.domain;
 
-import com.codeit.blob.post.domain.enums.Country;
+import com.codeit.blob.city.domain.Country;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,18 +18,14 @@ public class City {
     @Enumerated(EnumType.STRING)
     private Country country;
 
-    private String code;
-
     private String name;
 
     @Builder
     public City(
             Country country,
-            String code,
             String name
     ){
         this.country = country;
-        this.code = code;
         this.name = name;
     }
 }
