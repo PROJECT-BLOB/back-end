@@ -1,6 +1,6 @@
 package com.codeit.blob.user;
 
-public enum UserAuthenticateType {
+public enum UserAuthenticateState {
     NORMAL,
     BLOCKED,
     DELETED,

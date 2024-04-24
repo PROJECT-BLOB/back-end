@@ -3,6 +3,7 @@ package com.codeit.blob.oauth.dto.google;
 import lombok.Getter;
 
 @Getter
+// TODO KDY Json Property 설정 필요
 public class GoogleDto {
     private final String access_token;
     private final String expires_in;

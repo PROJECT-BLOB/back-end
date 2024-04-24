@@ -3,6 +3,7 @@ package com.codeit.blob.oauth.dto.kakao;
 import lombok.Getter;
 
 @Getter
+// TODO KDY Json Property 설정 필요
 public class KakaoDto {
     private final String access_token;
     private final String token_type;
