@@ -15,12 +15,8 @@ public class CityService {
 
     @Transactional
     public City createCity(Country country, String cityName){
-        City city = City.builder()
-                .country(country)
-                .name(cityName)
-                .build();
-        cityJpaRepository.save(city);
-        return city;
+        City city = new City(country, cityName);
+        return cityJpaRepository.save(city);
     }
 
     public City findCityByCountryAndName(Country country, String cityName){

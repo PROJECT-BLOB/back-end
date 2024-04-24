@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
@@ -32,6 +33,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .requestMatchers(PERMIT_URL).permitAll()
+                .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
                 .anyRequest().authenticated());
 
         http

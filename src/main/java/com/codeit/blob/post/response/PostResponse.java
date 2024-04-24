@@ -1,4 +1,4 @@
-package com.codeit.blob.post.dto.response;
+package com.codeit.blob.post.response;
 
 import com.codeit.blob.post.domain.Post;
 import com.codeit.blob.post.domain.PostImage;

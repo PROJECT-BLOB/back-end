@@ -4,9 +4,9 @@ import com.codeit.blob.city.domain.City;
 import com.codeit.blob.city.domain.Country;
 import com.codeit.blob.city.service.CityService;
 import com.codeit.blob.post.domain.*;
-import com.codeit.blob.post.dto.request.CreatePostRequest;
-import com.codeit.blob.post.dto.response.DeletePostResponse;
-import com.codeit.blob.post.dto.response.PostResponse;
+import com.codeit.blob.post.request.CreatePostRequest;
+import com.codeit.blob.post.response.DeletePostResponse;
+import com.codeit.blob.post.response.PostResponse;
 import com.codeit.blob.post.repository.PostImageJpaRepository;
 import com.codeit.blob.post.repository.PostJpaRepository;
 import com.codeit.blob.oauth.domain.CustomUsers;
@@ -43,7 +43,7 @@ public class PostService {
                 .content(request.getContent())
                 .category(Category.getInstance(request.getCategory()))
                 .subcategory(Subcategory.getInstance(request.getSubcategory()))
-                .author(null)
+                .author(userDetails.getUsers())
                 .city(city)
                 .coordinate(coordinate)
                 .distFromActual(distFromActual)
