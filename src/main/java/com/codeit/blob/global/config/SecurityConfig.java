@@ -45,7 +45,7 @@ public class SecurityConfig {
 
     @Bean
     @Profile("dev")
-    public SecurityFilterChain devConfig(HttpSecurity http) throws Exception {
+    public SecurityFilterChain devConfig(HttpSecurity http, JwtProvider provider, UserRepository userRepository) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(AbstractHttpConfigurer::disable);
 
@@ -53,6 +53,9 @@ public class SecurityConfig {
                 .requestMatchers(PERMIT_URL).permitAll()
                 .anyRequest().authenticated());
 
+        http
+                .addFilterBefore(new JwtAuthenticationFilter(provider, userRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtExceptionHandler(), JwtAuthenticationFilter.class);
 
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);

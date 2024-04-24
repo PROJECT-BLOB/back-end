@@ -1,23 +1,25 @@
 package com.codeit.blob.oauth.dto.kakao;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 
 @Getter
-// TODO KDY Json Property 설정 필요
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class KakaoDto {
-    private final String access_token;
-    private final String token_type;
-    private final String refresh_token;
-    private final String expires_in;
+    private final String accessToken;
+    private final String tokenType;
+    private final String refreshToken;
+    private final String expiresIn;
     private final String scope;
-    private final String refresh_token_expires_in;
+    private final String refreshTokenExpiresIn;
 
-    public KakaoDto(String access_token, String token_type, String refresh_token, String expires_in, String scope, String refresh_token_expires_in) {
-        this.access_token = access_token;
-        this.token_type = token_type;
-        this.refresh_token = refresh_token;
-        this.expires_in = expires_in;
+    public KakaoDto(String accessToken, String tokenType, String refreshToken, String expiresIn, String scope, String refreshTokenExpiresIn) {
+        this.accessToken = accessToken;
+        this.tokenType = tokenType;
+        this.refreshToken = refreshToken;
+        this.expiresIn = expiresIn;
         this.scope = scope;
-        this.refresh_token_expires_in = refresh_token_expires_in;
+        this.refreshTokenExpiresIn = refreshTokenExpiresIn;
     }
 }

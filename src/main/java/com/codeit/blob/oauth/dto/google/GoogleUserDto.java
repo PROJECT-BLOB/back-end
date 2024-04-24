@@ -1,26 +1,28 @@
 package com.codeit.blob.oauth.dto.google;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 
 @Getter
-// TODO KDY Json Property 설정 필요
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class GoogleUserDto {
     private final String id;
     private final String email;
-    private final String verified_email;
+    private final String verifiedEmail;
     private final String name;
-    private final String given_name;
-    private final String family_name;
+    private final String givenName;
+    private final String familyName;
     private final String picture;
     private final String locale;
 
-    public GoogleUserDto(String id, String email, String verified_email, String name, String given_name, String family_name, String picture, String locale) {
+    public GoogleUserDto(String id, String email, String verifiedEmail, String name, String givenName, String familyName, String picture, String locale) {
         this.id = id;
         this.email = email;
-        this.verified_email = verified_email;
+        this.verifiedEmail = verifiedEmail;
         this.name = name;
-        this.given_name = given_name;
-        this.family_name = family_name;
+        this.givenName = givenName;
+        this.familyName = familyName;
         this.picture = picture;
         this.locale = locale;
     }

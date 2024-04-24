@@ -1,14 +1,13 @@
 package com.codeit.blob.oauth.controller;
 
 import com.codeit.blob.jwt.exception.JwtExpiredException;
-import com.codeit.blob.oauth.OauthType;
 import com.codeit.blob.jwt.provider.JwtProvider;
+import com.codeit.blob.oauth.OauthType;
 import com.codeit.blob.oauth.response.OauthResponse;
 import com.codeit.blob.oauth.service.OauthManager;
 import com.codeit.blob.oauth.service.OauthService;
 import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.repository.UserRepository;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;

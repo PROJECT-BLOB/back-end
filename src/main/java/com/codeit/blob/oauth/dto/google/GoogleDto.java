@@ -1,21 +1,23 @@
 package com.codeit.blob.oauth.dto.google;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 
 @Getter
-// TODO KDY Json Property 설정 필요
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class GoogleDto {
-    private final String access_token;
-    private final String expires_in;
+    private final String accessToken;
+    private final String expiresIn;
     private final String scope;
-    private final String token_type;
-    private final String id_token;
+    private final String tokenType;
+    private final String idToken;
 
-    public GoogleDto(String access_token, String expires_in, String scope, String token_type, String id_token) {
-        this.access_token = access_token;
-        this.expires_in = expires_in;
+    public GoogleDto(String accessToken, String expiresIn, String scope, String tokenType, String idToken) {
+        this.accessToken = accessToken;
+        this.expiresIn = expiresIn;
         this.scope = scope;
-        this.token_type = token_type;
-        this.id_token = id_token;
+        this.tokenType = tokenType;
+        this.idToken = idToken;
     }
 }

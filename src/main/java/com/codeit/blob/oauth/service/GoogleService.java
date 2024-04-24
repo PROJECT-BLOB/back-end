@@ -50,7 +50,7 @@ public class GoogleService implements OauthService {
     @Transactional
     public OauthResponse createToken(String code) {
         GoogleDto oauthToken = getOauthToken(code);
-        GoogleUserDto userInfo = getUserInfo(oauthToken.getAccess_token());
+        GoogleUserDto userInfo = getUserInfo(oauthToken.getAccessToken());
 
         Map<String, Object> extractClaims = new HashMap<>();
         extractClaims.put("oauthId", userInfo.getId());

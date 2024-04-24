@@ -6,7 +6,6 @@ import lombok.Getter;
 
 @Getter
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-// TODO KDY Json Property 설정 필요
 public class KakaoUserDto {
     private String id;
     private KakaoAccount kakaoAccount;
@@ -20,25 +19,27 @@ public class KakaoUserDto {
     }
 
     public String getProfile() {
-        return kakaoAccount.getProfile().getProfile_image_url();
+        return kakaoAccount.getProfile().getProfileImageUrl();
     }
 
     @Getter
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class KakaoAccount {
-        private boolean profile_nickname_needs_agreement;
-        private boolean profile_image_needs_agreement;
+        private boolean profileNicknameNeedsAgreement;
+        private boolean profileImageNeedsAgreement;
         private KakaoProfile profile;
-        private boolean has_email;
-        private boolean email_needs_agreement;
-        private boolean is_email_valid;
-        private boolean is_email_verified;
+        private boolean hasEmail;
+        private boolean emailNeedsAgreement;
+        private boolean isEmailValid;
+        private boolean isEmailVerified;
         private String email;
 
         @Getter
+        @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
         public static class KakaoProfile {
-            private String thumbnail_image_url;
-            private String profile_image_url;
-            private boolean is_default_image;
+            private String thumbnailImageUrl;
+            private String profileImageUrl;
+            private boolean isDefaultImage;
         }
     }
 }
