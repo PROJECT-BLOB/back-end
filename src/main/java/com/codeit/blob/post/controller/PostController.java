@@ -27,12 +27,12 @@ public class PostController {
     private final PostService postService;
     private final S3Service s3Service;
 
-    @PostMapping
+    @PostMapping("/new")
     @Operation(summary = "게시글 작성")
     public ResponseEntity<PostResponse> createPost(
             @AuthenticationPrincipal CustomUsers userDetails,
             @Valid @RequestPart("data") CreatePostRequest request,
-            @RequestPart("file") List<MultipartFile> files
+            @RequestPart(value = "file", required = false) List<MultipartFile> files
     ) {
         List<String> imgPaths = new ArrayList<>();
         if (files != null && !files.isEmpty()) {

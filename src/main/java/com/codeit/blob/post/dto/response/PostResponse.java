@@ -29,10 +29,10 @@ public class PostResponse {
         this.postId = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.category = post.getCategory().getName();
-        this.subcategory = post.getSubcategory().getName();
+        this.category = post.getCategory().getLabel();
+        this.subcategory = post.getSubcategory().getLabel();
         // user
-        this.country = post.getCity().getCountry().getName();
+        this.country = post.getCity().getCountry().getLabel();
         this.city = post.getCity().getName();
         this.lat = post.getCoordinate().getLat();
         this.lng = post.getCoordinate().getLng();

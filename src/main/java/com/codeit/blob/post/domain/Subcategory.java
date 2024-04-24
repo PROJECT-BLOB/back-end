@@ -6,18 +6,18 @@ public enum Subcategory {
     // todo add finalised list
     WEATHER("날씨");
 
-    private String name;
+    private String label;
 
     Subcategory(String name) {
-        this.name = name;
+        this.label = name;
     }
 
-    public String getName() {
-        return name;
+    public String getLabel() {
+        return label;
     }
 
     public static Subcategory getInstance(String subcategory) {
-        return Arrays.stream(Subcategory.values()).filter(c -> c.name().equals(subcategory))
+        return Arrays.stream(Subcategory.values()).filter(c -> c.getLabel().equals(subcategory))
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("존재하지 않는 세부 카테고리입니다."));
     }
 }

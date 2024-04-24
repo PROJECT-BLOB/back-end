@@ -262,18 +262,18 @@ public enum Country {
     ZW("짐바브웨"),
     AX("올란드 제도");
 
-    private String name;
+    private String label;
 
     Country(String name) {
-        this.name = name;
+        this.label = name;
     }
 
-    public String getName() {
-        return name;
+    public String getLabel() {
+        return label;
     }
 
     public static Country getInstance(String country) {
-        return Arrays.stream(Country.values()).filter(c -> c.name().equals(country))
+        return Arrays.stream(Country.values()).filter(c -> c.getLabel().equals(country))
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("존재하지 않는 나라입니다."));
     }
 

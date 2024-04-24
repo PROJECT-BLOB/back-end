@@ -9,18 +9,18 @@ public enum Category {
     QUESTION("궁금해요"),
     HELP("도와주세요");
 
-    private String name;
+    private String label;
 
     Category(String name) {
-        this.name = name;
+        this.label = name;
     }
 
-    public String getName() {
-        return name;
+    public String getLabel() {
+        return label;
     }
 
     public static Category getInstance(String category) {
-        return Arrays.stream(Category.values()).filter(c -> c.name().equals(category))
+        return Arrays.stream(Category.values()).filter(c -> c.getLabel().equals(category))
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
     }
 }
