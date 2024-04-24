@@ -36,8 +36,9 @@ public class PostController {
     ) {
         List<String> imgPaths = new ArrayList<>();
         if (files != null && !files.isEmpty()) {
-            imgPaths = s3Service.upload(files);
+            imgPaths = s3Service.uploadFiles(files);
         }
+        //TODO max no of pics per post?
 
         return ResponseEntity.ok(postService.createPost(userDetails, request, imgPaths));
     }

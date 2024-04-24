@@ -46,7 +46,7 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     private List<PostImage> postImages = new ArrayList<>();
 
-    private long views = 0;
+    private Long views;
 
     @Builder
     public Post(
@@ -67,6 +67,7 @@ public class Post extends BaseTimeEntity {
         this.city = city;
         this.coordinate = coordinate;
         this.distFromActual = distFromActual;
+        this.views = 0L;
     }
 
     public void incrementView(){

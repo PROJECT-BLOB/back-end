@@ -28,3 +28,9 @@ spring:
       path: /h2-console
       settings:
         web-allow-others: true
+
+  servlet:
+    multipart:
+      resolve-lazily: true
+      max-file-size: 5MB
+      max-request-size: 50MB

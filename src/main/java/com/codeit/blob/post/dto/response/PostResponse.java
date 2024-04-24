@@ -37,7 +37,7 @@ public class PostResponse {
         this.lat = post.getCoordinate().getLat();
         this.lng = post.getCoordinate().getLng();
         this.distFromActual = post.getDistFromActual();
-        this.views = getViews();
+        this.views = post.getViews();
         this.imageUrl = post.getPostImages().stream().map(PostImage::getUrl).toList();
     }
 }

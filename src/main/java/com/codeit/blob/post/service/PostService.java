@@ -59,7 +59,7 @@ public class PostService {
         return new PostResponse(post);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public PostResponse viewPost(Long postId) {
         Post post = postJpaRepository.findById(postId)
                 .orElseThrow(IllegalArgumentException::new);

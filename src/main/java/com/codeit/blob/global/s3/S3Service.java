@@ -1,6 +1,7 @@
 package com.codeit.blob.global.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -32,22 +33,32 @@ public class S3Service {
         VALID_EXTENSIONS.add(".png");
     }
 
-    public List<String> upload(List<MultipartFile> files) {
+    public String uploadFile(MultipartFile file) {
+        String fileName = createFileName(file.getOriginalFilename());
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(file.getSize());
+        objectMetadata.setContentType(file.getContentType());
+
+        try (InputStream inputStream = file.getInputStream()) {
+            amazonS3.putObject(new PutObjectRequest(bucket + "/image", fileName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+        } catch (AmazonS3Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "S3 에러로 인해 파일 업로드에 실패했습니다.");
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "IO 에러로 인해 파일 업로드에 실패했습니다.");
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+        }
+
+        return amazonS3.getUrl(bucket + "/image",fileName).toString();
+    }
+
+    public List<String> uploadFiles(List<MultipartFile> files) {
         List<String> imgUrls = new ArrayList<>();
 
         for(MultipartFile file : files){
-            String fileName = createFileName(file.getOriginalFilename());
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentLength(file.getSize());
-            objectMetadata.setContentType(file.getContentType());
-
-            try (InputStream inputStream = file.getInputStream()) {
-                amazonS3.putObject(new PutObjectRequest(bucket + "/image", fileName, inputStream, objectMetadata)
-                        .withCannedAcl(CannedAccessControlList.PublicRead));
-                imgUrls.add(amazonS3.getUrl(bucket + "/image",fileName).toString());
-            } catch (IOException e) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
-            }
+            String url = uploadFile(file);
+            imgUrls.add(url);
         }
 
         return imgUrls;
@@ -60,12 +71,12 @@ public class S3Service {
     private String getFileExtension(String fileName) {
         int lastIndex = fileName.lastIndexOf(".");
         if (lastIndex == -1 || lastIndex == fileName.length() - 1) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일 (" + fileName + ") 입니다.");
+            throw new IllegalArgumentException("잘못된 형식의 파일 (" + fileName + ") 입니다.");
         }
 
         String extension = fileName.substring(lastIndex);
         if (!VALID_EXTENSIONS.contains(extension.toLowerCase())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일 (" + fileName + ") 입니다.");
+            throw new IllegalArgumentException("잘못된 형식의 파일 (" + fileName + ") 입니다.");
         }
 
         return extension;
