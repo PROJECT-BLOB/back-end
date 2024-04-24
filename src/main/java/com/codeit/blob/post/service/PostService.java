@@ -43,7 +43,7 @@ public class PostService {
                 .content(request.getContent())
                 .category(Category.getInstance(request.getCategory()))
                 .subcategory(Subcategory.getInstance(request.getSubcategory()))
-                .author(userDetails.getUsers())
+                .author(null)
                 .city(city)
                 .coordinate(coordinate)
                 .distFromActual(distFromActual)

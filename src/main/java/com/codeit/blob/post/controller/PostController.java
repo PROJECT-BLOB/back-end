@@ -36,9 +36,9 @@ public class PostController {
     ) {
         List<String> imgPaths = new ArrayList<>();
         if (files != null && !files.isEmpty()) {
+            if (files.size() > 5) throw new IllegalArgumentException("이미지 최대 5개");
             imgPaths = s3Service.uploadFiles(files);
         }
-        //TODO max no of pics per post?
 
         return ResponseEntity.ok(postService.createPost(userDetails, request, imgPaths));
     }
