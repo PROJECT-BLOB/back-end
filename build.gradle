@@ -37,7 +37,6 @@ dependencies {
 	// DB
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	runtimeOnly 'com.h2database:h2'
-	implementation 'org.hibernate:hibernate-spatial:6.1.7.Final'
 
 	// lombok
 	compileOnly 'org.projectlombok:lombok'

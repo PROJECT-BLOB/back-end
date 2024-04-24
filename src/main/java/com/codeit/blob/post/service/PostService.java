@@ -3,10 +3,7 @@ package com.codeit.blob.post.service;
 import com.codeit.blob.city.domain.City;
 import com.codeit.blob.city.domain.Country;
 import com.codeit.blob.city.service.CityService;
-import com.codeit.blob.post.domain.Post;
-import com.codeit.blob.post.domain.PostImage;
-import com.codeit.blob.post.domain.Category;
-import com.codeit.blob.post.domain.Subcategory;
+import com.codeit.blob.post.domain.*;
 import com.codeit.blob.post.dto.request.CreatePostRequest;
 import com.codeit.blob.post.dto.response.DeletePostResponse;
 import com.codeit.blob.post.dto.response.PostResponse;
@@ -14,10 +11,6 @@ import com.codeit.blob.post.repository.PostImageJpaRepository;
 import com.codeit.blob.post.repository.PostJpaRepository;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import lombok.RequiredArgsConstructor;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,15 +27,16 @@ public class PostService {
     @Transactional
     public PostResponse createPost(CustomUsers userDetails, CreatePostRequest request, List<String> imgPaths) {
 
-        GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
-        Point point = geometryFactory.createPoint(new Coordinate(request.getLng(), request.getLat()));
-        Point actualPoint = geometryFactory.createPoint(new Coordinate(request.getActualLng(), request.getActualLat()));
-
         Country country = Country.getInstance(request.getCountry());
         City city = cityService.findCityByCountryAndName(country, request.getCity());
         if (city == null){
             city = cityService.createCity(country, request.getCity());
         }
+
+        Coordinate coordinate = request.getLat() == null || request.getLng() == null
+                ? null : new Coordinate(request.getLat(), request.getLng());
+        Long distFromActual = coordinate == null || request.getActualLat() == null || request.getActualLng() == null
+                ? null : coordinate.calculateDistance(request.getActualLat(), request.getActualLng());
 
         Post post = Post.builder()
                 .title(request.getTitle())
@@ -51,8 +45,8 @@ public class PostService {
                 .subcategory(Subcategory.getInstance(request.getSubcategory()))
                 .author(null) //TODO
                 .city(city)
-                .location(point)
-                .actualLocation(actualPoint)
+                .coordinate(coordinate)
+                .distFromActual(distFromActual)
                 .build();
 
         for (String imgUrl : imgPaths) {

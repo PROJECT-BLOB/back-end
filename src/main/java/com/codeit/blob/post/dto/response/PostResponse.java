@@ -34,8 +34,8 @@ public class PostResponse {
         // user
         this.country = post.getCity().getCountry().getName();
         this.city = post.getCity().getName();
-        this.lat = post.getLocation().getX();
-        this.lng = post.getLocation().getY();
+        this.lat = post.getCoordinate().getLat();
+        this.lng = post.getCoordinate().getLng();
         this.distFromActual = post.getDistFromActual();
         this.views = getViews();
         this.imageUrl = post.getPostImages().stream().map(PostImage::getUrl).toList();
