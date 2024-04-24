@@ -1,25 +1,39 @@
 package com.codeit.blob.oauth.service;
 
-import com.codeit.blob.user.UserAuthenticateType;
-import com.codeit.blob.user.request.UserRequest;
+import com.codeit.blob.oauth.OauthType;
+import com.codeit.blob.jwt.provider.JwtProvider;
+import com.codeit.blob.oauth.provider.GoogleProperties;
+import com.codeit.blob.oauth.response.OauthResponse;
+import com.codeit.blob.user.UserAuthenticateState;
+import com.codeit.blob.user.domain.Users;
+import com.codeit.blob.user.repository.UserRepository;
 import com.codeit.blob.oauth.dto.google.GoogleDto;
 import com.codeit.blob.oauth.dto.google.GoogleUserDto;
-import com.codeit.blob.oauth.provider.OauthProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Service
-public class GoogleService extends OauthService {
+import java.util.HashMap;
+import java.util.Map;
 
-    public GoogleService(@Qualifier("googleProperties") OauthProperties provider) {
-        super(provider);
+@Service
+@RequiredArgsConstructor
+public class GoogleService implements OauthService {
+
+    private final GoogleProperties properties;
+    private final JwtProvider jwtProvider;
+    private final UserRepository userRepository;
+
+    @Override
+    public OauthType getOauthType() {
+        return properties.getOauthType();
     }
 
     @Override
@@ -33,26 +47,35 @@ public class GoogleService extends OauthService {
     }
 
     @Override
-    public Object createToken(String code) {
+    @Transactional
+    public OauthResponse createToken(String code) {
         GoogleDto oauthToken = getOauthToken(code);
-        String accessToken = oauthToken.getAccess_token();
-        GoogleUserDto userInfo = getUserInfo(accessToken);
+        GoogleUserDto userInfo = getUserInfo(oauthToken.getAccess_token());
 
-        WebClient.create().post()
-                .uri("http://localhost:8080/account")
-                .bodyValue(
-                        UserRequest.builder()
+        Map<String, Object> extractClaims = new HashMap<>();
+        extractClaims.put("oauthId", userInfo.getId());
+
+        String accessToken = jwtProvider.generateAccessToken(extractClaims);
+        String refreshToken = jwtProvider.generateRefreshToken(extractClaims);
+
+        Users users = userRepository.findByOauthId(userInfo.getId())
+                .orElseGet(() ->
+                        Users.builder()
                                 .oauthId(userInfo.getId())
                                 .email(userInfo.getEmail())
                                 .profileUrl(userInfo.getPicture())
-                                .userAuthenticateType(UserAuthenticateType.BLOCKED)
+                                .state(UserAuthenticateState.BLOCKED)
                                 .oauthType(properties.getOauthType())
+                                .refreshToken(refreshToken)
                                 .build()
-                ).retrieve()
-                .bodyToMono(Void.class)
-                .block();
+                );
+        userRepository.save(users);
 
-        return userInfo;
+        return OauthResponse.builder()
+                .oauthId(userInfo.getId())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     @Override

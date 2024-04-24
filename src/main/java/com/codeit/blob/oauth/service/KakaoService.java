@@ -1,13 +1,16 @@
 package com.codeit.blob.oauth.service;
 
-import com.codeit.blob.user.UserAuthenticateType;
-import com.codeit.blob.user.request.UserRequest;
+import com.codeit.blob.oauth.OauthType;
+import com.codeit.blob.jwt.provider.JwtProvider;
+import com.codeit.blob.oauth.provider.KakaoProperties;
+import com.codeit.blob.oauth.response.OauthResponse;
+import com.codeit.blob.user.UserAuthenticateState;
+import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.oauth.dto.kakao.KakaoDto;
 import com.codeit.blob.oauth.dto.kakao.KakaoUserDto;
-import com.codeit.blob.oauth.provider.OauthProperties;
 import com.codeit.blob.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -16,13 +19,20 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
-public class KakaoService extends OauthService {
+@RequiredArgsConstructor
+public class KakaoService implements OauthService {
+
+    private final KakaoProperties properties;
+    private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
 
-    public KakaoService(@Qualifier("kakaoProperties") OauthProperties properties, UserRepository userRepository) {
-        super(properties);
-        this.userRepository = userRepository;
+    @Override
+    public OauthType getOauthType() {
+        return properties.getOauthType();
     }
 
     @Override
@@ -36,26 +46,34 @@ public class KakaoService extends OauthService {
     }
 
     @Override
-    public Object createToken(String code) {
+    public OauthResponse createToken(String code) {
         KakaoDto oauthToken = getOauthToken(code);
-        String accessToken = oauthToken.getAccess_token();
-        KakaoUserDto userInfo = getUserInfo(accessToken);
+        KakaoUserDto userInfo = getUserInfo(oauthToken.getAccess_token());
 
-        WebClient.create().post()
-                .uri("http://localhost:8080/account")
-                .bodyValue(
-                        UserRequest.builder()
+        Map<String, Object> extractClaims = new HashMap<>();
+        extractClaims.put("oauthId", userInfo.getId());
+
+        String accessToken = jwtProvider.generateAccessToken(extractClaims);
+        String refreshToken = jwtProvider.generateRefreshToken(extractClaims);
+
+        Users users = userRepository.findByOauthId(userInfo.getId())
+                .orElseGet(() ->
+                        Users.builder()
                                 .oauthId(userInfo.getId())
                                 .email(userInfo.getEmail())
                                 .profileUrl(userInfo.getProfile())
-                                .userAuthenticateType(UserAuthenticateType.BLOCKED)
+                                .state(UserAuthenticateState.BLOCKED)
                                 .oauthType(properties.getOauthType())
+                                .refreshToken(refreshToken)
                                 .build()
-                ).retrieve()
-                .bodyToMono(Void.class)
-                .subscribe();
+                );
+        userRepository.save(users);
 
-        return userInfo;
+        return OauthResponse.builder()
+                .oauthId(userInfo.getId())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     @Override

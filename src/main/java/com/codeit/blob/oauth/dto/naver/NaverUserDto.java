@@ -3,6 +3,7 @@ package com.codeit.blob.oauth.dto.naver;
 import lombok.Getter;
 
 @Getter
+// TODO KDY Json Property 설정 필요
 public class NaverUserDto {
     private final String resultcode;
     private final String message;

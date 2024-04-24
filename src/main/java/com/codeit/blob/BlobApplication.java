@@ -14,17 +14,11 @@ import java.util.Arrays;
 @EnableJpaAuditing
 @SpringBootApplication
 @RequiredArgsConstructor
-public class BlobApplication implements CommandLineRunner {
+public class BlobApplication{
 
     private final ApplicationContext applicationContext;
 
     public static void main(String[] args) {
         SpringApplication.run(BlobApplication.class, args);
-    }
-
-    @Override
-    public void run(String... args) throws Exception {
-        Arrays.stream(applicationContext.getBeanDefinitionNames())
-                .forEach(s -> log.info(s));
     }
 }
