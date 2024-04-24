@@ -53,6 +53,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(PERMIT_URL).permitAll()
+                .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
                 .anyRequest().authenticated());
 
 
