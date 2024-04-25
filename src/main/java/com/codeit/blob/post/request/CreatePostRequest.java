@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Schema(description = "게시글 작성 요청 DTO")
+@Schema(name = "게시글 작성 요청 데이터")
 public class CreatePostRequest {
 
     @NotEmpty(message = "게시글 제목은 필수값입니다.")
