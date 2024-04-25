@@ -4,11 +4,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 @Getter
-@Schema(name = "Refresh Token 재발급 응답 데이터")
+@Schema(name = "Access Token 재발급 응답 데이터")
 public class TokenResponse {
-    private final String refreshToken;
+    private final String accessToken;
 
-    public TokenResponse(String refreshToken) {
-        this.refreshToken = refreshToken;
+    public TokenResponse(String accessToken) {
+        this.accessToken = accessToken;
     }
 }
