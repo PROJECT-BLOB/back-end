@@ -1,8 +1,8 @@
 package com.codeit.blob.user.domain;
 
-import com.codeit.blob.user.UserAuthenticateState;
 import com.codeit.blob.global.domain.BaseTimeEntity;
 import com.codeit.blob.oauth.OauthType;
+import com.codeit.blob.user.UserAuthenticateState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

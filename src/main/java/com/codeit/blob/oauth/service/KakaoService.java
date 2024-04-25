@@ -1,13 +1,13 @@
 package com.codeit.blob.oauth.service;
 
-import com.codeit.blob.oauth.OauthType;
 import com.codeit.blob.jwt.provider.JwtProvider;
+import com.codeit.blob.oauth.OauthType;
+import com.codeit.blob.oauth.dto.kakao.KakaoDto;
+import com.codeit.blob.oauth.dto.kakao.KakaoUserDto;
 import com.codeit.blob.oauth.provider.KakaoProperties;
 import com.codeit.blob.oauth.response.OauthResponse;
 import com.codeit.blob.user.UserAuthenticateState;
 import com.codeit.blob.user.domain.Users;
-import com.codeit.blob.oauth.dto.kakao.KakaoDto;
-import com.codeit.blob.oauth.dto.kakao.KakaoUserDto;
 import com.codeit.blob.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +48,7 @@ public class KakaoService implements OauthService {
     @Override
     public OauthResponse createToken(String code) {
         KakaoDto oauthToken = getOauthToken(code);
-        KakaoUserDto userInfo = getUserInfo(oauthToken.getAccess_token());
+        KakaoUserDto userInfo = getUserInfo(oauthToken.getAccessToken());
 
         Map<String, Object> extractClaims = new HashMap<>();
         extractClaims.put("oauthId", userInfo.getId());

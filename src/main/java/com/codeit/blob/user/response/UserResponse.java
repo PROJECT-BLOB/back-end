@@ -2,7 +2,6 @@ package com.codeit.blob.user.response;
 
 import com.codeit.blob.user.UserAuthenticateState;
 import com.codeit.blob.user.domain.Users;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter

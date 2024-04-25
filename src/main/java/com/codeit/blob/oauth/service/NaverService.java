@@ -50,7 +50,7 @@ public class NaverService implements OauthService {
     @Override
     public OauthResponse createToken(String code) {
         NaverDto oauthToken = getOauthToken(code);
-        NaverUserDto userInfo = getUserInfo(oauthToken.getAccess_token());
+        NaverUserDto userInfo = getUserInfo(oauthToken.getAccessToken());
 
         Map<String, Object> extractClaims = new HashMap<>();
         extractClaims.put("oauthId", userInfo.getId());

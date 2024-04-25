@@ -1,9 +1,10 @@
 package com.codeit.blob.oauth.dto.naver;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 
 @Getter
-// TODO KDY Json Property 설정 필요
 public class NaverUserDto {
     private final String resultcode;
     private final String message;
@@ -18,14 +19,15 @@ public class NaverUserDto {
         this.id = response.getId();
         this.name = response.getName();
         this.email = response.getEmail();
-        this.profile = response.getProfile_image();
+        this.profile = response.getProfileImage();
     }
 
     @Getter
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     private static class NaverResponse {
         private String id;
         private String nickname;
-        private String profile_image;
+        private String profileImage;
         private String email;
         private String name;
     }
