@@ -71,4 +71,14 @@ public class PostController {
     ) {
         return ResponseEntity.ok(postService.deletePost(userDetails, postId));
     }
+
+    @PostMapping("/like/{postId}")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "댓글 좋아요/취소", description = "postId를 받아 게시글에 좋아요를 추가하거나 이미 좋아요를 누른 경우 취소합니다.")
+    public ResponseEntity<PostResponse> likePost(
+            @AuthenticationPrincipal CustomUsers userDetails,
+            @PathVariable Long postId
+    ) {
+        return ResponseEntity.ok(postService.likePost(userDetails, postId));
+    }
 }

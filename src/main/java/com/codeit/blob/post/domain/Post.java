@@ -49,6 +49,9 @@ public class Post extends BaseTimeEntity {
 
     private Long views;
 
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<PostLike> likes = new ArrayList<>();
+
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
