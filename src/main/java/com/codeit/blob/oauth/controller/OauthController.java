@@ -61,6 +61,6 @@ public class OauthController {
     ) {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
         String refreshToken = token.substring(JwtProvider.JWT_PREFIX.length());
-        return ResponseEntity.ok(tokenService.createRefreshToken(refreshToken));
+        return ResponseEntity.ok(tokenService.createAccessToken(refreshToken));
     }
 }

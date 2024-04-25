@@ -21,13 +21,13 @@ public class TokenService {
     private final UserRepository userRepository;
 
     @Transactional
-    public TokenResponse createRefreshToken(String refreshToken) {
+    public TokenResponse createAccessToken(String refreshToken) {
         if (!jwtProvider.isTokenExpired(refreshToken)) {
             List<Users> all = userRepository.findAll();
             Users users1 = all.get(0);
             log.info(users1.getRefreshToken());
 
-            Users users = userRepository.findByRefreshTokenLike(refreshToken)
+            Users users = userRepository.findByRefreshToken(refreshToken)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저 입니다."));
 
             if (jwtProvider.isTokenValid(refreshToken, users)) {

@@ -10,5 +10,5 @@ public interface UserRepository extends JpaRepository<Users, Long> {
 
     Optional<Users> findByBlobId(String blobId);
 
-    Optional<Users> findByRefreshTokenLike(String refreshToken);
+    Optional<Users> findByRefreshToken(String refreshToken);
 }
