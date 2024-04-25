@@ -46,11 +46,4 @@ public class UserService {
 
         return new UserResponse(users);
     }
-
-    public UserResponse findByRefreshToken(String refreshToken) {
-        Users users = userRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 아이디 입니다."));
-
-        return new UserResponse(users);
-    }
 }

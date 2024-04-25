@@ -46,14 +46,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         log.info("--[Request Jwt Token : {}]", jwtToken);
 
-        //access token validate
         if (jwtToken == null || !jwtToken.startsWith(jwtPrefix)) {
             log.info("---[Access Token Not Validation]---");
             throw new JwtValidationException();
         }
 
         try {
-            String accessToken = jwtToken.substring(jwtPrefix.length() - 1);
+            String accessToken = jwtToken.substring(jwtPrefix.length());
             if (!provider.isTokenExpired(accessToken)) {
                 log.info("---[Access Token Not Expired]---");
 
