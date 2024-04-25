@@ -26,6 +26,7 @@ public class PostResponse {
     private final Double lng;
     private final Long distFromActual;
     private final Long views;
+    @Schema(example = "2024-04-24T12:59:24")
     private final String createdDate;
     private final List<String> imageUrl;
     private final boolean liked;

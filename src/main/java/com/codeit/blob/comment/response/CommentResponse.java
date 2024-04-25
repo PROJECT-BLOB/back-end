@@ -15,6 +15,7 @@ public class CommentResponse {
     private Long id;
     private String content;
     private UserProfileResponse author;
+    @Schema(example = "2024-04-24T12:59:24")
     private String createdDate;
     private boolean canDelete;
     private List<CommentResponse> reply;

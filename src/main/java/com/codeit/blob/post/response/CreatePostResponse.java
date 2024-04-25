@@ -8,7 +8,6 @@ import lombok.Getter;
 public class CreatePostResponse {
 
     private final Long postId;
-
     @Schema(example = "게시물 작성 성공")
     private final String message;
 

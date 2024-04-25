@@ -30,7 +30,7 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_id")
     private Comment parent;
 

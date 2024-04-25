@@ -33,7 +33,7 @@ public class CommentController {
     }
 
     @PostMapping("/reply/{commentId}")
-    @Operation(summary = "댓글 작성 API", description = "commentId와 댓글 내용을 받아 해당 댓글에 답글을 작성합니다.")
+    @Operation(summary = "답글 작성 API", description = "commentId와 댓글 내용을 받아 해당 댓글에 답글을 작성합니다.")
     public ResponseEntity<CommentResponse> createReply(
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long commentId,

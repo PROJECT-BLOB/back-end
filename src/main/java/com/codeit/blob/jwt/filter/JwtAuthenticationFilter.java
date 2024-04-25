@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     };
 
     private static final String[] GET_EXCLUDE_PATH = {
-            "/post/"
+            "/post/", "/comment/post/"
     };
 
     private final JwtProvider provider;

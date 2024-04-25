@@ -5,6 +5,8 @@ import com.codeit.blob.comment.repository.CommentJpaRepository;
 import com.codeit.blob.comment.request.CreateCommentRequest;
 import com.codeit.blob.comment.response.CommentResponse;
 import com.codeit.blob.comment.response.DeleteCommentResponse;
+import com.codeit.blob.global.exceptions.CustomException;
+import com.codeit.blob.global.exceptions.ErrorCode;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.post.domain.Post;
 import com.codeit.blob.post.repository.PostJpaRepository;
@@ -29,22 +31,17 @@ public class CommentService {
             Long postId,
             CreateCommentRequest request
     ) {
-        if (userDetails == null){
-            throw new IllegalArgumentException();
-        }
-        Users user = userDetails.getUsers();
-
         Post post = postJpaRepository.findById(postId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         Comment comment = Comment.builder()
                 .content(request.getContent())
-                .author(user)
+                .author(userDetails.getUsers())
                 .post(post)
                 .build();
 
         commentJpaRepository.save(comment);
-        return new CommentResponse(comment, user);
+        return new CommentResponse(comment, userDetails.getUsers());
     }
 
     @Transactional
@@ -53,13 +50,8 @@ public class CommentService {
             Long parentId,
             CreateCommentRequest request
     ) {
-        if (userDetails == null){
-            throw new IllegalArgumentException();
-        }
-        Users user = userDetails.getUsers();
-
         Comment parent = commentJpaRepository.findById(parentId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
         // make max reply depth 1
         if (parent.getParent() != null){
@@ -68,13 +60,12 @@ public class CommentService {
 
         Comment comment = Comment.builder()
                 .content(request.getContent())
-                .author(user)
+                .author(userDetails.getUsers())
                 .parent(parent)
                 .build();
 
         commentJpaRepository.save(comment);
-
-        return new CommentResponse(parent, user);
+        return new CommentResponse(parent, userDetails.getUsers());
     }
 
     @Transactional
@@ -82,12 +73,8 @@ public class CommentService {
             CustomUsers userDetails,
             Long commentId
     ) {
-        if (userDetails == null){
-            throw new IllegalArgumentException();
-        }
-
         Comment comment = commentJpaRepository.findById(commentId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
         // check if the user deleting the comment is the author of the comment
         if (!comment.getAuthor().getId().equals(userDetails.getUsers().getId())) {
@@ -104,12 +91,13 @@ public class CommentService {
             Long postId,
             int page
     ){
+        Users user = userDetails == null ? null : userDetails.getUsers();
         Post post = postJpaRepository.findById(postId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         Pageable pageable = PageRequest.of(page - 1, 10);
         Page<Comment> comments = commentJpaRepository.findByPostOrderByCreatedDateAsc(post, pageable);
 
-        return comments.map(c -> new CommentResponse(c, userDetails.getUsers()));
+        return comments.map(c -> new CommentResponse(c, user));
     }
 }

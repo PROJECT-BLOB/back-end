@@ -8,7 +8,6 @@ import lombok.Getter;
 public class DeletePostResponse {
 
     private final Long postId;
-
     @Schema(example = "게시물 삭제 성공")
     private final String message;
 
