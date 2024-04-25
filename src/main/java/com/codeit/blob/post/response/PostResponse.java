@@ -29,6 +29,7 @@ public class PostResponse {
     private final List<String> imageUrl;
     private final boolean liked;
     private final boolean bookmarked;
+    private final int commentCount;
 
 
     public PostResponse(Post post){
@@ -48,5 +49,6 @@ public class PostResponse {
         this.imageUrl = post.getPostImages().stream().map(PostImage::getUrl).toList();
         this.liked = false;
         this.bookmarked = false;
+        this.commentCount = post.getComments().size();
     }
 }
