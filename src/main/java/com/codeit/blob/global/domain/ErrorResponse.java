@@ -1,5 +1,6 @@
 package com.codeit.blob.global.domain;
 
+import com.codeit.blob.global.exceptions.ErrorCode;
 import lombok.Getter;
 
 @Getter
@@ -12,5 +13,11 @@ public class ErrorResponse {
         this.status = status;
         this.name = name;
         this.message = message;
+    }
+
+    public ErrorResponse(ErrorCode errorCode){
+        this.status = errorCode.getStatus();
+        this.name = errorCode.name();
+        this.message = errorCode.getMessage();
     }
 }

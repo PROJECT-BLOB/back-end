@@ -74,11 +74,4 @@ public class Post extends BaseTimeEntity {
         this.views++;
     }
 
-    public void addImage(PostImage img){
-        postImages.add(img);
-        img.setPost(this);
-    }
-
-
-
 }
