@@ -3,13 +3,14 @@ package com.codeit.blob.oauth.controller;
 import com.codeit.blob.jwt.exception.JwtExpiredException;
 import com.codeit.blob.jwt.provider.JwtProvider;
 import com.codeit.blob.oauth.OauthType;
-import com.codeit.blob.oauth.dto.UrlResponse;
+import com.codeit.blob.oauth.response.LoginPageResponse;
 import com.codeit.blob.oauth.response.OauthResponse;
 import com.codeit.blob.oauth.service.OauthManager;
 import com.codeit.blob.oauth.service.OauthService;
 import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -32,18 +33,18 @@ public class OauthController {
 
 
     @GetMapping("/{type}")
-    @Operation(summary = "Oauth Login Page Url 리턴")
-    public ResponseEntity<UrlResponse> createLoginPage(
+    @Operation(summary = "Oauth Redirect Url API", description = "type 에 해당하는 redirect url 주소를 리턴합니다.")
+    public ResponseEntity<LoginPageResponse> createLoginPage(
             @PathVariable("type") String oauthType
     ) {
         OauthType type = OauthType.toOauthType(oauthType);
         OauthService oauthService = manager.getService(type);
-        return ResponseEntity.ok(new UrlResponse(oauthService.createLoginUrl()));
+        return ResponseEntity.ok(new LoginPageResponse(oauthService.createLoginUrl()));
     }
 
     @GetMapping("/{type}/callback")
     @Operation(hidden = true)
-    public ResponseEntity<Object> callback(
+    public ResponseEntity<OauthResponse> callback(
             @PathVariable(name = "type") String oauthType,
             @RequestParam(name = "code") String code
     ) {
@@ -56,7 +57,8 @@ public class OauthController {
     }
 
     @PostMapping("/refresh")
-    @Operation(summary = "Refresh Token 으로 Access Token 재발급")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "access token 재발급 API", description = "refresh 토큰을 Header로 받아 새로운 access token을 발급받습니다.")
     public ResponseEntity<Object> refresh(
             HttpServletRequest request
     ) {

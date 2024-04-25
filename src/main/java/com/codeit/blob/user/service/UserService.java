@@ -1,5 +1,6 @@
 package com.codeit.blob.user.service;
 
+import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.user.UserAuthenticateState;
 import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.repository.UserRepository;
@@ -22,7 +23,6 @@ public class UserService {
 
         users.changeUser(
                 users.toBuilder()
-                        .oauthId(userRequest.getOauthId())
                         .blobId(userRequest.getBlobId())
                         .nickName(userRequest.getNickName())
                         .state(UserAuthenticateState.NORMAL)

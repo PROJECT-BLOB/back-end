@@ -2,9 +2,11 @@ package com.codeit.blob.user.response;
 
 import com.codeit.blob.user.UserAuthenticateState;
 import com.codeit.blob.user.domain.Users;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 @Getter
+@Schema(name = "유저 조회 응답 데이터")
 public class UserResponse {
     private final String email;
     private final String blobId;

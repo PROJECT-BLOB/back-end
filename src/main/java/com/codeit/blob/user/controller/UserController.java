@@ -1,12 +1,16 @@
 package com.codeit.blob.user.controller;
 
+import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.user.request.UserRequest;
 import com.codeit.blob.user.response.UserResponse;
 import com.codeit.blob.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,9 +21,11 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    @Operation(summary = "회원 인증 API", description = "blobId, nickName 을 입력 받아 인증합니다.")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "유저 추가 인증 API", description = "blobId, nickName 을 입력 받아 인증합니다.")
     public ResponseEntity<UserResponse> validationUser(
-            @RequestBody UserRequest userRequest
+            //TODO KDY CustomUsers 사용 추가 필요
+            @Valid @RequestBody UserRequest userRequest
     ) {
         return ResponseEntity.ok(userService.validationUser(userRequest));
     }
