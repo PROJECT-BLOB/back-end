@@ -3,6 +3,7 @@ package com.codeit.blob.oauth.controller;
 import com.codeit.blob.jwt.exception.JwtExpiredException;
 import com.codeit.blob.jwt.provider.JwtProvider;
 import com.codeit.blob.oauth.OauthType;
+import com.codeit.blob.oauth.dto.UrlResponse;
 import com.codeit.blob.oauth.response.OauthResponse;
 import com.codeit.blob.oauth.service.OauthManager;
 import com.codeit.blob.oauth.service.OauthService;
@@ -31,12 +32,13 @@ public class OauthController {
 
 
     @GetMapping("/{type}")
-    public ResponseEntity<String> createLoginPage(
+    @Operation(summary = "Oauth Login Page Url 리턴")
+    public ResponseEntity<UrlResponse> createLoginPage(
             @PathVariable("type") String oauthType
     ) {
         OauthType type = OauthType.toOauthType(oauthType);
         OauthService oauthService = manager.getService(type);
-        return ResponseEntity.ok(oauthService.createLoginUrl());
+        return ResponseEntity.ok(new UrlResponse(oauthService.createLoginUrl()));
     }
 
     @GetMapping("/{type}/callback")
@@ -54,6 +56,7 @@ public class OauthController {
     }
 
     @PostMapping("/refresh")
+    @Operation(summary = "Refresh Token 으로 Access Token 재발급")
     public ResponseEntity<Object> refresh(
             HttpServletRequest request
     ) {
