@@ -31,6 +31,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/oauth", "/user", "/h2-console", "/swagger-ui", "/v3"
     };
 
+    private static final String[] GET_EXCLUDE_PATH = {
+            "/posts/"
+    };
+
     private final JwtProvider provider;
     private final UserRepository userRepository;
 
@@ -84,7 +88,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return Arrays.stream(EXCLUDE_PATH)
-                .anyMatch(path::startsWith);
+        String method = request.getMethod();
+
+        boolean getExclude = "GET".equals(method) && Arrays.stream(GET_EXCLUDE_PATH).anyMatch(path::startsWith);
+        return Arrays.stream(EXCLUDE_PATH).anyMatch(path::startsWith) || getExclude;
+
     }
 }

@@ -4,7 +4,10 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-oauth-config.yml
+
+/src/main/resources/config
+
+
 ### STS ###
 .apt_generated
 .classpath
@@ -35,3 +38,4 @@ out/
 
 ### VS Code ###
 .vscode/
+
