@@ -2,6 +2,7 @@ package com.codeit.blob.post.response;
 
 import com.codeit.blob.post.domain.Post;
 import com.codeit.blob.post.domain.PostImage;
+import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.response.UserProfileResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -29,10 +30,11 @@ public class PostResponse {
     private final List<String> imageUrl;
     private final boolean liked;
     private final boolean bookmarked;
+    private final int likeCount;
     private final int commentCount;
+    private final boolean canDelete;
 
-
-    public PostResponse(Post post){
+    public PostResponse(Post post, Users user){
         this.postId = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
@@ -49,6 +51,8 @@ public class PostResponse {
         this.imageUrl = post.getPostImages().stream().map(PostImage::getUrl).toList();
         this.liked = false;
         this.bookmarked = false;
+        this.likeCount = 0;
         this.commentCount = post.getComments().size();
+        this.canDelete = user != null && user.getId().equals(post.getAuthor().getId());
     }
 }

@@ -35,7 +35,7 @@ public class JwtExceptionHandler extends OncePerRequestFilter {
     private void jwtExpiredExceptionHandler(HttpServletResponse response) {
         log.error("---[Expired Jwt Token]---");
         JwtStatus status = JwtStatus.JWT_EXPIRED;
-        ErrorResponse errorResponse = new ErrorResponse(status.getStatus(), status.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(status.getStatus(), status.name(), status.getMessage());
         setResponse(response, errorResponse);
     }
 
@@ -43,7 +43,7 @@ public class JwtExceptionHandler extends OncePerRequestFilter {
     private void jwtValidationExceptionHandler(HttpServletResponse response) {
         log.error("---[Jwt Validation Fail]---");
         JwtStatus status = JwtStatus.JWT_VALIDATED_FAIL;
-        ErrorResponse errorResponse = new ErrorResponse(status.getStatus(), status.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(status.getStatus(), status.name(),status.getMessage());
         setResponse(response, errorResponse);
     }
 
@@ -51,7 +51,7 @@ public class JwtExceptionHandler extends OncePerRequestFilter {
     private void userNotValidationExceptionExceptionHandler(HttpServletResponse response) {
         log.error("---[User Must Need Validation]---");
         JwtStatus status = JwtStatus.USER_NOT_VALIDATED;
-        ErrorResponse errorResponse = new ErrorResponse(status.getStatus(), status.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(status.getStatus(), status.name(),status.getMessage());
         setResponse(response, errorResponse);
     }
 
@@ -59,7 +59,7 @@ public class JwtExceptionHandler extends OncePerRequestFilter {
     private void illegalArgumentExceptionHandler(HttpServletResponse response) {
         log.error("---[Illegal Argument Exception]---");
         JwtStatus status = JwtStatus.ILLEGAL_ARGUMENT_ERROR;
-        ErrorResponse errorResponse = new ErrorResponse(status.getStatus(), status.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(status.getStatus(), status.name(),status.getMessage());
         setResponse(response, errorResponse);
     }
 

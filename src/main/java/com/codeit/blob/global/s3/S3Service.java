@@ -1,19 +1,17 @@
 package com.codeit.blob.global.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.codeit.blob.global.exceptions.CustomException;
+import com.codeit.blob.global.exceptions.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -42,15 +40,11 @@ public class S3Service {
         try (InputStream inputStream = file.getInputStream()) {
             amazonS3.putObject(new PutObjectRequest(bucket + "/image", fileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
-        } catch (AmazonS3Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "S3 에러로 인해 파일 업로드에 실패했습니다.");
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "IO 에러로 인해 파일 업로드에 실패했습니다.");
-        } catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.IMG_UPLOAD_FAIL);
         }
 
-        return amazonS3.getUrl(bucket + "/image",fileName).toString();
+        return amazonS3.getUrl(bucket + "/image", fileName).toString();
     }
 
     public List<String> uploadFiles(List<MultipartFile> files) {
@@ -71,12 +65,12 @@ public class S3Service {
     private String getFileExtension(String fileName) {
         int lastIndex = fileName.lastIndexOf(".");
         if (lastIndex == -1 || lastIndex == fileName.length() - 1) {
-            throw new IllegalArgumentException("잘못된 형식의 파일 (" + fileName + ") 입니다.");
+            throw new CustomException(ErrorCode.UNSUPPORTED_MEDIA_TYPE);
         }
 
         String extension = fileName.substring(lastIndex);
         if (!VALID_EXTENSIONS.contains(extension.toLowerCase())) {
-            throw new IllegalArgumentException("잘못된 형식의 파일 (" + fileName + ") 입니다.");
+            throw new CustomException(ErrorCode.UNSUPPORTED_MEDIA_TYPE);
         }
 
         return extension;

@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     };
 
     private static final String[] GET_EXCLUDE_PATH = {
-            "/posts/"
+            "/post/"
     };
 
     private final JwtProvider provider;
@@ -90,8 +90,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String method = request.getMethod();
 
-        boolean getExclude = "GET".equals(method) && Arrays.stream(GET_EXCLUDE_PATH).anyMatch(path::startsWith);
-        return Arrays.stream(EXCLUDE_PATH).anyMatch(path::startsWith) || getExclude;
+        // check if token is null so that signed-in users can get extra features
+        final String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        boolean getExclude = jwtToken == null
+                && "GET".equals(method)
+                && Arrays.stream(GET_EXCLUDE_PATH).anyMatch(path::startsWith);
 
+        return Arrays.stream(EXCLUDE_PATH).anyMatch(path::startsWith) || getExclude;
     }
+
 }
