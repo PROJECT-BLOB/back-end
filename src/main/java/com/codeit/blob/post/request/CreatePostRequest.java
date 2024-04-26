@@ -22,10 +22,10 @@ public class CreatePostRequest {
     private String content;
 
     @NotNull(message = "게시글 카테고리는 필수값입니다.")
-    @Schema(description = "게시글 카테고리", example = "참고하세요")
+    @Schema(description = "게시글 카테고리", example = "QUESTION")
     private String category;
 
-    @Schema(description = "게시글 세부 카테고리", example = "날씨")
+    @Schema(description = "게시글 세부 카테고리", example = "WEATHER")
     private String subcategory;
 
     @NotEmpty(message = "나라 정보는 필수값입니다.")
