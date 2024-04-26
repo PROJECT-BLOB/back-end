@@ -3,6 +3,7 @@ package com.codeit.blob.post.service;
 import com.codeit.blob.city.domain.City;
 import com.codeit.blob.city.domain.Country;
 import com.codeit.blob.city.service.CityService;
+import com.codeit.blob.global.domain.Coordinate;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.global.exceptions.ErrorCode;
 import com.codeit.blob.post.domain.*;

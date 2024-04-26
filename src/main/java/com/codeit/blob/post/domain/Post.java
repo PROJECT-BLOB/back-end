@@ -3,6 +3,7 @@ package com.codeit.blob.post.domain;
 import com.codeit.blob.city.domain.City;
 import com.codeit.blob.comment.domain.Comment;
 import com.codeit.blob.global.domain.BaseTimeEntity;
+import com.codeit.blob.global.domain.Coordinate;
 import com.codeit.blob.user.domain.Users;
 import jakarta.persistence.*;
 import lombok.Builder;
