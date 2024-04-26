@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -34,8 +36,11 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "parent_id")
     private Comment parent;
 
-    @OneToMany(mappedBy = "parent", orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Comment> reply;
+
+    @OneToMany(mappedBy = "comment", fetch = FetchType.EAGER, orphanRemoval = true)
+    private Set<CommentLike> likes = new HashSet<>();
 
     @Builder
     public Comment(String content, Users author, Post post, Comment parent){
@@ -44,6 +49,14 @@ public class Comment extends BaseTimeEntity {
         this.post = post;
         this.parent = parent;
         this.reply = new ArrayList<>();
+    }
+
+    public void addLike(CommentLike like){
+        likes.add(like);
+    }
+
+    public void removeLike(CommentLike like){
+        likes.remove(like);
     }
 
 }
