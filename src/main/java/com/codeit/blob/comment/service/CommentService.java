@@ -1,7 +1,9 @@
 package com.codeit.blob.comment.service;
 
 import com.codeit.blob.comment.domain.Comment;
+import com.codeit.blob.comment.domain.CommentLike;
 import com.codeit.blob.comment.repository.CommentJpaRepository;
+import com.codeit.blob.comment.repository.CommentLikeJpaRepository;
 import com.codeit.blob.comment.request.CreateCommentRequest;
 import com.codeit.blob.comment.response.CommentResponse;
 import com.codeit.blob.comment.response.DeleteCommentResponse;
@@ -18,11 +20,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
 
     private final CommentJpaRepository commentJpaRepository;
+    private final CommentLikeJpaRepository likeJpaRepository;
     private final PostJpaRepository postJpaRepository;
 
     @Transactional
@@ -65,7 +70,7 @@ public class CommentService {
                 .build();
 
         commentJpaRepository.save(comment);
-        return new CommentResponse(parent, userDetails.getUsers());
+        return new CommentResponse(comment, userDetails.getUsers());
     }
 
     @Transactional
@@ -86,7 +91,7 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CommentResponse> getPostComments(
+    public List<CommentResponse> getPostComments(
             CustomUsers userDetails,
             Long postId,
             int page
@@ -96,8 +101,30 @@ public class CommentService {
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         Pageable pageable = PageRequest.of(page - 1, 10);
-        Page<Comment> comments = commentJpaRepository.findByPostOrderByCreatedDateAsc(post, pageable);
+        List<Comment> comments = commentJpaRepository.findByPostOrderByCreatedDateAsc(post, pageable).getContent();
 
-        return comments.map(c -> new CommentResponse(c, user));
+        return comments.stream().map(c -> new CommentResponse(c, user)).toList();
+    }
+
+    @Transactional
+    public CommentResponse likeComment(CustomUsers userDetails, Long commentId) {
+        Comment comment = commentJpaRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        Users user = userDetails.getUsers();
+
+        CommentLike like = likeJpaRepository.findByUserIdAndCommentId(user.getId(), commentId).orElse(null);
+
+        if (like == null){
+            // add like if post was not previously liked
+            like = new CommentLike(user, comment);
+            likeJpaRepository.save(like);
+            comment.addLike(like);
+        } else {
+            // delete like if post was previously liked
+            likeJpaRepository.deleteById(like.getId());
+            comment.removeLike(like);
+        }
+
+        return new CommentResponse(comment, user);
     }
 }

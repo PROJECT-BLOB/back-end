@@ -39,8 +39,8 @@ public class PostResponse {
         this.postId = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.category = post.getCategory().getLabel();
-        this.subcategory = post.getSubcategory().getLabel();
+        this.category = post.getCategory().name();
+        this.subcategory = post.getSubcategory().name();
         this.author = post.getAuthor() == null ? null : new UserProfileResponse(post.getAuthor());
         this.country = post.getCity().getCountry().getLabel();
         this.city = post.getCity().getName();
@@ -50,9 +50,9 @@ public class PostResponse {
         this.views = post.getViews();
         this.createdDate = post.getCreatedDate().truncatedTo(ChronoUnit.SECONDS).toString();
         this.imageUrl = post.getPostImages().stream().map(PostImage::getUrl).toList();
-        this.liked = false;
+        this.liked = user != null && post.getLikes().stream().map(l -> l.getUser().getId()).toList().contains(user.getId());
         this.bookmarked = user != null && post.getBookmarks().stream().map(b -> b.getUser().getId()).toList().contains(user.getId());
-        this.likeCount = 0;
+        this.likeCount = post.getLikes().size();
         this.commentCount = post.getComments().size();
         this.canDelete = user != null && user.getId().equals(post.getAuthor().getId());
     }

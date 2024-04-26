@@ -1,4 +1,4 @@
-package com.codeit.blob.post.domain;
+package com.codeit.blob.global.domain;
 
 import jakarta.persistence.Embeddable;
 import lombok.Builder;

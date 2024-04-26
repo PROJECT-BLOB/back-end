@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Bearer Authentication")
@@ -54,12 +56,21 @@ public class CommentController {
     }
 
     @GetMapping("/post/{postId}")
-    @Operation(summary = "댓글 조회 API", description = "postId를 받아 해당 게시글의 댓글을 조회합니다. (토큰 필수 X)")
-    public ResponseEntity<Page<CommentResponse>> getPostComments(
+    @Operation(summary = "댓글 조회 API", description = "postId를 받아 해당 게시글의 댓글을 오래된순으로 조회합니다. (토큰 필수 X)")
+    public ResponseEntity<List<CommentResponse>> getPostComments(
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long postId,
             @RequestParam(defaultValue = "1") int page
     ) {
         return ResponseEntity.ok(commentService.getPostComments(userDetails, postId, page));
+    }
+
+    @PostMapping("/like/{commentId}")
+    @Operation(summary = "댓글 좋아요/취소 API", description = "commentId를 받아 댓글에 좋아요를 추가하거나 이미 좋아요를 누른 경우 취소합니다.")
+    public ResponseEntity<CommentResponse> likeComment(
+            @AuthenticationPrincipal CustomUsers userDetails,
+            @PathVariable Long commentId
+    ) {
+        return ResponseEntity.ok(commentService.likeComment(userDetails, commentId));
     }
 }
