@@ -26,11 +26,13 @@ public class PostResponse {
     private final Double lng;
     private final Long distFromActual;
     private final Long views;
+    @Schema(example = "2024-04-24T12:59:24")
     private final String createdDate;
     private final List<String> imageUrl;
     private final boolean liked;
     private final boolean bookmarked;
     private final int likeCount;
+    private final int commentCount;
     private final boolean canDelete;
 
     public PostResponse(Post post, Users user){
@@ -51,6 +53,7 @@ public class PostResponse {
         this.liked = false;
         this.bookmarked = false;
         this.likeCount = 0;
+        this.commentCount = post.getComments().size();
         this.canDelete = user != null && user.getId().equals(post.getAuthor().getId());
     }
 }

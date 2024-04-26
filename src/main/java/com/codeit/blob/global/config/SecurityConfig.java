@@ -36,7 +36,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .requestMatchers(PERMIT_URL).permitAll()
-                .requestMatchers(HttpMethod.GET, "/post/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/post/**", "/comment/post/**").permitAll()
                 .anyRequest().authenticated());
 
         http
