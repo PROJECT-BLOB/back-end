@@ -7,6 +7,7 @@ import com.codeit.blob.global.domain.Coordinate;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.global.exceptions.ErrorCode;
 import com.codeit.blob.post.domain.*;
+import com.codeit.blob.post.repository.BookmarkJpaRepository;
 import com.codeit.blob.post.repository.PostLikeJpaRepository;
 import com.codeit.blob.post.request.CreatePostRequest;
 import com.codeit.blob.post.response.DeletePostResponse;
@@ -27,6 +28,7 @@ public class PostService {
 
     private final PostJpaRepository postJpaRepository;
     private final PostImageJpaRepository imageJpaRepository;
+    private final BookmarkJpaRepository bookmarkJpaRepository;
     private final PostLikeJpaRepository postLikeJpaRepository;
     private final CityService cityService;
 
@@ -109,6 +111,26 @@ public class PostService {
             // delete like if post was previously liked
             postLikeJpaRepository.deleteById(like.getId());
             post.removeLike(like);
+        }
+
+        return new PostResponse(post, user);
+    }
+
+    @Transactional
+    public PostResponse bookmarkPost(CustomUsers userDetails, Long postId) {
+        Post post = postJpaRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        Users user = userDetails.getUsers();
+
+        Bookmark bookmark = bookmarkJpaRepository.findByUserIdAndPostId(user.getId(), postId).orElse(null);
+
+        if (bookmark == null){
+            bookmark = new Bookmark(user, post);
+            bookmarkJpaRepository.save(bookmark);
+            post.addBookmark(bookmark);
+        } else {
+            bookmarkJpaRepository.deleteById(bookmark.getId());
+            post.removeBookmark(bookmark);
         }
 
         return new PostResponse(post, user);

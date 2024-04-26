@@ -58,6 +58,9 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    private Set<Bookmark> bookmarks = new HashSet<>();
+
     @Builder
     public Post(
             String title,
@@ -94,6 +97,14 @@ public class Post extends BaseTimeEntity {
 
     public void removeLike(PostLike like){
         likes.remove(like);
+    }
+
+    public void addBookmark(Bookmark bookmark){
+        bookmarks.add(bookmark);
+    }
+
+    public void removeBookmark(Bookmark bookmark){
+        bookmarks.remove(bookmark);
     }
 
 }
