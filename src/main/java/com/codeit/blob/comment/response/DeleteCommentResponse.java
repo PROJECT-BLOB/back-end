@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 @Getter
-@Schema(name = "댓글 삭제 응답")
+@Schema(name = "댓글 삭제 성공 응답")
 public class DeleteCommentResponse {
 
     private final Long commentId;

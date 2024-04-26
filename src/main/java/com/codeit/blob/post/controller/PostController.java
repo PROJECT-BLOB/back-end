@@ -2,7 +2,6 @@ package com.codeit.blob.post.controller;
 
 import com.codeit.blob.global.s3.S3Service;
 import com.codeit.blob.post.request.CreatePostRequest;
-import com.codeit.blob.post.response.CreatePostResponse;
 import com.codeit.blob.post.response.DeletePostResponse;
 import com.codeit.blob.post.response.PostResponse;
 import com.codeit.blob.post.service.PostService;
@@ -39,7 +38,7 @@ public class PostController {
             @Encoding(name = "data", contentType = "application/json"),
             @Encoding(name = "file", contentType = "image/jpg, image/png, image/jpeg")
     }))
-    public ResponseEntity<CreatePostResponse> createPost(
+    public ResponseEntity<PostResponse> createPost(
             @AuthenticationPrincipal CustomUsers userDetails,
             @Valid @RequestPart("data") CreatePostRequest request,
             @RequestPart(value = "file", required = false) List<MultipartFile> files
@@ -73,7 +72,6 @@ public class PostController {
     }
 
     @PostMapping("/like/{postId}")
-    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "댓글 좋아요/취소", description = "postId를 받아 게시글에 좋아요를 추가하거나 이미 좋아요를 누른 경우 취소합니다.")
     public ResponseEntity<PostResponse> likePost(
             @AuthenticationPrincipal CustomUsers userDetails,

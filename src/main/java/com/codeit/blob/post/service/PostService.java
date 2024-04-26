@@ -8,7 +8,6 @@ import com.codeit.blob.global.exceptions.ErrorCode;
 import com.codeit.blob.post.domain.*;
 import com.codeit.blob.post.repository.PostLikeJpaRepository;
 import com.codeit.blob.post.request.CreatePostRequest;
-import com.codeit.blob.post.response.CreatePostResponse;
 import com.codeit.blob.post.response.DeletePostResponse;
 import com.codeit.blob.post.response.PostResponse;
 import com.codeit.blob.post.repository.PostImageJpaRepository;
@@ -31,7 +30,7 @@ public class PostService {
     private final CityService cityService;
 
     @Transactional
-    public CreatePostResponse createPost(
+    public PostResponse createPost(
             CustomUsers userDetails,
             CreatePostRequest request,
             List<String> imgPaths
@@ -62,9 +61,10 @@ public class PostService {
         for (String imgUrl : imgPaths) {
             PostImage img = new PostImage(imgUrl, post);
             imageJpaRepository.save(img);
+            post.addImage(img);
         }
 
-        return new CreatePostResponse(post.getId());
+        return new PostResponse(post, userDetails.getUsers());
     }
 
     @Transactional
@@ -103,9 +103,11 @@ public class PostService {
             // add like if post was not previously liked
             like = new PostLike(user, post);
             postLikeJpaRepository.save(like);
+            post.addLike(like);
         } else {
             // delete like if post was previously liked
             postLikeJpaRepository.deleteById(like.getId());
+            post.removeLike(like);
         }
 
         return new PostResponse(post, user);
