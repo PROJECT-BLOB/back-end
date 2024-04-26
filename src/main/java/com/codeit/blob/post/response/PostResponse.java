@@ -51,7 +51,7 @@ public class PostResponse {
         this.createdDate = post.getCreatedDate().truncatedTo(ChronoUnit.SECONDS).toString();
         this.imageUrl = post.getPostImages().stream().map(PostImage::getUrl).toList();
         this.liked = false;
-        this.bookmarked = false;
+        this.bookmarked = user != null && post.getBookmarks().stream().map(b -> b.getUser().getId()).toList().contains(user.getId());
         this.likeCount = 0;
         this.commentCount = post.getComments().size();
         this.canDelete = user != null && user.getId().equals(post.getAuthor().getId());

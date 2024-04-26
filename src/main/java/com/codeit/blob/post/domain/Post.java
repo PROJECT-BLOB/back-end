@@ -10,7 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -52,6 +54,9 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    private Set<Bookmark> bookmarks = new HashSet<>();
+
     @Builder
     public Post(
             String title,
@@ -76,6 +81,14 @@ public class Post extends BaseTimeEntity {
 
     public void incrementView(){
         this.views++;
+    }
+
+    public void addBookmark(Bookmark bookmark){
+        bookmarks.add(bookmark);
+    }
+
+    public void removeBookmark(Bookmark bookmark){
+        bookmarks.remove(bookmark);
     }
 
 }

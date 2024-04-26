@@ -70,4 +70,13 @@ public class PostController {
     ) {
         return ResponseEntity.ok(postService.deletePost(userDetails, postId));
     }
+
+    @PostMapping("/bookmark/{postId}")
+    @Operation(summary = "게시글 저장/취소 API", description = "postId를 받아 게시글을 저장하거나 이미 저장한 경우 취소합니다.")
+    public ResponseEntity<PostResponse> bookmarkPost(
+            @AuthenticationPrincipal CustomUsers userDetails,
+            @PathVariable Long postId
+    ) {
+        return ResponseEntity.ok(postService.bookmarkPost(userDetails, postId));
+    }
 }
