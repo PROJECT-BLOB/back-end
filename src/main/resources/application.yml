@@ -33,4 +33,4 @@ spring:
     multipart:
       resolve-lazily: true
       max-file-size: 5MB
-      max-request-size: 50MB
+      max-request-size: 30MB

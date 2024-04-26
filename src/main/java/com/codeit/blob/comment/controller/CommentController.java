@@ -6,6 +6,7 @@ import com.codeit.blob.comment.response.DeleteCommentResponse;
 import com.codeit.blob.comment.service.CommentService;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 @Tag(name = "댓글 API", description = "댓글 관련 API 목록입니다.")
 @RequestMapping("/comment")
 public class CommentController {
@@ -52,7 +54,7 @@ public class CommentController {
     }
 
     @GetMapping("/post/{postId}")
-    @Operation(summary = "댓글 조회 API", description = "postId를 받아 해당 게시글의 댓글을 조회합니다.")
+    @Operation(summary = "댓글 조회 API", description = "postId를 받아 해당 게시글의 댓글을 조회합니다. (토큰 필수 X)")
     public ResponseEntity<Page<CommentResponse>> getPostComments(
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long postId,

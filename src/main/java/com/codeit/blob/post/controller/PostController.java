@@ -26,6 +26,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "게시글 API", description = "게시글 관련 API 목록입니다.")
+@SecurityRequirement(name = "Bearer Authentication")
 @RequestMapping("/post")
 public class PostController {
 
@@ -33,7 +34,6 @@ public class PostController {
     private final S3Service s3Service;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "게시글 작성 API", description = "form-data 형식으로 요청 정보를 data에, 사진을 file에 받아 게시글을 작성합니다.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(encoding = {
             @Encoding(name = "data", contentType = "application/json"),
@@ -54,7 +54,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    @Operation(summary = "게시글 조회", description = "postId를 받아 게시글을 조회합니다.")
+    @Operation(summary = "게시글 조회", description = "postId를 받아 게시글을 조회합니다. (토큰 필수 X)")
     public ResponseEntity<PostResponse> viewPost(
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long postId
@@ -63,7 +63,6 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "게시글 삭제", description = "postId를 받아 유저가 작성자일 경우 게시글을 삭제합니다.")
     public ResponseEntity<DeletePostResponse> deletePost(
             @AuthenticationPrincipal CustomUsers userDetails,
