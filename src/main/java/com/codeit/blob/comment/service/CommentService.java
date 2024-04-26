@@ -65,7 +65,7 @@ public class CommentService {
                 .build();
 
         commentJpaRepository.save(comment);
-        return new CommentResponse(parent, userDetails.getUsers());
+        return new CommentResponse(comment, userDetails.getUsers());
     }
 
     @Transactional

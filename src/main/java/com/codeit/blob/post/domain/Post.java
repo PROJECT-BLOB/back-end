@@ -3,6 +3,7 @@ package com.codeit.blob.post.domain;
 import com.codeit.blob.city.domain.City;
 import com.codeit.blob.comment.domain.Comment;
 import com.codeit.blob.global.domain.BaseTimeEntity;
+import com.codeit.blob.global.domain.Coordinate;
 import com.codeit.blob.user.domain.Users;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -10,7 +11,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -49,6 +52,9 @@ public class Post extends BaseTimeEntity {
 
     private Long views;
 
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, orphanRemoval = true)
+    private Set<PostLike> likes = new HashSet<>();
+
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
@@ -76,6 +82,18 @@ public class Post extends BaseTimeEntity {
 
     public void incrementView(){
         this.views++;
+    }
+
+    public void addImage(PostImage image){
+        postImages.add(image);
+    }
+
+    public void addLike(PostLike like){
+        likes.add(like);
+    }
+
+    public void removeLike(PostLike like){
+        likes.remove(like);
     }
 
 }
