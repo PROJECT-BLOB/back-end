@@ -28,7 +28,7 @@ import java.util.Arrays;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String[] EXCLUDE_PATH = {
-            "/oauth", "/user", "/h2-console", "/swagger-ui", "/v3"
+            "/oauth", "/h2-console", "/swagger-ui", "/v3"
     };
 
     private static final String[] GET_EXCLUDE_PATH = {
@@ -60,10 +60,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Users users = userRepository.findByOauthId(oauthId)
                         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
-
-                if (users.getBlobId() == null || users.getNickName() == null) {
-                    throw new UserNotValidationException();
-                }
 
                 CustomUsers userDetail = new CustomUsers(users);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(

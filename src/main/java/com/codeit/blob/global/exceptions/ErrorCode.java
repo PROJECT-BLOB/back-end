@@ -16,10 +16,11 @@ public enum ErrorCode {
     //404 NOT_FOUND
     USER_NOT_FOUND(404, "유저를 찾을 수 없습니다."),
     POST_NOT_FOUND(404, "게시글을 찾을 수 없습니다."),
-    COMMENT_NOT_FOUND(404,"댓글을 찾을수 없습니다."),
+    COMMENT_NOT_FOUND(404, "댓글을 찾을수 없습니다."),
 
     //500 INTERNAL SERVER ERROR
-    IMG_UPLOAD_FAIL(500, "사진 업로드에 실패하였습니다.");
+    IMG_UPLOAD_FAIL(500, "사진 업로드에 실패하였습니다."),
+    IMG_DELETE_FAIL(500, "사진 삭제에 실패하였습니다.");
 
     private final int status;
     private final String message;

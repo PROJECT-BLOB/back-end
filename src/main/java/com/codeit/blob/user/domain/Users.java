@@ -2,6 +2,7 @@ package com.codeit.blob.user.domain;
 
 import com.codeit.blob.global.domain.BaseTimeEntity;
 import com.codeit.blob.oauth.OauthType;
+import com.codeit.blob.post.domain.Coordinate;
 import com.codeit.blob.user.UserAuthenticateState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -23,6 +24,9 @@ public class Users extends BaseTimeEntity {
     private String profileUrl;
     private String refreshToken;
 
+    @Embedded
+    private Coordinate coordinate;
+
     @Enumerated(EnumType.STRING)
     private UserAuthenticateState state;
 
@@ -31,13 +35,14 @@ public class Users extends BaseTimeEntity {
 
 
     @Builder(toBuilder = true)
-    public Users(String email, String oauthId, String blobId, String nickName, String profileUrl, String refreshToken, UserAuthenticateState state, OauthType oauthType) {
+    public Users(String email, String oauthId, String blobId, String nickName, String profileUrl, String refreshToken, Coordinate coordinate, UserAuthenticateState state, OauthType oauthType) {
         this.email = email;
         this.oauthId = oauthId;
         this.blobId = blobId;
         this.nickName = nickName;
         this.profileUrl = profileUrl;
         this.refreshToken = refreshToken;
+        this.coordinate = coordinate;
         this.state = state;
         this.oauthType = oauthType;
     }
@@ -51,5 +56,6 @@ public class Users extends BaseTimeEntity {
         this.refreshToken = users.getRefreshToken();
         this.state = users.getState();
         this.oauthType = users.getOauthType();
+        this.coordinate = users.getCoordinate();
     }
 }

@@ -1,5 +1,7 @@
 package com.codeit.blob.oauth.service;
 
+import com.codeit.blob.global.exceptions.CustomException;
+import com.codeit.blob.global.exceptions.ErrorCode;
 import com.codeit.blob.jwt.provider.JwtProvider;
 import com.codeit.blob.oauth.response.TokenResponse;
 import com.codeit.blob.user.domain.Users;
@@ -28,7 +30,7 @@ public class TokenService {
             log.info(users1.getRefreshToken());
 
             Users users = userRepository.findByRefreshToken(refreshToken)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저 입니다."));
+                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
             if (jwtProvider.isTokenValid(refreshToken, users)) {
                 Map<String, Object> extractClaims = new HashMap<>();

@@ -2,6 +2,7 @@ package com.codeit.blob.global.config;
 
 import com.codeit.blob.jwt.exception.JwtExceptionHandler;
 import com.codeit.blob.jwt.filter.JwtAuthenticationFilter;
+import com.codeit.blob.jwt.filter.UserAuthenticationFilter;
 import com.codeit.blob.jwt.provider.JwtProvider;
 import com.codeit.blob.user.repository.UserRepository;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -41,7 +42,8 @@ public class SecurityConfig {
 
         http
                 .addFilterBefore(new JwtAuthenticationFilter(provider, userRepository), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtExceptionHandler(), JwtAuthenticationFilter.class);
+                .addFilterBefore(new JwtExceptionHandler(), JwtAuthenticationFilter.class)
+                .addFilterAfter(new UserAuthenticationFilter(), JwtAuthenticationFilter.class);
 
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
