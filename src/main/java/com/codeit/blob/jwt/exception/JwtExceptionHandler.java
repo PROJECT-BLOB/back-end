@@ -22,51 +22,11 @@ public class JwtExceptionHandler extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
-        } catch (JwtExpiredException e) {
-            jwtExpiredExceptionHandler(response);
-        } catch (IllegalArgumentException e) {
-            illegalArgumentExceptionHandler(response);
-        } catch (JwtValidationException e) {
-            jwtValidationExceptionHandler(response);
-        } catch (UserNotValidationException e) {
-            userNotValidationExceptionExceptionHandler(response);
         } catch (CustomException e) {
             ErrorCode errorCode = e.getErrorCode();
             ErrorResponse errorResponse = new ErrorResponse(errorCode.getStatus(), errorCode.name(), errorCode.getMessage());
             setResponse(response, errorResponse);
         }
-    }
-
-    //Jwt 만료 처리
-    private void jwtExpiredExceptionHandler(HttpServletResponse response) {
-        log.error("---[Expired Jwt Token]---");
-        JwtStatus status = JwtStatus.JWT_EXPIRED;
-        ErrorResponse errorResponse = new ErrorResponse(status.getStatus(), status.name(), status.getMessage());
-        setResponse(response, errorResponse);
-    }
-
-    //Jwt 유효성 검사 실패 처리
-    private void jwtValidationExceptionHandler(HttpServletResponse response) {
-        log.error("---[Jwt Validation Fail]---");
-        JwtStatus status = JwtStatus.JWT_VALIDATED_FAIL;
-        ErrorResponse errorResponse = new ErrorResponse(status.getStatus(), status.name(), status.getMessage());
-        setResponse(response, errorResponse);
-    }
-
-    //인증하지 않은 회원 실패 처리
-    private void userNotValidationExceptionExceptionHandler(HttpServletResponse response) {
-        log.error("---[User Must Need Validation]---");
-        JwtStatus status = JwtStatus.USER_NOT_VALIDATED;
-        ErrorResponse errorResponse = new ErrorResponse(status.getStatus(), status.name(), status.getMessage());
-        setResponse(response, errorResponse);
-    }
-
-    //미처리 에러
-    private void illegalArgumentExceptionHandler(HttpServletResponse response) {
-        log.error("---[Illegal Argument Exception]---");
-        JwtStatus status = JwtStatus.ILLEGAL_ARGUMENT_ERROR;
-        ErrorResponse errorResponse = new ErrorResponse(status.getStatus(), status.name(), status.getMessage());
-        setResponse(response, errorResponse);
     }
 
     private static void setResponse(HttpServletResponse response, ErrorResponse errorResponse) {

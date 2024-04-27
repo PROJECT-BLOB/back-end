@@ -2,7 +2,6 @@ package com.codeit.blob.jwt.filter;
 
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.global.exceptions.ErrorCode;
-import com.codeit.blob.jwt.exception.UserNotValidationException;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.user.domain.Users;
 import jakarta.servlet.FilterChain;

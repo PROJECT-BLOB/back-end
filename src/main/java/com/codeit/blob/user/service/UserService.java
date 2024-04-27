@@ -65,14 +65,14 @@ public class UserService {
 
     public UserResponse findByOauthId(String oauthId) {
         Users users = userRepository.findByOauthId(oauthId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 아이디 입니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return new UserResponse(users);
     }
 
     public UserResponse findByBlobId(String blobId) {
         Users users = userRepository.findByBlobId(blobId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 아이디 입니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return new UserResponse(users);
     }

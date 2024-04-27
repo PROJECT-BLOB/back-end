@@ -8,6 +8,11 @@ public enum ErrorCode {
     // 400 BAD_REQUEST
     IMG_TOO_LARGE(400, "사진이 너무 큽니다. (파일 당 최대 5MB)"),
     UNSUPPORTED_MEDIA_TYPE(400, "잘못된 형식의 파일입니다. (JPG, JPEG, PNG만 가능)"),
+    BAD_ENUM_REQUEST(400, "잘못된 형식의 enum 입니다."),
+
+    // 401 UNAUTHORIZED
+    JWT_EXPIRED(401, "jwt 토큰이 만료되었습니다,"),
+    JWT_VALIDATED_FAIL(401, "유효하지 않은 토큰입니다."),
 
     //403 FORBIDDEN
     ACTION_ACCESS_DENIED(403, "이 작업을 수행할 수 있는 권한이 없습니다."),
