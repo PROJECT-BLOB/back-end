@@ -1,10 +1,10 @@
 package com.codeit.blob.user.service;
 
+import com.codeit.blob.global.domain.Coordinate;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.global.exceptions.ErrorCode;
 import com.codeit.blob.global.s3.S3Service;
 import com.codeit.blob.oauth.domain.CustomUsers;
-import com.codeit.blob.post.domain.Coordinate;
 import com.codeit.blob.user.UserAuthenticateState;
 import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.repository.UserRepository;
