@@ -1,5 +1,7 @@
 package com.codeit.blob.jwt.filter;
 
+import com.codeit.blob.global.exceptions.CustomException;
+import com.codeit.blob.global.exceptions.ErrorCode;
 import com.codeit.blob.jwt.exception.UserNotValidationException;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.user.domain.Users;
@@ -34,7 +36,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         CustomUsers details = (CustomUsers) authentication.getPrincipal();
         Users users = details.getUsers();
         if (users.getBlobId() == null || users.getNickName() == null) {
-            throw new UserNotValidationException();
+            throw new CustomException(ErrorCode.NEED_MORE_AUTHENTICATE);
         }
 
         filterChain.doFilter(request, response);
