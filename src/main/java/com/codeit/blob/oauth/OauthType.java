@@ -1,5 +1,8 @@
 package com.codeit.blob.oauth;
 
+import com.codeit.blob.global.exceptions.CustomException;
+import com.codeit.blob.global.exceptions.ErrorCode;
+
 import java.util.Arrays;
 
 public enum OauthType {
@@ -11,6 +14,6 @@ public enum OauthType {
         return Arrays.stream(OauthType.values())
                 .filter(type -> type.name().equals(oauthType.toUpperCase()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Oauth Type 입니다. {}" + oauthType));
+                .orElseThrow(() -> new CustomException(ErrorCode.BAD_ENUM_REQUEST));
     }
 }

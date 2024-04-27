@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -25,6 +26,7 @@ public class S3Service {
     private final AmazonS3 amazonS3;
 
     private static final Set<String> VALID_EXTENSIONS = new HashSet<>();
+
     static {
         VALID_EXTENSIONS.add(".jpg");
         VALID_EXTENSIONS.add(".jpeg");
@@ -50,7 +52,7 @@ public class S3Service {
     public List<String> uploadFiles(List<MultipartFile> files) {
         List<String> imgUrls = new ArrayList<>();
 
-        for(MultipartFile file : files){
+        for (MultipartFile file : files) {
             String url = uploadFile(file);
             imgUrls.add(url);
         }
@@ -76,4 +78,11 @@ public class S3Service {
         return extension;
     }
 
+    public void deleteFile(String fileName) {
+        try {
+            amazonS3.deleteObject(bucket + "/image", fileName);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.IMG_DELETE_FAIL);
+        }
+    }
 }

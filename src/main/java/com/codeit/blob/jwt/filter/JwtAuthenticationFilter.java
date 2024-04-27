@@ -1,8 +1,7 @@
 package com.codeit.blob.jwt.filter;
 
-import com.codeit.blob.jwt.exception.JwtExpiredException;
-import com.codeit.blob.jwt.exception.JwtValidationException;
-import com.codeit.blob.jwt.exception.UserNotValidationException;
+import com.codeit.blob.global.exceptions.CustomException;
+import com.codeit.blob.global.exceptions.ErrorCode;
 import com.codeit.blob.jwt.provider.JwtProvider;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.user.domain.Users;
@@ -28,7 +27,7 @@ import java.util.Arrays;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String[] EXCLUDE_PATH = {
-            "/oauth", "/user", "/h2-console", "/swagger-ui", "/v3"
+            "/oauth", "/h2-console", "/swagger-ui", "/v3"
     };
 
     private static final String[] GET_EXCLUDE_PATH = {
@@ -48,7 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (jwtToken == null || !jwtToken.startsWith(jwtPrefix)) {
             log.info("---[Access Token Not Validation]---");
-            throw new JwtValidationException();
+            throw new CustomException(ErrorCode.JWT_VALIDATED_FAIL);
         }
 
         try {
@@ -58,12 +57,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 String oauthId = provider.extractClaim(accessToken, claims -> String.valueOf(claims.get("oauthId")));
                 Users users = userRepository.findByOauthId(oauthId)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-
-                if (users.getBlobId() == null || users.getNickName() == null) {
-                    throw new UserNotValidationException();
-                }
 
                 CustomUsers userDetail = new CustomUsers(users);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -75,10 +70,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         } catch (ExpiredJwtException e) {
             log.error("---[Access Token Expired]---");
-            throw new JwtExpiredException();
+            throw new CustomException(ErrorCode.JWT_EXPIRED);
         } catch (SignatureException e) {
             log.info("---[Access Token Not Validation]---");
-            throw new JwtValidationException();
+            throw new CustomException(ErrorCode.JWT_VALIDATED_FAIL);
         }
 
         filterChain.doFilter(request, response);
