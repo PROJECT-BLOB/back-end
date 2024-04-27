@@ -64,7 +64,7 @@ public class GoogleService implements OauthService {
                                 .oauthId(userInfo.getId())
                                 .email(userInfo.getEmail())
                                 .profileUrl(userInfo.getPicture())
-                                .state(UserAuthenticateState.BLOCKED)
+                                .state(UserAuthenticateState.INCOMPLETE)
                                 .oauthType(properties.getOauthType())
                                 .refreshToken(refreshToken)
                                 .build()

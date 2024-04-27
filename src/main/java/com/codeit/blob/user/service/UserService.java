@@ -32,7 +32,7 @@ public class UserService {
                 users.toBuilder()
                         .blobId(userRequest.getBlobId())
                         .nickName(userRequest.getNickName())
-                        .state(UserAuthenticateState.NORMAL)
+                        .state(UserAuthenticateState.COMPLETE)
                         .build()
         );
         userRepository.save(users);

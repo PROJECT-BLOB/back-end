@@ -12,6 +12,8 @@ public class UserResponse {
     private final String blobId;
     private final String nickName;
     private final String profileUrl;
+
+    @Schema(description = "유저 계정 상태(COMPLETE - 사용 가능 계정) (INCOMPLETE - 추가인증 필요)")
     private final UserAuthenticateState state;
 
     public UserResponse(Users users) {

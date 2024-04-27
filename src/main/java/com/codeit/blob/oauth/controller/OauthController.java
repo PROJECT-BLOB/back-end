@@ -25,8 +25,6 @@ import org.springframework.web.bind.annotation.*;
 public class OauthController {
 
     private final OauthManager manager;
-    private final JwtProvider jwtProvider;
-    private final UserRepository userRepository;
     private final TokenService tokenService;
 
     @GetMapping("/{type}")
@@ -40,7 +38,7 @@ public class OauthController {
     }
 
     @GetMapping("/{type}/callback")
-    @Operation(hidden = true)
+    @Operation(summary = "엑세스, 리프레시 토큰 발급 + 회원가입 API", description = "type 에 해당하는 토큰과 Oauth 유저 정보로 회원가입 합니다.")
     public ResponseEntity<OauthResponse> callback(
             @PathVariable(name = "type") String oauthType,
             @RequestParam(name = "code") String code

@@ -1,4 +1,4 @@
-package com.codeit.blob.global.config;
+package com.codeit.blob.global.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;

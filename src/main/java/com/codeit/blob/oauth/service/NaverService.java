@@ -64,7 +64,7 @@ public class NaverService implements OauthService {
                                 .oauthId(userInfo.getId())
                                 .email(userInfo.getEmail())
                                 .profileUrl(userInfo.getProfile())
-                                .state(UserAuthenticateState.BLOCKED)
+                                .state(UserAuthenticateState.INCOMPLETE)
                                 .oauthType(properties.getOauthType())
                                 .refreshToken(refreshToken)
                                 .build()
