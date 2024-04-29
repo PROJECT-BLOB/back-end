@@ -3,11 +3,17 @@ package com.codeit.blob.post.domain;
 import java.util.Arrays;
 
 public enum Subcategory {
-    // todo add finalised list
+
     WEATHER("날씨"),
-    ATM("ATM"),
     RESTAURANT("음식점"),
-    ACCOMMODATION("숙소");
+    ACCOMMODATION("숙소"),
+    HOSPITAL("병원"),
+    TOILET("화장실"),
+    PHARMACY("약국"),
+    TRANSPORT("교통"),
+    MUSEUM("박물관"),
+    ATTRACTIONS("관광지"),
+    ATM("ATM");
 
     private String label;
 

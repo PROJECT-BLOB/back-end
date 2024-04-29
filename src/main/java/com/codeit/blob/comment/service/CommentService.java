@@ -5,6 +5,7 @@ import com.codeit.blob.comment.domain.CommentLike;
 import com.codeit.blob.comment.repository.CommentJpaRepository;
 import com.codeit.blob.comment.repository.CommentLikeJpaRepository;
 import com.codeit.blob.comment.request.CreateCommentRequest;
+import com.codeit.blob.comment.response.CommentPageResponse;
 import com.codeit.blob.comment.response.CommentResponse;
 import com.codeit.blob.comment.response.DeleteCommentResponse;
 import com.codeit.blob.global.exceptions.CustomException;
@@ -19,8 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -67,6 +66,7 @@ public class CommentService {
                 .content(request.getContent())
                 .author(userDetails.getUsers())
                 .parent(parent)
+                .post(parent.getPost())
                 .build();
 
         commentJpaRepository.save(comment);
@@ -87,23 +87,41 @@ public class CommentService {
         }
 
         commentJpaRepository.deleteById(commentId);
-        return new DeleteCommentResponse(commentId);
+        return new DeleteCommentResponse(commentId, comment.getPost().getId());
     }
 
     @Transactional(readOnly = true)
-    public List<CommentResponse> getPostComments(
+    public CommentPageResponse getPostComments(
             CustomUsers userDetails,
             Long postId,
-            int page
+            int page,
+            int limit
     ){
         Users user = userDetails == null ? null : userDetails.getUsers();
         Post post = postJpaRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        Pageable pageable = PageRequest.of(page - 1, 10);
-        List<Comment> comments = commentJpaRepository.findByPostOrderByCreatedDateAsc(post, pageable).getContent();
+        Pageable pageable = PageRequest.of(page, limit);
+        Page<Comment> comments = commentJpaRepository.findByPostAndParentOrderByCreatedDateAsc(post, null, pageable);
 
-        return comments.stream().map(c -> new CommentResponse(c, user)).toList();
+        return new CommentPageResponse(comments, user);
+    }
+
+    @Transactional(readOnly = true)
+    public CommentPageResponse getCommentReplies(
+            CustomUsers userDetails,
+            Long commentId,
+            int page,
+            int limit
+    ){
+        Users user = userDetails == null ? null : userDetails.getUsers();
+        Comment parent = commentJpaRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+
+        Pageable pageable = PageRequest.of(page, limit);
+        Page<Comment> comments = commentJpaRepository.findByParentIdOrderByCreatedDateAsc(parent.getId(), pageable);
+
+        return new CommentPageResponse(comments, user);
     }
 
     @Transactional
@@ -115,12 +133,10 @@ public class CommentService {
         CommentLike like = likeJpaRepository.findByUserIdAndCommentId(user.getId(), commentId).orElse(null);
 
         if (like == null){
-            // add like if post was not previously liked
             like = new CommentLike(user, comment);
             likeJpaRepository.save(like);
             comment.addLike(like);
         } else {
-            // delete like if post was previously liked
             likeJpaRepository.deleteById(like.getId());
             comment.removeLike(like);
         }

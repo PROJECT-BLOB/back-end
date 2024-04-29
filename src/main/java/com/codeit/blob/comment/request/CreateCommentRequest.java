@@ -2,6 +2,7 @@ package com.codeit.blob.comment.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,8 @@ import lombok.NoArgsConstructor;
 public class CreateCommentRequest {
 
     @NotEmpty(message = "댓글 내용은 필수값입니다.")
-    @Schema(description = "댓글 내용", example = "content")
+    @Size(max = 1000)
+    @Schema(description = "댓글 내용, 최대 1000자", example = "content")
     private String content;
 
 }

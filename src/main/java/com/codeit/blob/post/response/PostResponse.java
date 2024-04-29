@@ -28,6 +28,7 @@ public class PostResponse {
     private final Long views;
     @Schema(example = "2024-04-24T12:59:24")
     private final String createdDate;
+    private final String expiresAt;
     private final List<String> imageUrl;
     private final boolean liked;
     private final boolean bookmarked;
@@ -49,6 +50,7 @@ public class PostResponse {
         this.distFromActual = post.getDistFromActual();
         this.views = post.getViews();
         this.createdDate = post.getCreatedDate().truncatedTo(ChronoUnit.SECONDS).toString();
+        this.expiresAt = post.getExpiresAt().truncatedTo(ChronoUnit.SECONDS).toString();
         this.imageUrl = post.getPostImages().stream().map(PostImage::getUrl).toList();
         this.liked = user != null && post.getLikes().stream().map(l -> l.getUser().getId()).toList().contains(user.getId());
         this.bookmarked = user != null && post.getBookmarks().stream().map(b -> b.getUser().getId()).toList().contains(user.getId());

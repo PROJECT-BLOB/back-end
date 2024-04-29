@@ -8,11 +8,13 @@ import lombok.Getter;
 public class DeleteCommentResponse {
 
     private final Long commentId;
+    private final Long postId;
     @Schema(example = "댓글 삭제 성공")
     private final String message;
 
-    public DeleteCommentResponse(Long commentId){
+    public DeleteCommentResponse(Long commentId, Long postId){
         this.commentId = commentId;
+        this.postId = postId;
         this.message = "댓글 삭제 성공";
     }
 

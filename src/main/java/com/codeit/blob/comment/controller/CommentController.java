@@ -1,6 +1,7 @@
 package com.codeit.blob.comment.controller;
 
 import com.codeit.blob.comment.request.CreateCommentRequest;
+import com.codeit.blob.comment.response.CommentPageResponse;
 import com.codeit.blob.comment.response.CommentResponse;
 import com.codeit.blob.comment.response.DeleteCommentResponse;
 import com.codeit.blob.comment.service.CommentService;
@@ -57,12 +58,24 @@ public class CommentController {
 
     @GetMapping("/post/{postId}")
     @Operation(summary = "댓글 조회 API", description = "postId를 받아 해당 게시글의 댓글을 오래된순으로 조회합니다. (토큰 필수 X)")
-    public ResponseEntity<List<CommentResponse>> getPostComments(
+    public ResponseEntity<CommentPageResponse> getPostComments(
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long postId,
-            @RequestParam(defaultValue = "1") int page
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int limit
     ) {
-        return ResponseEntity.ok(commentService.getPostComments(userDetails, postId, page));
+        return ResponseEntity.ok(commentService.getPostComments(userDetails, postId, page, limit));
+    }
+
+    @GetMapping("/reply/{commentId}")
+    @Operation(summary = "답글 조회 API", description = "commentId를 받아 해당 댓글의 답글을 오래된순으로 조회합니다. (토큰 필수 X)")
+    public ResponseEntity<CommentPageResponse> getCommentReplies(
+            @AuthenticationPrincipal CustomUsers userDetails,
+            @PathVariable Long commentId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit
+    ) {
+        return ResponseEntity.ok(commentService.getCommentReplies(userDetails, commentId, page, limit));
     }
 
     @PostMapping("/like/{commentId}")
