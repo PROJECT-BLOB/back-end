@@ -63,6 +63,7 @@ public class UserService {
         return new UserResponse(users);
     }
 
+
     public UserResponse findByOauthId(String oauthId) {
         Users users = userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
