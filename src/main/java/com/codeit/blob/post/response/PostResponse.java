@@ -45,8 +45,8 @@ public class PostResponse {
         this.author = post.getAuthor() == null ? null : new UserProfileResponse(post.getAuthor());
         this.country = post.getCity().getCountry().getLabel();
         this.city = post.getCity().getName();
-        this.lat = post.getCoordinate().getLat();
-        this.lng = post.getCoordinate().getLng();
+        this.lat = post.getCoordinate() == null ? null : post.getCoordinate().getLat();
+        this.lng = post.getCoordinate() == null ? null : post.getCoordinate().getLng();
         this.distFromActual = post.getDistFromActual();
         this.views = post.getViews();
         this.createdDate = post.getCreatedDate().truncatedTo(ChronoUnit.SECONDS).toString();

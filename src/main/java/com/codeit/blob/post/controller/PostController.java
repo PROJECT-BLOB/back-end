@@ -1,8 +1,10 @@
 package com.codeit.blob.post.controller;
 
 import com.codeit.blob.global.s3.S3Service;
+import com.codeit.blob.post.request.FeedFilter;
 import com.codeit.blob.post.request.CreatePostRequest;
 import com.codeit.blob.post.response.DeletePostResponse;
+import com.codeit.blob.post.response.PostPageResponse;
 import com.codeit.blob.post.response.PostResponse;
 import com.codeit.blob.post.service.PostService;
 import com.codeit.blob.oauth.domain.CustomUsers;
@@ -13,12 +15,14 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,5 +90,14 @@ public class PostController {
             @PathVariable Long postId
     ) {
         return ResponseEntity.ok(postService.likePost(userDetails, postId));
+    }
+
+    @GetMapping("/feed")
+    @Operation(summary = "피드 게시글 조회 API", description = "나라/도시 등 필터링 조건들을 받아 게시글을 조회합니다.")
+    public ResponseEntity<PostPageResponse> getFeed(
+            @AuthenticationPrincipal CustomUsers userDetails,
+            @ModelAttribute FeedFilter filters
+    ) {
+        return ResponseEntity.ok(postService.getFeed(userDetails, filters));
     }
 }

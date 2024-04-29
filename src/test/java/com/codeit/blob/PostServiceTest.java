@@ -3,7 +3,9 @@ package com.codeit.blob;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.post.request.CreatePostRequest;
+import com.codeit.blob.post.request.FeedFilter;
 import com.codeit.blob.post.response.DeletePostResponse;
+import com.codeit.blob.post.response.PostPageResponse;
 import com.codeit.blob.post.response.PostResponse;
 import com.codeit.blob.post.service.PostService;
 import com.codeit.blob.user.UserAuthenticateState;
@@ -18,6 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @SpringBootTest
@@ -190,5 +194,176 @@ public class PostServiceTest {
 
         Assertions.assertNotNull(response2);
         Assertions.assertFalse(response2.isBookmarked());
+    }
+
+    @Test
+    @DisplayName("피드 조건 검색 - 나라, 조회순, 카테고리, 날짜")
+    void getFeed1() {
+        //given
+        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612, 37.532600, 127.024612);
+        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 37.532600, 127.024612, null, null);
+        CreatePostRequest request4 = new CreatePostRequest("title", "content", "QUESTION", "WEATHER", "대한민국", "서울", null, null, null, null);
+        CreatePostRequest request5 = new CreatePostRequest("title", "content", "QUESTION", "TRANSPORT", "대한민국", "서울", 37.532600, 127.024612, 37.532600, 127.024612);
+
+        postService.createPost(userDetails[0], request, images);
+        postService.createPost(userDetails[0], request2, images);
+        postService.createPost(userDetails[0], request3, Collections.emptyList());
+        postService.createPost(userDetails[0], request4, Collections.emptyList());
+        postService.createPost(userDetails[0], request5, images);
+
+        postService.viewPost(userDetails[0], 1L);
+        postService.viewPost(userDetails[1], 1L);
+        postService.viewPost(userDetails[0], 5L);
+
+        FeedFilter filter = new FeedFilter();
+        filter.setCountry("대한민국");
+        filter.setSortBy("views");
+        filter.setCategories(List.of("HELP", "NOT_RECOMMENDED", "QUESTION:TRANSPORT"));
+        filter.setStartDate(LocalDate.of(2024, 1, 1));
+        filter.setEndDate(LocalDate.of(2030, 1, 31));
+
+        //when
+        PostPageResponse response = postService.getFeed(userDetails[0], filter);
+
+        //then
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(3, response.getContent().size());
+        Assertions.assertEquals(1L, response.getContent().get(0).getPostId());
+        Assertions.assertEquals(5L, response.getContent().get(1).getPostId());
+        Assertions.assertEquals(2L, response.getContent().get(2).getPostId());
+    }
+
+    @Test
+    @DisplayName("피드 조건 검색 - 도시, 좋아요순, 최소 좋아요")
+    void getFeed2() {
+        //given
+        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612, 37.532600, 127.024612);
+        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 37.532600, 127.024612, null, null);
+        CreatePostRequest request4 = new CreatePostRequest("title", "content", "QUESTION", "WEATHER", "대한민국", "서울", null, null, null, null);
+        CreatePostRequest request5 = new CreatePostRequest("title", "content", "QUESTION", "TRANSPORT", "대한민국", "부산", 37.532600, 127.024612, 37.532600, 127.024612);
+
+        postService.createPost(userDetails[0], request, images);
+        postService.createPost(userDetails[0], request2, images);
+        postService.createPost(userDetails[0], request3, Collections.emptyList());
+        postService.createPost(userDetails[0], request4, Collections.emptyList());
+        postService.createPost(userDetails[0], request5, images);
+        
+        postService.likePost(userDetails[0], 1L);
+        postService.likePost(userDetails[1], 1L);
+        postService.likePost(userDetails[0], 2L);
+        postService.likePost(userDetails[0], 3L);
+
+        FeedFilter filter = new FeedFilter();
+        filter.setCountry("대한민국");
+        filter.setCity("서울");
+        filter.setSortBy("likes");
+        filter.setMinLikes(1);
+
+        //when
+        PostPageResponse response = postService.getFeed(userDetails[0], filter);
+
+        //then
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(2, response.getContent().size());
+        Assertions.assertEquals(1L, response.getContent().get(0).getPostId());
+        Assertions.assertEquals(2L, response.getContent().get(1).getPostId());
+    }
+
+    @Test
+    @DisplayName("피드 조건 검색 - 나라, 인기순, 카테고리, 이미지 첨부 여부")
+    void getFeed3() {
+        //given
+        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612, 37.532600, 127.024612);
+        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 37.532600, 127.024612, null, null);
+        CreatePostRequest request4 = new CreatePostRequest("title", "content", "QUESTION", "WEATHER", "대한민국", "서울", null, null, null, null);
+        CreatePostRequest request5 = new CreatePostRequest("title", "content", "QUESTION", "TRANSPORT", "대한민국", "서울", 37.532600, 127.024612, 37.532600, 127.024612);
+
+        postService.createPost(userDetails[0], request, images);
+        postService.createPost(userDetails[0], request2, images);
+        postService.createPost(userDetails[0], request3, Collections.emptyList());
+        postService.createPost(userDetails[0], request4, Collections.emptyList());
+        postService.createPost(userDetails[0], request5, images);
+
+        postService.likePost(userDetails[0], 2L);
+        postService.likePost(userDetails[1], 2L);
+        postService.likePost(userDetails[0], 3L);
+
+
+        FeedFilter filter = new FeedFilter();
+        filter.setCountry("대한민국");
+        filter.setCategories(List.of("HELP", "RECOMMENDED", "QUESTION:TRANSPORT", "QUESTION:ATM"));
+        filter.setSortBy("hot");
+        filter.setHasImage(true);
+
+        //when
+        PostPageResponse response = postService.getFeed(userDetails[0], filter);
+
+        //then
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(3, response.getContent().size());
+        Assertions.assertEquals(2L, response.getContent().get(0).getPostId());
+        Assertions.assertEquals(5L, response.getContent().get(1).getPostId());
+        Assertions.assertEquals(1L, response.getContent().get(2).getPostId());
+    }
+
+    @Test
+    @DisplayName("피드 조건 검색 - 도시, 최신순, 카테고리, 상세위치 여부")
+    void getFeed4() {
+        //given
+        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612, 37.532600, 127.024612);
+        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 37.532600, 127.024612, null, null);
+        CreatePostRequest request4 = new CreatePostRequest("title", "content", "QUESTION", "WEATHER", "대한민국", "서울", null, null, null, null);
+        CreatePostRequest request5 = new CreatePostRequest("title", "content", "HELP", "TRANSPORT", "대한민국", "서울", null, null, null, null);
+
+        postService.createPost(userDetails[0], request, images);
+        postService.createPost(userDetails[0], request2, images);
+        postService.createPost(userDetails[0], request3, Collections.emptyList());
+        postService.createPost(userDetails[0], request4, Collections.emptyList());
+        postService.createPost(userDetails[0], request5, images);
+
+        postService.viewPost(userDetails[0], 1L);
+        postService.viewPost(userDetails[1], 1L);
+        postService.likePost(userDetails[0], 2L);
+        postService.likePost(userDetails[1], 2L);
+        postService.likePost(userDetails[0], 3L);
+        postService.viewPost(userDetails[0], 5L);
+
+        FeedFilter filter = new FeedFilter();
+        filter.setCountry("대한민국");
+        filter.setCity("서울");
+        filter.setCategories(List.of("HELP"));
+        filter.setHasLocation(true);
+
+        //when
+        PostPageResponse response = postService.getFeed(userDetails[0], filter);
+
+        //then
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(2, response.getContent().size());
+        Assertions.assertEquals(2L, response.getContent().get(0).getPostId());
+        Assertions.assertEquals(1L, response.getContent().get(1).getPostId());
+    }
+
+    @Test
+    @DisplayName("피드 조건 검색 - 없는 도시")
+    void getFeed5() {
+        //given
+        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612, 37.532600, 127.024612);
+        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 37.532600, 127.024612, null, null);
+        
+        postService.createPost(userDetails[0], request, images);
+        postService.createPost(userDetails[0], request2, images);
+        postService.createPost(userDetails[0], request3, Collections.emptyList());
+
+        FeedFilter filter = new FeedFilter();
+        filter.setCountry("대한민국");
+        filter.setCity("대전");
+
+        //when
+        PostPageResponse response = postService.getFeed(userDetails[0], filter);
+
+        //then
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(0, response.getContent().size());
     }
 }

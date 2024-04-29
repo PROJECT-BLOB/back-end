@@ -57,11 +57,11 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<PostLike> likes = new HashSet<>();
 
-    @OneToMany(mappedBy = "post", orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, orphanRemoval = true)
+    private Set<Bookmark> bookmarks = new HashSet<>();
 
     @OneToMany(mappedBy = "post", orphanRemoval = true)
-    private Set<Bookmark> bookmarks = new HashSet<>();
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder
     public Post(

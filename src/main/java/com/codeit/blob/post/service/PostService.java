@@ -7,19 +7,22 @@ import com.codeit.blob.global.domain.Coordinate;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.global.exceptions.ErrorCode;
 import com.codeit.blob.post.domain.*;
-import com.codeit.blob.post.repository.BookmarkJpaRepository;
-import com.codeit.blob.post.repository.PostLikeJpaRepository;
+import com.codeit.blob.post.repository.*;
 import com.codeit.blob.post.request.CreatePostRequest;
+import com.codeit.blob.post.request.FeedFilter;
 import com.codeit.blob.post.response.DeletePostResponse;
+import com.codeit.blob.post.response.PostPageResponse;
 import com.codeit.blob.post.response.PostResponse;
-import com.codeit.blob.post.repository.PostImageJpaRepository;
-import com.codeit.blob.post.repository.PostJpaRepository;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.user.domain.Users;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -27,6 +30,7 @@ import java.util.List;
 public class PostService {
 
     private final PostJpaRepository postJpaRepository;
+    private final PostRepositoryImpl postRepository;
     private final PostImageJpaRepository imageJpaRepository;
     private final BookmarkJpaRepository bookmarkJpaRepository;
     private final PostLikeJpaRepository postLikeJpaRepository;
@@ -134,5 +138,23 @@ public class PostService {
         }
 
         return new PostResponse(post, user);
+    }
+
+    @Transactional(readOnly = true)
+    public PostPageResponse getFeed(CustomUsers userDetails, FeedFilter filters) {
+        Country country = Country.getInstance(filters.getCountry());
+        City city = null;
+        if (filters.getCity() != null){
+            city = cityService.findCityByCountryAndName(country, filters.getCity());
+            if (city == null){
+                return new PostPageResponse(Collections.emptyList(), 0, 0, false);
+            }
+        }
+
+        Users user = userDetails == null ? null : userDetails.getUsers();
+        Pageable pageable = PageRequest.of(filters.getPage(), filters.getSize());
+        Page<Post> posts = postRepository.getFeed(country, city, filters, pageable);
+
+        return new PostPageResponse(posts, user);
     }
 }
