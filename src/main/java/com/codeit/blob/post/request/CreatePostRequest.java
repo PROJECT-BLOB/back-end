@@ -16,11 +16,11 @@ import lombok.NoArgsConstructor;
 public class CreatePostRequest {
 
     @NotEmpty(message = "게시글 제목은 필수값입니다.")
-    @Schema(description = "게시글 내용", example = "title")
+    @Schema(description = "게시글 제목", example = "title")
     private String title;
 
-    @Size(max = 10000)
-    @Schema(description = "게시글 내용", example = "content")
+    @Size(max = 2000)
+    @Schema(description = "게시글 내용, 최대 2000자", example = "content")
     private String content;
 
     @NotNull(message = "게시글 카테고리는 필수값입니다.")

@@ -67,6 +67,17 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getPostComments(userDetails, postId, page, limit));
     }
 
+    @GetMapping("/reply/{commentId}")
+    @Operation(summary = "답글 조회 API", description = "commentId를 받아 해당 댓글의 답글을 오래된순으로 조회합니다. (토큰 필수 X)")
+    public ResponseEntity<CommentPageResponse> getCommentReplies(
+            @AuthenticationPrincipal CustomUsers userDetails,
+            @PathVariable Long commentId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit
+    ) {
+        return ResponseEntity.ok(commentService.getCommentReplies(userDetails, commentId, page, limit));
+    }
+
     @PostMapping("/like/{commentId}")
     @Operation(summary = "댓글 좋아요/취소 API", description = "commentId를 받아 댓글에 좋아요를 추가하거나 이미 좋아요를 누른 경우 취소합니다.")
     public ResponseEntity<CommentResponse> likeComment(

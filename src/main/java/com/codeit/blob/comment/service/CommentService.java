@@ -21,8 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -68,6 +66,7 @@ public class CommentService {
                 .content(request.getContent())
                 .author(userDetails.getUsers())
                 .parent(parent)
+                .post(parent.getPost())
                 .build();
 
         commentJpaRepository.save(comment);
@@ -88,7 +87,7 @@ public class CommentService {
         }
 
         commentJpaRepository.deleteById(commentId);
-        return new DeleteCommentResponse(commentId);
+        return new DeleteCommentResponse(commentId, comment.getPost().getId());
     }
 
     @Transactional(readOnly = true)
@@ -103,7 +102,24 @@ public class CommentService {
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         Pageable pageable = PageRequest.of(page, limit);
-        Page<Comment> comments = commentJpaRepository.findByPostOrderByCreatedDateAsc(post, pageable);
+        Page<Comment> comments = commentJpaRepository.findByPostAndParentOrderByCreatedDateAsc(post, null, pageable);
+
+        return new CommentPageResponse(comments, user);
+    }
+
+    @Transactional(readOnly = true)
+    public CommentPageResponse getCommentReplies(
+            CustomUsers userDetails,
+            Long commentId,
+            int page,
+            int limit
+    ){
+        Users user = userDetails == null ? null : userDetails.getUsers();
+        Comment parent = commentJpaRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+
+        Pageable pageable = PageRequest.of(page, limit);
+        Page<Comment> comments = commentJpaRepository.findByParentIdOrderByCreatedDateAsc(parent.getId(), pageable);
 
         return new CommentPageResponse(comments, user);
     }
@@ -117,12 +133,10 @@ public class CommentService {
         CommentLike like = likeJpaRepository.findByUserIdAndCommentId(user.getId(), commentId).orElse(null);
 
         if (like == null){
-            // add like if post was not previously liked
             like = new CommentLike(user, comment);
             likeJpaRepository.save(like);
             comment.addLike(like);
         } else {
-            // delete like if post was previously liked
             likeJpaRepository.deleteById(like.getId());
             comment.removeLike(like);
         }
