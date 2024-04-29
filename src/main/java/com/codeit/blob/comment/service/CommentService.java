@@ -5,6 +5,7 @@ import com.codeit.blob.comment.domain.CommentLike;
 import com.codeit.blob.comment.repository.CommentJpaRepository;
 import com.codeit.blob.comment.repository.CommentLikeJpaRepository;
 import com.codeit.blob.comment.request.CreateCommentRequest;
+import com.codeit.blob.comment.response.CommentPageResponse;
 import com.codeit.blob.comment.response.CommentResponse;
 import com.codeit.blob.comment.response.DeleteCommentResponse;
 import com.codeit.blob.global.exceptions.CustomException;
@@ -91,19 +92,20 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommentResponse> getPostComments(
+    public CommentPageResponse getPostComments(
             CustomUsers userDetails,
             Long postId,
-            int page
+            int page,
+            int limit
     ){
         Users user = userDetails == null ? null : userDetails.getUsers();
         Post post = postJpaRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        Pageable pageable = PageRequest.of(page - 1, 10);
-        List<Comment> comments = commentJpaRepository.findByPostOrderByCreatedDateAsc(post, pageable).getContent();
+        Pageable pageable = PageRequest.of(page, limit);
+        Page<Comment> comments = commentJpaRepository.findByPostOrderByCreatedDateAsc(post, pageable);
 
-        return comments.stream().map(c -> new CommentResponse(c, user)).toList();
+        return new CommentPageResponse(comments, user);
     }
 
     @Transactional
