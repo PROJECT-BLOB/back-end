@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -105,6 +106,11 @@ public class Post extends BaseTimeEntity {
 
     public void removeBookmark(Bookmark bookmark){
         bookmarks.remove(bookmark);
+    }
+
+    public LocalDateTime getExpiresAt(){
+        long plus = 30 * likes.size() * 10L;
+        return getCreatedDate().plusMinutes(plus);
     }
 
 }
