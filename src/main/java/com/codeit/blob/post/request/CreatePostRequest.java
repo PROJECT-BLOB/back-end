@@ -3,6 +3,7 @@ package com.codeit.blob.post.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class CreatePostRequest {
     @Schema(description = "게시글 내용", example = "title")
     private String title;
 
+    @Size(max = 10000)
     @Schema(description = "게시글 내용", example = "content")
     private String content;
 
