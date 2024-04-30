@@ -83,7 +83,7 @@ public class CommentService {
 
         // check if the user deleting the comment is the author of the comment
         if (!comment.getAuthor().getId().equals(userDetails.getUsers().getId())) {
-            throw new IllegalArgumentException();
+            throw new CustomException(ErrorCode.ACTION_ACCESS_DENIED);
         }
 
         commentJpaRepository.deleteById(commentId);
