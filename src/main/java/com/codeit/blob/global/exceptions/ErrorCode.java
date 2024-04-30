@@ -23,6 +23,9 @@ public enum ErrorCode {
     USER_NOT_FOUND(404, "유저를 찾을 수 없습니다."),
     POST_NOT_FOUND(404, "게시글을 찾을 수 없습니다."),
     COMMENT_NOT_FOUND(404, "댓글을 찾을수 없습니다."),
+    COUNTRY_NOT_FOUND(404, "나라를 찾을수 없습니다."),
+    CATEGORY_NOT_FOUND(404, "카테고리를 찾을수 없습니다."),
+    SUBCATEGORY_NOT_FOUND(404, "세부 카테고리를 찾을수 없습니다."),
 
     //405 403으로 수정?
     NEED_MORE_AUTHENTICATE(405, "추가적인 인증이 필요합니다."),

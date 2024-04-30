@@ -62,9 +62,9 @@ public class CommentController {
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long postId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int limit
+            @RequestParam(defaultValue = "5") int size
     ) {
-        return ResponseEntity.ok(commentService.getPostComments(userDetails, postId, page, limit));
+        return ResponseEntity.ok(commentService.getPostComments(userDetails, postId, page, size));
     }
 
     @GetMapping("/reply/{commentId}")
@@ -73,9 +73,9 @@ public class CommentController {
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long commentId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit
+            @RequestParam(defaultValue = "10") int size
     ) {
-        return ResponseEntity.ok(commentService.getCommentReplies(userDetails, commentId, page, limit));
+        return ResponseEntity.ok(commentService.getCommentReplies(userDetails, commentId, page, size));
     }
 
     @PostMapping("/like/{commentId}")

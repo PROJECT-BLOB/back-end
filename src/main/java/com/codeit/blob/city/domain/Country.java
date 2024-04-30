@@ -2,6 +2,9 @@ package com.codeit.blob.city.domain;
 
 // REF: https://developers.google.com/maps/coverage?hl=ko (2024.04.17)
 
+import com.codeit.blob.global.exceptions.CustomException;
+import com.codeit.blob.global.exceptions.ErrorCode;
+
 import java.util.Arrays;
 
 public enum Country {
@@ -274,7 +277,7 @@ public enum Country {
 
     public static Country getInstance(String country) {
         return Arrays.stream(Country.values()).filter(c -> c.getLabel().equals(country))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("존재하지 않는 나라입니다."));
+                .findFirst().orElseThrow(() -> new CustomException(ErrorCode.COUNTRY_NOT_FOUND));
     }
 
 }

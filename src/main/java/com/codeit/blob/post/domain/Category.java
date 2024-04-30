@@ -1,5 +1,8 @@
 package com.codeit.blob.post.domain;
 
+import com.codeit.blob.global.exceptions.CustomException;
+import com.codeit.blob.global.exceptions.ErrorCode;
+
 import java.util.Arrays;
 
 public enum Category {
@@ -21,6 +24,6 @@ public enum Category {
 
     public static Category getInstance(String category) {
         return Arrays.stream(Category.values()).filter(c -> c.name().equals(category))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+                .findFirst().orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 }
