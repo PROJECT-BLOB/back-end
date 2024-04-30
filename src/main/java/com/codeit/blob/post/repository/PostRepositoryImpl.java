@@ -6,10 +6,10 @@ import com.codeit.blob.post.domain.Category;
 import com.codeit.blob.post.domain.Post;
 import com.codeit.blob.post.domain.Subcategory;
 import com.codeit.blob.post.request.FeedFilter;
+import com.codeit.blob.post.request.MapFilter;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.MathExpressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +45,28 @@ public class PostRepositoryImpl {
         return new PageImpl<>(content, pageable, total);
     }
 
+    public List<Post> getMap(MapFilter filters){
+        BooleanExpression predicate = getMapFilterPredicate(filters);
+        return jpaQueryFactory.selectFrom(post)
+                .where(predicate)
+                .fetch();
+    }
+
+    public Page<Post> getMapSidebar(MapFilter filters, Pageable pageable, String sortBy){
+        BooleanExpression predicate = getMapFilterPredicate(filters);
+        List<Post> content = jpaQueryFactory.selectFrom(post)
+                .where(predicate)
+                .orderBy(getOrderBy(sortBy))
+                .fetch();
+
+        Long total = jpaQueryFactory.select(post.count()).from(post)
+                .where(predicate)
+                .fetchOne();
+        total = total == null ? 0 : total;
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
     private BooleanExpression getFeedFilterPredicate(Country country, City city, FeedFilter filters){
         BooleanExpression predicate = Expressions.TRUE;
 
@@ -55,19 +77,7 @@ public class PostRepositoryImpl {
         }
 
         if (filters.getCategories() != null && !filters.getCategories().isEmpty()) {
-            BooleanExpression categoryPredicate = Expressions.FALSE;
-            for (String categoryAndSubcategory : filters.getCategories()) {
-                String[] parts = categoryAndSubcategory.split(":");
-                if (parts.length == 1){
-                    Category category = Category.getInstance(parts[0]);
-                    categoryPredicate = categoryPredicate.or(post.category.eq(category));
-                } else if (parts.length == 2) {
-                    Category category = Category.getInstance(parts[0]);
-                    Subcategory subcategory = Subcategory.getInstance(parts[1]);
-                    categoryPredicate = categoryPredicate.or(post.category.eq(category).and(post.subcategory.eq(subcategory)));
-                }
-            }
-            predicate = predicate.and(categoryPredicate);
+            predicate = predicate.and(getCategoryFilterPredicate(filters.getCategories()));
         }
 
         if (filters.getStartDate() != null) {
@@ -90,6 +100,42 @@ public class PostRepositoryImpl {
             predicate = predicate.and(post.likes.size().goe(filters.getMinLikes()));
         }
 
+        return predicate;
+    }
+
+    private BooleanExpression getMapFilterPredicate(MapFilter filters){
+        BooleanExpression predicate = post.coordinate.isNotNull()
+                .and(post.coordinate.lat.loe(filters.getMaxLat()))
+                .and(post.coordinate.lat.goe(filters.getMinLat()))
+                .and(post.coordinate.lng.loe(filters.getMaxLng()))
+                .and(post.coordinate.lng.goe(filters.getMinLng()));
+
+        NumberExpression<Long> minutesToShow = post.likes.size().longValue()
+                .multiply(10).add(30);
+        NumberExpression<Long> timeDifference = Expressions.numberTemplate(Long.class,
+                "timestampdiff(SECOND, {0}, now())", post.createdDate).divide(60);
+        predicate = predicate.and(timeDifference.loe(minutesToShow));
+
+        if (filters.getCategories() != null && !filters.getCategories().isEmpty()) {
+            predicate = predicate.and(getCategoryFilterPredicate(filters.getCategories()));
+        }
+
+        return predicate;
+    }
+
+    private BooleanExpression getCategoryFilterPredicate(List<String> categories){
+        BooleanExpression predicate = Expressions.FALSE;
+        for (String categoryAndSubcategory : categories) {
+            String[] parts = categoryAndSubcategory.split(":");
+            if (parts.length == 1){
+                Category category = Category.getInstance(parts[0]);
+                predicate = predicate.or(post.category.eq(category));
+            } else if (parts.length == 2) {
+                Category category = Category.getInstance(parts[0]);
+                Subcategory subcategory = Subcategory.getInstance(parts[1]);
+                predicate = predicate.or(post.category.eq(category).and(post.subcategory.eq(subcategory)));
+            }
+        }
         return predicate;
     }
 

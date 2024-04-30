@@ -41,7 +41,7 @@ public class PostResponse {
         this.title = post.getTitle();
         this.content = post.getContent();
         this.category = post.getCategory().name();
-        this.subcategory = post.getSubcategory().name();
+        this.subcategory = post.getSubcategory() == null ? null : post.getSubcategory().name();
         this.author = post.getAuthor() == null ? null : new UserProfileResponse(post.getAuthor());
         this.country = post.getCity().getCountry().getLabel();
         this.city = post.getCity().getName();

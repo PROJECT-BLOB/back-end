@@ -110,7 +110,7 @@ public class Post extends BaseTimeEntity {
     }
 
     public LocalDateTime getExpiresAt(){
-        long plus = 30 * likes.size() * 10L;
+        long plus = 30 + likes.size() * 10L;
         return getCreatedDate().plusMinutes(plus);
     }
 

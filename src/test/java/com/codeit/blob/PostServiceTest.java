@@ -4,9 +4,8 @@ import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.post.request.CreatePostRequest;
 import com.codeit.blob.post.request.FeedFilter;
-import com.codeit.blob.post.response.DeletePostResponse;
-import com.codeit.blob.post.response.PostPageResponse;
-import com.codeit.blob.post.response.PostResponse;
+import com.codeit.blob.post.request.MapFilter;
+import com.codeit.blob.post.response.*;
 import com.codeit.blob.post.service.PostService;
 import com.codeit.blob.user.UserAuthenticateState;
 import com.codeit.blob.user.domain.Users;
@@ -365,5 +364,72 @@ public class PostServiceTest {
         //then
         Assertions.assertNotNull(response);
         Assertions.assertEquals(0, response.getContent().size());
+    }
+
+    @Test
+    @DisplayName("지도 조건 검색 - 위치, 카테고리")
+    void getMap() {
+        //given
+        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 150.0, 150.0, null, null);
+        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 120.0, 120.0, null, null);
+        CreatePostRequest request4 = new CreatePostRequest("title", "content", "HELP", "WEATHER", "대한민국", "서울", null, null, null, null);
+        CreatePostRequest request5 = new CreatePostRequest("title", "content", "HELP", null, "대한민국", "서울", 130.0, 130.0, null, null);
+
+        postService.createPost(userDetails[0], request, images);
+        postService.createPost(userDetails[0], request2, images);
+        postService.createPost(userDetails[0], request3, Collections.emptyList());
+        postService.createPost(userDetails[0], request4, Collections.emptyList());
+        postService.createPost(userDetails[0], request5, images);
+
+        MapFilter filter = new MapFilter();
+        filter.setCategories(List.of("HELP"));
+        filter.setMaxLat(200);
+        filter.setMinLat(100);
+        filter.setMaxLng(200);
+        filter.setMinLng(100);
+
+        //when
+        List<PostMapResponse> response = postService.getMap(filter);
+
+        //then
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(2, response.size());
+    }
+
+    @Test
+    @DisplayName("지도 사이드바 조건 검색 - 위치, 인기순, 카테고리")
+    void getMapSidebar() {
+        //given
+        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 150.0, 150.0, null, null);
+        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 120.0, 120.0, null, null);
+        CreatePostRequest request4 = new CreatePostRequest("title", "content", "HELP", "WEATHER", "대한민국", "서울", null, null, null, null);
+        CreatePostRequest request5 = new CreatePostRequest("title", "content", "HELP", null, "대한민국", "서울", 130.0, 130.0, null, null);
+
+        postService.createPost(userDetails[0], request, images);
+        postService.createPost(userDetails[0], request2, images);
+        postService.createPost(userDetails[0], request3, Collections.emptyList());
+        postService.createPost(userDetails[0], request4, Collections.emptyList());
+        postService.createPost(userDetails[0], request5, images);
+
+        postService.likePost(userDetails[0], 2L);
+        postService.likePost(userDetails[1], 2L);
+        postService.likePost(userDetails[0], 3L);
+
+        MapFilter filter = new MapFilter();
+        filter.setCategories(List.of("HELP", "RECOMMENDED:HOSPITAL", "RECOMMENDED:ATM"));
+        filter.setMaxLat(200);
+        filter.setMinLat(100);
+        filter.setMaxLng(200);
+        filter.setMinLng(100);
+
+        //when
+        PostMapPageResponse response = postService.getMapSidebar(filter, 0, 2, "hot");
+
+        //then
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(3, response.getContent().size());
+        Assertions.assertEquals(2L, response.getContent().get(0).getPostId());
+        Assertions.assertEquals(3L, response.getContent().get(1).getPostId());
+        Assertions.assertEquals(5L, response.getContent().get(2).getPostId());
     }
 }
