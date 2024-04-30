@@ -9,7 +9,7 @@ import java.time.temporal.ChronoUnit;
 
 @Getter
 @Schema(name = "지도에 표시되는 게시글 응답")
-public class PostMapResponse {
+public class MapPostResponse implements PostResponse {
 
     private final Long postId;
     private final String title;
@@ -20,7 +20,7 @@ public class PostMapResponse {
     private final Double lng;
     private final String createdDate;
 
-    public PostMapResponse(Post post) {
+    public MapPostResponse(Post post) {
         this.postId = post.getId();
         this.title = post.getTitle();
         this.category = post.getCategory().name();

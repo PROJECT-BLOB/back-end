@@ -36,7 +36,7 @@ public class PostService {
     private final CityService cityService;
 
     @Transactional
-    public PostResponse createPost(
+    public DetailedPostResponse createPost(
             CustomUsers userDetails,
             CreatePostRequest request,
             List<String> imgPaths
@@ -72,17 +72,17 @@ public class PostService {
             post.addImage(img);
         }
 
-        return new PostResponse(post, userDetails.getUsers());
+        return new DetailedPostResponse(post, userDetails.getUsers());
     }
 
     @Transactional
-    public PostResponse viewPost(CustomUsers userDetails, Long postId) {
+    public DetailedPostResponse viewPost(CustomUsers userDetails, Long postId) {
         Users user = userDetails == null ? null : userDetails.getUsers();
         Post post = postJpaRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         post.incrementView();
 
-        return new PostResponse(post, user);
+        return new DetailedPostResponse(post, user);
     }
 
     @Transactional
@@ -100,7 +100,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse likePost(CustomUsers userDetails, Long postId) {
+    public DetailedPostResponse likePost(CustomUsers userDetails, Long postId) {
         Post post = postJpaRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         Users user = userDetails.getUsers();
@@ -118,11 +118,11 @@ public class PostService {
             post.removeLike(like);
         }
 
-        return new PostResponse(post, user);
+        return new DetailedPostResponse(post, user);
     }
 
     @Transactional
-    public PostResponse bookmarkPost(CustomUsers userDetails, Long postId) {
+    public DetailedPostResponse bookmarkPost(CustomUsers userDetails, Long postId) {
         Post post = postJpaRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         Users user = userDetails.getUsers();
@@ -138,7 +138,7 @@ public class PostService {
             post.removeBookmark(bookmark);
         }
 
-        return new PostResponse(post, user);
+        return new DetailedPostResponse(post, user);
     }
 
     @Transactional(readOnly = true)
@@ -156,19 +156,19 @@ public class PostService {
         Pageable pageable = PageRequest.of(filters.getPage(), filters.getSize());
         Page<Post> posts = postRepository.getFeed(country, city, filters, pageable);
 
-        return new PostPageResponse(posts, user);
+        return PostPageResponse.postDetailPageResponse(posts, user);
     }
 
     @Transactional(readOnly = true)
-    public List<PostMapResponse> getMap(MapFilter filters) {
+    public List<MapPostResponse> getMap(MapFilter filters) {
         List<Post> posts = postRepository.getMap(filters);
-        return posts.stream().map(PostMapResponse::new).toList();
+        return posts.stream().map(MapPostResponse::new).toList();
     }
 
     @Transactional(readOnly = true)
-    public PostMapPageResponse getMapSidebar(MapFilter filters, int page, int size, String sortBy) {
+    public PostPageResponse getMapSidebar(MapFilter filters, int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Post> posts = postRepository.getMapSidebar(filters, pageable, sortBy);
-        return new PostMapPageResponse(posts);
+        return PostPageResponse.postMapPageResponse(posts);
     }
 }

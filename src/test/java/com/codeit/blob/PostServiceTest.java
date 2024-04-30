@@ -63,7 +63,7 @@ public class PostServiceTest {
     @DisplayName("게시글 작성 성공")
     void createPost() {
         //when
-        PostResponse response = postService.createPost(userDetails[0], request, images);
+        DetailedPostResponse response = postService.createPost(userDetails[0], request, images);
 
         //then
         Assertions.assertNotNull(response);
@@ -79,7 +79,7 @@ public class PostServiceTest {
         postService.createPost(userDetails[0], request, images);
 
         //when
-        PostResponse response = postService.viewPost(userDetails[0], 1L);
+        DetailedPostResponse response = postService.viewPost(userDetails[0], 1L);
 
         //then
         Assertions.assertNotNull(response);
@@ -96,7 +96,7 @@ public class PostServiceTest {
         postService.createPost(userDetails[0], request, images);
 
         //when
-        PostResponse response = postService.viewPost(userDetails[1], 1L);
+        DetailedPostResponse response = postService.viewPost(userDetails[1], 1L);
 
         //then
         Assertions.assertNotNull(response);
@@ -112,7 +112,7 @@ public class PostServiceTest {
         postService.createPost(userDetails[0], request, images);
 
         //when
-        PostResponse response = postService.viewPost(null, 1L);
+        DetailedPostResponse response = postService.viewPost(null, 1L);
 
         //then
         Assertions.assertNotNull(response);
@@ -152,7 +152,7 @@ public class PostServiceTest {
 
         //when
         postService.likePost(userDetails[0], 1L);
-        PostResponse response = postService.likePost(userDetails[1], 1L);
+        DetailedPostResponse response = postService.likePost(userDetails[1], 1L);
 
         //then
         Assertions.assertNotNull(response);
@@ -169,7 +169,7 @@ public class PostServiceTest {
         //when
         postService.likePost(userDetails[0], 1L);
         postService.likePost(userDetails[1], 1L);
-        PostResponse response = postService.likePost(userDetails[1], 1L);
+        DetailedPostResponse response = postService.likePost(userDetails[1], 1L);
 
         //then
         Assertions.assertNotNull(response);
@@ -184,8 +184,8 @@ public class PostServiceTest {
         postService.createPost(userDetails[0], request, images);
 
         //when
-        PostResponse response1 = postService.bookmarkPost(userDetails[0], 1L);
-        PostResponse response2 = postService.bookmarkPost(userDetails[0], 1L);
+        DetailedPostResponse response1 = postService.bookmarkPost(userDetails[0], 1L);
+        DetailedPostResponse response2 = postService.bookmarkPost(userDetails[0], 1L);
 
         //then
         Assertions.assertNotNull(response1);
@@ -315,10 +315,10 @@ public class PostServiceTest {
         CreatePostRequest request5 = new CreatePostRequest("title", "content", "HELP", "TRANSPORT", "대한민국", "서울", null, null, null, null);
 
         postService.createPost(userDetails[0], request, images);
-        postService.createPost(userDetails[0], request2, images);
+        postService.createPost(userDetails[0], request5, images);
         postService.createPost(userDetails[0], request3, Collections.emptyList());
         postService.createPost(userDetails[0], request4, Collections.emptyList());
-        postService.createPost(userDetails[0], request5, images);
+        postService.createPost(userDetails[0], request2, images);
 
         postService.viewPost(userDetails[0], 1L);
         postService.viewPost(userDetails[1], 1L);
@@ -339,7 +339,7 @@ public class PostServiceTest {
         //then
         Assertions.assertNotNull(response);
         Assertions.assertEquals(2, response.getContent().size());
-        Assertions.assertEquals(2L, response.getContent().get(0).getPostId());
+        Assertions.assertEquals(5L, response.getContent().get(0).getPostId());
         Assertions.assertEquals(1L, response.getContent().get(1).getPostId());
     }
 
@@ -389,7 +389,7 @@ public class PostServiceTest {
         filter.setMinLng(100);
 
         //when
-        List<PostMapResponse> response = postService.getMap(filter);
+        List<MapPostResponse> response = postService.getMap(filter);
 
         //then
         Assertions.assertNotNull(response);
@@ -423,7 +423,7 @@ public class PostServiceTest {
         filter.setMinLng(100);
 
         //when
-        PostMapPageResponse response = postService.getMapSidebar(filter, 0, 2, "hot");
+        PostPageResponse response = postService.getMapSidebar(filter, 0, 2, "hot");
 
         //then
         Assertions.assertNotNull(response);

@@ -39,7 +39,7 @@ public class PostController {
             @Encoding(name = "data", contentType = "application/json"),
             @Encoding(name = "file", contentType = "image/jpg, image/png, image/jpeg")
     }))
-    public ResponseEntity<PostResponse> createPost(
+    public ResponseEntity<DetailedPostResponse> createPost(
             @AuthenticationPrincipal CustomUsers userDetails,
             @Valid @RequestPart("data") CreatePostRequest request,
             @RequestPart(value = "file", required = false) List<MultipartFile> files
@@ -55,7 +55,7 @@ public class PostController {
 
     @GetMapping("/{postId}")
     @Operation(summary = "게시글 조회 API", description = "postId를 받아 게시글을 조회합니다. (토큰 필수 X)")
-    public ResponseEntity<PostResponse> viewPost(
+    public ResponseEntity<DetailedPostResponse> viewPost(
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long postId
     ) {
@@ -73,7 +73,7 @@ public class PostController {
 
     @PostMapping("/bookmark/{postId}")
     @Operation(summary = "게시글 저장/취소 API", description = "postId를 받아 게시글을 저장하거나 이미 저장한 경우 취소합니다.")
-    public ResponseEntity<PostResponse> bookmarkPost(
+    public ResponseEntity<DetailedPostResponse> bookmarkPost(
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long postId
     ) {
@@ -82,7 +82,7 @@ public class PostController {
 
     @PostMapping("/like/{postId}")
     @Operation(summary = "게시글 좋아요/취소 API", description = "postId를 받아 게시글에 좋아요를 추가하거나 이미 좋아요를 누른 경우 취소합니다.")
-    public ResponseEntity<PostResponse> likePost(
+    public ResponseEntity<DetailedPostResponse> likePost(
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long postId
     ) {
@@ -100,7 +100,7 @@ public class PostController {
 
     @GetMapping("/map")
     @Operation(summary = "지도 게시글 마커 조회 API", description = "필터링 조건들을 받아 지도에 표시할 게시글을 조회합니다.")
-    public ResponseEntity<List<PostMapResponse>> getMap(
+    public ResponseEntity<List<MapPostResponse>> getMap(
             @ModelAttribute MapFilter filters
     ) {
         return ResponseEntity.ok(postService.getMap(filters));
@@ -108,7 +108,7 @@ public class PostController {
 
     @GetMapping("/map-sidebar")
     @Operation(summary = "지도 사이드바 게시글 조회 API", description = "필터링 조건들을 받아 지도 사이드바에 표시할 게시글을 조회합니다.")
-    public ResponseEntity<PostMapPageResponse> getMapSidebar(
+    public ResponseEntity<PostPageResponse> getMapSidebar(
             @ModelAttribute MapFilter filters,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
