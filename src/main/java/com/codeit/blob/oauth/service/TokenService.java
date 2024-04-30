@@ -23,12 +23,10 @@ public class TokenService {
     private final UserRepository userRepository;
 
     @Transactional
-    public TokenResponse createAccessToken(String refreshToken) {
-        if (!jwtProvider.isTokenExpired(refreshToken)) {
-            List<Users> all = userRepository.findAll();
-            Users users1 = all.get(0);
-            log.info(users1.getRefreshToken());
+    public TokenResponse createAccessToken(String token) {
+        String refreshToken = token.substring(JwtProvider.JWT_PREFIX.length());
 
+        if (!jwtProvider.isTokenExpired(refreshToken)) {
             Users users = userRepository.findByRefreshToken(refreshToken)
                     .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -40,5 +38,25 @@ public class TokenService {
         }
 
         throw new IllegalArgumentException("Access Token 재발급 실패");
+    }
+
+    @Transactional
+    public String deleteRefreshToken(String token) {
+        String accessToken = token.substring(JwtProvider.JWT_PREFIX.length());
+        if (!jwtProvider.isTokenExpired(accessToken)) {
+            String oauthId = jwtProvider.extractClaim(accessToken, claims -> claims.get("oauthId", String.class));
+            Users users = userRepository.findByOauthId(oauthId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+            users.changeUser(
+                    users.toBuilder()
+                            .refreshToken("")
+                            .build()
+            );
+
+            userRepository.save(users);
+        }
+
+        return "로그아웃 성공";
     }
 }

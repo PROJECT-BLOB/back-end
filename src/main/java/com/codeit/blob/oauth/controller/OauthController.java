@@ -51,6 +51,16 @@ public class OauthController {
                 .body(tokenResponse);
     }
 
+    @GetMapping("/logout")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "로그아웃 API", description = "로그아웃 합니다.")
+    public ResponseEntity<String> callback(
+            HttpServletRequest request
+    ) {
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+        return ResponseEntity.ok(tokenService.deleteRefreshToken(token));
+    }
+
     @PostMapping("/refresh")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "access token 재발급 API", description = "refresh 토큰을 Header로 받아 새로운 access token을 발급받습니다.")
@@ -58,7 +68,6 @@ public class OauthController {
             HttpServletRequest request
     ) {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
-        String refreshToken = token.substring(JwtProvider.JWT_PREFIX.length());
-        return ResponseEntity.ok(tokenService.createAccessToken(refreshToken));
+        return ResponseEntity.ok(tokenService.createAccessToken(token));
     }
 }
