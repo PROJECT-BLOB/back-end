@@ -9,6 +9,7 @@ import com.codeit.blob.post.request.FeedFilter;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.MathExpressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -94,15 +95,20 @@ public class PostRepositoryImpl {
 
     private OrderSpecifier<?>[] getOrderBy(String sortBy) {
         switch (sortBy) {
-            case "hot":
+            case "hot": // ref: hacker news ranking algorithms
                 NumberExpression<Long> timeDifference = Expressions
-                        .numberTemplate(Long.class, "timestampdiff(SECOND, {0}, now())", post.createdDate);
+                        .numberTemplate(Long.class, "timestampdiff(SECOND, {0}, now())", post.createdDate)
+                        .divide(3600 * 24).add(2);
 
-                // penalty older posts by subtracting week diff with weight
-                NumberExpression<Double> scoreExpression = post.likes.size().doubleValue()
-                        .subtract(timeDifference.divide(3600 * 24 * 7).multiply(100));
+                // time diff in days, gravity is 2
+                NumberExpression<Double> denominator = timeDifference.doubleValue()
+                        .multiply(timeDifference);
 
-                OrderSpecifier<Double> hotOrderSpecifier = scoreExpression.desc();
+                NumberExpression<Double> score = post.likes.size().doubleValue()
+                        .subtract(1)
+                        .divide(denominator);
+
+                OrderSpecifier<Double> hotOrderSpecifier = score.desc();
                 return new OrderSpecifier[]{hotOrderSpecifier, post.createdDate.desc()};
 
             case "likes":
