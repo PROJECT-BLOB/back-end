@@ -1,9 +1,12 @@
 package com.codeit.blob.user.controller;
 
+import com.codeit.blob.comment.response.CommentPageResponse;
 import com.codeit.blob.oauth.domain.CustomUsers;
+import com.codeit.blob.post.response.PostPageResponse;
 import com.codeit.blob.user.request.UserRequest;
 import com.codeit.blob.user.request.UserUpdateRequest;
 import com.codeit.blob.user.response.UserResponse;
+import com.codeit.blob.user.service.UserProfileService;
 import com.codeit.blob.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,6 +16,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,9 +28,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
-@Tag(name = "User API", description = "회원 CRUD API")
+@Tag(name = "User API", description = "유저 관련 API")
 public class UserController {
     private final UserService userService;
+    private final UserProfileService service;
 
     @PostMapping
     @SecurityRequirement(name = "Bearer Authentication")
@@ -67,5 +73,32 @@ public class UserController {
             @PathVariable("oauthId") String oauthId
     ) {
         return ResponseEntity.ok(userService.findByOauthId(oauthId));
+    }
+
+    @GetMapping("/{blobId}/profile")
+    @Operation(summary = "유저가 작성한 게시글 조회 API", description = "Page 처리를 통한 게시글 조회")
+    public ResponseEntity<PostPageResponse> findPostPage(
+            @PathVariable("blobId") String blobId,
+            @ParameterObject Pageable pageable
+    ) {
+        return ResponseEntity.ok(service.findUserPosts(blobId, pageable));
+    }
+
+    @GetMapping("/{blobId}/comment")
+    @Operation(summary = "유저가 작성한 댓글 조회 API", description = "Page 처리를 통한 유저가 작성한 댓글 조회")
+    public ResponseEntity<CommentPageResponse> findComment(
+            @PathVariable("blobId") String blobId,
+            @ParameterObject Pageable pageable
+    ) {
+        return ResponseEntity.ok(service.findUserComment(blobId, pageable));
+    }
+
+    @GetMapping("/{blobId}/bookmark")
+    @Operation(summary = "유저의 북마크 조회 API", description = "Page 처리를 통한 북마크 조회")
+    public ResponseEntity<PostPageResponse> findBookmark(
+            @PathVariable("blobId") String blobId,
+            @ParameterObject Pageable pageable
+    ) {
+        return ResponseEntity.ok(service.findUserBookmark(blobId, pageable));
     }
 }
