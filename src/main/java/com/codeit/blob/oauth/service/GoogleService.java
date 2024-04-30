@@ -66,9 +66,14 @@ public class GoogleService implements OauthService {
                                 .profileUrl(userInfo.getPicture())
                                 .state(UserAuthenticateState.INCOMPLETE)
                                 .oauthType(properties.getOauthType())
-                                .refreshToken(refreshToken)
                                 .build()
                 );
+
+        users.changeUser(
+                users.toBuilder()
+                        .refreshToken(refreshToken)
+                        .build()
+        );
         userRepository.save(users);
 
         return OauthResponse.builder()

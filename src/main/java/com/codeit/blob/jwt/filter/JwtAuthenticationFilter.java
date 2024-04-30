@@ -59,6 +59,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Users users = userRepository.findByOauthId(oauthId)
                         .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+                if (users.getRefreshToken().isEmpty()) {
+                    throw new CustomException(ErrorCode.JWT_EXPIRED);
+                }
 
                 CustomUsers userDetail = new CustomUsers(users);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
