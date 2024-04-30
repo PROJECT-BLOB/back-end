@@ -95,13 +95,13 @@ public class CommentService {
             CustomUsers userDetails,
             Long postId,
             int page,
-            int limit
+            int size
     ){
         Users user = userDetails == null ? null : userDetails.getUsers();
         Post post = postJpaRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        Pageable pageable = PageRequest.of(page, limit);
+        Pageable pageable = PageRequest.of(page, size);
         Page<Comment> comments = commentJpaRepository.findByPostAndParentOrderByCreatedDateAsc(post, null, pageable);
 
         return new CommentPageResponse(comments, user);
@@ -112,13 +112,13 @@ public class CommentService {
             CustomUsers userDetails,
             Long commentId,
             int page,
-            int limit
+            int size
     ){
         Users user = userDetails == null ? null : userDetails.getUsers();
         Comment parent = commentJpaRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
-        Pageable pageable = PageRequest.of(page, limit);
+        Pageable pageable = PageRequest.of(page, size);
         Page<Comment> comments = commentJpaRepository.findByParentIdOrderByCreatedDateAsc(parent.getId(), pageable);
 
         return new CommentPageResponse(comments, user);

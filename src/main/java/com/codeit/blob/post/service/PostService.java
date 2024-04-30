@@ -10,9 +10,8 @@ import com.codeit.blob.post.domain.*;
 import com.codeit.blob.post.repository.*;
 import com.codeit.blob.post.request.CreatePostRequest;
 import com.codeit.blob.post.request.FeedFilter;
-import com.codeit.blob.post.response.DeletePostResponse;
-import com.codeit.blob.post.response.PostPageResponse;
-import com.codeit.blob.post.response.PostResponse;
+import com.codeit.blob.post.request.MapFilter;
+import com.codeit.blob.post.response.*;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.user.domain.Users;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +36,7 @@ public class PostService {
     private final CityService cityService;
 
     @Transactional
-    public PostResponse createPost(
+    public DetailedPostResponse createPost(
             CustomUsers userDetails,
             CreatePostRequest request,
             List<String> imgPaths
@@ -48,6 +47,8 @@ public class PostService {
             city = cityService.createCity(country, request.getCity());
         }
 
+        Subcategory subcategory = request.getSubcategory() == null ? null : Subcategory.getInstance(request.getSubcategory());
+
         Coordinate coordinate = request.getLat() == null || request.getLng() == null
                 ? null : new Coordinate(request.getLat(), request.getLng());
         Long distFromActual = coordinate == null || request.getActualLat() == null || request.getActualLng() == null
@@ -57,7 +58,7 @@ public class PostService {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .category(Category.getInstance(request.getCategory()))
-                .subcategory(Subcategory.getInstance(request.getSubcategory()))
+                .subcategory(subcategory)
                 .author(userDetails.getUsers())
                 .city(city)
                 .coordinate(coordinate)
@@ -71,17 +72,17 @@ public class PostService {
             post.addImage(img);
         }
 
-        return new PostResponse(post, userDetails.getUsers());
+        return new DetailedPostResponse(post, userDetails.getUsers());
     }
 
     @Transactional
-    public PostResponse viewPost(CustomUsers userDetails, Long postId) {
+    public DetailedPostResponse viewPost(CustomUsers userDetails, Long postId) {
         Users user = userDetails == null ? null : userDetails.getUsers();
         Post post = postJpaRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         post.incrementView();
 
-        return new PostResponse(post, user);
+        return new DetailedPostResponse(post, user);
     }
 
     @Transactional
@@ -99,7 +100,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse likePost(CustomUsers userDetails, Long postId) {
+    public DetailedPostResponse likePost(CustomUsers userDetails, Long postId) {
         Post post = postJpaRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         Users user = userDetails.getUsers();
@@ -117,11 +118,11 @@ public class PostService {
             post.removeLike(like);
         }
 
-        return new PostResponse(post, user);
+        return new DetailedPostResponse(post, user);
     }
 
     @Transactional
-    public PostResponse bookmarkPost(CustomUsers userDetails, Long postId) {
+    public DetailedPostResponse bookmarkPost(CustomUsers userDetails, Long postId) {
         Post post = postJpaRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         Users user = userDetails.getUsers();
@@ -137,7 +138,7 @@ public class PostService {
             post.removeBookmark(bookmark);
         }
 
-        return new PostResponse(post, user);
+        return new DetailedPostResponse(post, user);
     }
 
     @Transactional(readOnly = true)
@@ -155,6 +156,19 @@ public class PostService {
         Pageable pageable = PageRequest.of(filters.getPage(), filters.getSize());
         Page<Post> posts = postRepository.getFeed(country, city, filters, pageable);
 
-        return new PostPageResponse(posts, user);
+        return PostPageResponse.postDetailPageResponse(posts, user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MapPostResponse> getMap(MapFilter filters) {
+        List<Post> posts = postRepository.getMap(filters);
+        return posts.stream().map(MapPostResponse::new).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public PostPageResponse getMapSidebar(MapFilter filters, int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> posts = postRepository.getMapSidebar(filters, pageable, sortBy);
+        return PostPageResponse.postMapPageResponse(posts);
     }
 }

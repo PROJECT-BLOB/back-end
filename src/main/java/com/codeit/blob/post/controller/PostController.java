@@ -3,9 +3,8 @@ package com.codeit.blob.post.controller;
 import com.codeit.blob.global.s3.S3Service;
 import com.codeit.blob.post.request.FeedFilter;
 import com.codeit.blob.post.request.CreatePostRequest;
-import com.codeit.blob.post.response.DeletePostResponse;
-import com.codeit.blob.post.response.PostPageResponse;
-import com.codeit.blob.post.response.PostResponse;
+import com.codeit.blob.post.request.MapFilter;
+import com.codeit.blob.post.response.*;
 import com.codeit.blob.post.service.PostService;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,14 +14,12 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +39,7 @@ public class PostController {
             @Encoding(name = "data", contentType = "application/json"),
             @Encoding(name = "file", contentType = "image/jpg, image/png, image/jpeg")
     }))
-    public ResponseEntity<PostResponse> createPost(
+    public ResponseEntity<DetailedPostResponse> createPost(
             @AuthenticationPrincipal CustomUsers userDetails,
             @Valid @RequestPart("data") CreatePostRequest request,
             @RequestPart(value = "file", required = false) List<MultipartFile> files
@@ -58,7 +55,7 @@ public class PostController {
 
     @GetMapping("/{postId}")
     @Operation(summary = "게시글 조회 API", description = "postId를 받아 게시글을 조회합니다. (토큰 필수 X)")
-    public ResponseEntity<PostResponse> viewPost(
+    public ResponseEntity<DetailedPostResponse> viewPost(
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long postId
     ) {
@@ -76,7 +73,7 @@ public class PostController {
 
     @PostMapping("/bookmark/{postId}")
     @Operation(summary = "게시글 저장/취소 API", description = "postId를 받아 게시글을 저장하거나 이미 저장한 경우 취소합니다.")
-    public ResponseEntity<PostResponse> bookmarkPost(
+    public ResponseEntity<DetailedPostResponse> bookmarkPost(
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long postId
     ) {
@@ -85,7 +82,7 @@ public class PostController {
 
     @PostMapping("/like/{postId}")
     @Operation(summary = "게시글 좋아요/취소 API", description = "postId를 받아 게시글에 좋아요를 추가하거나 이미 좋아요를 누른 경우 취소합니다.")
-    public ResponseEntity<PostResponse> likePost(
+    public ResponseEntity<DetailedPostResponse> likePost(
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long postId
     ) {
@@ -99,5 +96,24 @@ public class PostController {
             @ModelAttribute FeedFilter filters
     ) {
         return ResponseEntity.ok(postService.getFeed(userDetails, filters));
+    }
+
+    @GetMapping("/map")
+    @Operation(summary = "지도 게시글 마커 조회 API", description = "필터링 조건들을 받아 지도에 표시할 게시글을 조회합니다.")
+    public ResponseEntity<List<MapPostResponse>> getMap(
+            @ModelAttribute MapFilter filters
+    ) {
+        return ResponseEntity.ok(postService.getMap(filters));
+    }
+
+    @GetMapping("/map-sidebar")
+    @Operation(summary = "지도 사이드바 게시글 조회 API", description = "필터링 조건들을 받아 지도 사이드바에 표시할 게시글을 조회합니다.")
+    public ResponseEntity<PostPageResponse> getMapSidebar(
+            @ModelAttribute MapFilter filters,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "recent") String sortBy
+    ) {
+        return ResponseEntity.ok(postService.getMapSidebar(filters, page, size, sortBy));
     }
 }

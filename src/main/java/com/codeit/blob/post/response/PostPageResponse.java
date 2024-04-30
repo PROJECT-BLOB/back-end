@@ -14,15 +14,26 @@ import java.util.List;
 @Schema(name = "게시글 페이지 응답")
 public class PostPageResponse {
 
-    private final List<PostResponse> content;
+    private final List<? extends PostResponse> content;
     private final long count;
     private final long currentPage;
     private final boolean hasMore;
 
-    public PostPageResponse(Page<Post> page, Users user){
-        this.content = page.getContent().stream().map(p -> new PostResponse(p, user)).toList();
-        this.count = page.getTotalElements();
-        this.currentPage = page.getNumber();
-        this.hasMore = page.hasNext();
+    public static PostPageResponse postDetailPageResponse(Page<Post> page, Users user){
+        return new PostPageResponse(
+                page.getContent().stream().map(p -> new DetailedPostResponse(p, user)).toList(),
+                page.getTotalElements(),
+                page.getNumber(),
+                page.hasNext()
+        );
+    }
+
+    public static PostPageResponse postMapPageResponse(Page<Post> page){
+        return new PostPageResponse(
+                page.getContent().stream().map(MapPostResponse::new).toList(),
+                page.getTotalElements(),
+                page.getNumber(),
+                page.hasNext()
+        );
     }
 }
