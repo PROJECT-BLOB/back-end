@@ -1,6 +1,9 @@
 package com.codeit.blob.user.response;
 
+import com.codeit.blob.global.domain.Coordinate;
+import com.codeit.blob.oauth.OauthType;
 import com.codeit.blob.user.UserAuthenticateState;
+import com.codeit.blob.user.domain.UserRole;
 import com.codeit.blob.user.domain.Users;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -13,8 +16,19 @@ public class UserResponse {
     private final String nickName;
     private final String profileUrl;
 
-    @Schema(description = "유저 계정 상태(COMPLETE - 사용 가능 계정) (INCOMPLETE - 추가인증 필요)")
+    @Schema(description = "유저 정보 공개 / 비공개 상태")
+    private final boolean closeProfile;
+
+    private final Coordinate coordinate;
+
+    @Schema(description = "유저 계정 상태")
     private final UserAuthenticateState state;
+
+    @Schema(description = "유저 Oauth 로그인 타입")
+    private final OauthType oauthType;
+
+    @Schema(description = "유저 권한")
+    private final UserRole role;
 
     public UserResponse(Users users) {
         this.email = users.getEmail();
@@ -22,5 +36,9 @@ public class UserResponse {
         this.nickName = users.getNickName();
         this.profileUrl = users.getProfileUrl();
         this.state = users.getState();
+        this.closeProfile = users.isCloseProfile();
+        this.coordinate = users.getCoordinate();
+        this.oauthType = users.getOauthType();
+        this.role = users.getRole();
     }
 }
