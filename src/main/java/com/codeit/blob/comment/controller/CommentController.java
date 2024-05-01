@@ -2,7 +2,7 @@ package com.codeit.blob.comment.controller;
 
 import com.codeit.blob.comment.request.CreateCommentRequest;
 import com.codeit.blob.comment.response.CommentPageResponse;
-import com.codeit.blob.comment.response.CommentResponse;
+import com.codeit.blob.comment.response.DetailedCommentResponse;
 import com.codeit.blob.comment.service.CommentService;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +25,7 @@ public class CommentController {
 
     @PostMapping("/post/{postId}")
     @Operation(summary = "댓글 작성 API", description = "postId와 댓글 내용을 받아 해당 게시글에 댓글을 작성합니다.")
-    public ResponseEntity<CommentResponse> createComment(
+    public ResponseEntity<DetailedCommentResponse> createComment(
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long postId,
             @RequestBody @Valid CreateCommentRequest request
@@ -35,7 +35,7 @@ public class CommentController {
 
     @PostMapping("/reply/{commentId}")
     @Operation(summary = "답글 작성 API", description = "commentId와 댓글 내용을 받아 해당 댓글에 답글을 작성합니다.")
-    public ResponseEntity<CommentResponse> createReply(
+    public ResponseEntity<DetailedCommentResponse> createReply(
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long commentId,
             @RequestBody @Valid CreateCommentRequest request
@@ -76,7 +76,7 @@ public class CommentController {
 
     @PostMapping("/like/{commentId}")
     @Operation(summary = "댓글 좋아요/취소 API", description = "commentId를 받아 댓글에 좋아요를 추가하거나 이미 좋아요를 누른 경우 취소합니다.")
-    public ResponseEntity<CommentResponse> likeComment(
+    public ResponseEntity<DetailedCommentResponse> likeComment(
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long commentId
     ) {

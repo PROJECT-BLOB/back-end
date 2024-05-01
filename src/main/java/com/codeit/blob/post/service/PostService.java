@@ -13,6 +13,7 @@ import com.codeit.blob.post.request.FeedFilter;
 import com.codeit.blob.post.request.MapFilter;
 import com.codeit.blob.post.response.*;
 import com.codeit.blob.oauth.domain.CustomUsers;
+import com.codeit.blob.user.domain.UserRole;
 import com.codeit.blob.user.domain.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -91,8 +92,9 @@ public class PostService {
         Post post = postJpaRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        // check if the user deleting the post is the author of the post
-        if (!post.getAuthor().getId().equals(userDetails.getUsers().getId())) {
+        // check if the user deleting the post is the author of the post or admin
+        if (!post.getAuthor().getId().equals(userDetails.getUsers().getId())
+                || userDetails.getUsers().getRole().equals(UserRole.ROLE_ADMIN)) {
             throw new CustomException(ErrorCode.ACTION_ACCESS_DENIED);
         }
 
@@ -191,5 +193,12 @@ public class PostService {
         }
 
         return "게시글 신고 성공";
+    }
+
+    @Transactional(readOnly = true)
+    public PostPageResponse getReportedPosts(int minReport, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> posts = postRepository.getReportedPosts(pageable, minReport);
+        return PostPageResponse.postReportedPageResponse(posts);
     }
 }

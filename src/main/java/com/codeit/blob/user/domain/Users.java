@@ -33,6 +33,9 @@ public class Users extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private OauthType oauthType;
 
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
 
     @Builder(toBuilder = true)
     public Users(String email, String oauthId, String blobId, String nickName, String profileUrl, String refreshToken, Coordinate coordinate, UserAuthenticateState state, OauthType oauthType) {
@@ -45,6 +48,7 @@ public class Users extends BaseTimeEntity {
         this.coordinate = coordinate;
         this.state = state;
         this.oauthType = oauthType;
+        this.role = UserRole.ROLE_USER;
     }
 
     public void changeUser(Users users) {
@@ -57,5 +61,10 @@ public class Users extends BaseTimeEntity {
         this.state = users.getState();
         this.oauthType = users.getOauthType();
         this.coordinate = users.getCoordinate();
+    }
+
+    public Users makeAdmin(){
+        this.role = UserRole.ROLE_ADMIN;
+        return this;
     }
 }

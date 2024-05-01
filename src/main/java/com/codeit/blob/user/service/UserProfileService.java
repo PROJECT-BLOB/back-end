@@ -43,7 +43,7 @@ public class UserProfileService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Page<Comment> byAuthor = commentRepository.findCommentByAuthorBlobId(blobId, pageable);
-        return new CommentPageResponse(byAuthor, users);
+        return CommentPageResponse.commentDetailedPageResponse(byAuthor, users);
     }
 
     public PostPageResponse findUserBookmark(String blobId, Pageable pageable) {

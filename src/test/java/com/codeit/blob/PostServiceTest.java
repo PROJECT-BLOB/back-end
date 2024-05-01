@@ -42,9 +42,9 @@ public class PostServiceTest {
 
     @BeforeEach
     public void setup(){
-        users = new Users[2];
-        userDetails = new CustomUsers[2];
-        for (int i = 0; i < 2; i++) {
+        users = new Users[3];
+        userDetails = new CustomUsers[3];
+        for (int i = 0; i < 3; i++) {
             Users user = Users.builder()
                     .blobId("blobId" + i)
                     .nickName("nickname" + i)
@@ -456,5 +456,24 @@ public class PostServiceTest {
         //then
         Assertions.assertThrows(CustomException.class, () -> postService.reportPost(userDetails[0], 1L));
         Assertions.assertThrows(CustomException.class, () -> postService.reportPost(userDetails[1], 1L));
+    }
+
+    @Test
+    @DisplayName("신고된 게시글 조회")
+    void getReportedPosts() {
+        //given
+        postService.createPost(userDetails[0], request, images);
+        postService.createPost(userDetails[0], request, images);
+        postService.createPost(userDetails[0], request, images);
+        postService.reportPost(userDetails[1], 1L);
+        postService.reportPost(userDetails[2], 1L);
+        postService.reportPost(userDetails[1], 2L);
+
+        //when
+        PostPageResponse response = postService.getReportedPosts(2, 0, 10);
+
+        //then
+        Assertions.assertEquals(1, response.getCount());
+        Assertions.assertEquals(1L, response.getContent().get(0).getPostId());
     }
 }

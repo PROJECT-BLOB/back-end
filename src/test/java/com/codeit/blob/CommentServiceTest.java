@@ -2,11 +2,12 @@ package com.codeit.blob;
 
 import com.codeit.blob.comment.request.CreateCommentRequest;
 import com.codeit.blob.comment.response.CommentPageResponse;
-import com.codeit.blob.comment.response.CommentResponse;
+import com.codeit.blob.comment.response.DetailedCommentResponse;
 import com.codeit.blob.comment.service.CommentService;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.post.request.CreatePostRequest;
+import com.codeit.blob.post.response.PostPageResponse;
 import com.codeit.blob.post.service.PostService;
 import com.codeit.blob.user.UserAuthenticateState;
 import com.codeit.blob.user.domain.Users;
@@ -66,7 +67,7 @@ public class CommentServiceTest {
     @DisplayName("새 댓글 작성")
     void createComment() {
         //when
-        CommentResponse response = commentService.createComment(userDetails[0], 1L, request);
+        DetailedCommentResponse response = commentService.createComment(userDetails[0], 1L, request);
 
         //then
         Assertions.assertNotNull(response);
@@ -79,7 +80,7 @@ public class CommentServiceTest {
     void createReply() {
         //when
         commentService.createComment(userDetails[0], 1L, request);
-        CommentResponse response = commentService.createReply(userDetails[0], 1L, request);
+        DetailedCommentResponse response = commentService.createReply(userDetails[0], 1L, request);
 
         //then
         Assertions.assertNotNull(response);
@@ -180,7 +181,7 @@ public class CommentServiceTest {
 
         //when
         commentService.likeComment(userDetails[0], 1L);
-        CommentResponse response = commentService.likeComment(userDetails[1], 1L);
+        DetailedCommentResponse response = commentService.likeComment(userDetails[1], 1L);
 
         //then
         Assertions.assertNotNull(response);
@@ -198,7 +199,7 @@ public class CommentServiceTest {
         //when
         commentService.likeComment(userDetails[0], 2L);
         commentService.likeComment(userDetails[1], 2L);
-        CommentResponse response = commentService.likeComment(userDetails[1], 2L);
+        DetailedCommentResponse response = commentService.likeComment(userDetails[1], 2L);
 
         //then
         Assertions.assertNotNull(response);
@@ -236,6 +237,22 @@ public class CommentServiceTest {
         Assertions.assertThrows(CustomException.class, () -> commentService.reportComment(userDetails[0], 2L));
         Assertions.assertThrows(CustomException.class, () -> commentService.reportComment(userDetails[1], 1L));
         Assertions.assertThrows(CustomException.class, () -> commentService.reportComment(userDetails[1], 2L));
+    }
+
+    @Test
+    @DisplayName("신고된 댓글 조회")
+    void getReportedComments() {
+        //given
+        commentService.createComment(userDetails[0], 1L, request);
+        commentService.createReply(userDetails[0], 1L, request);
+        commentService.reportComment(userDetails[1], 2L);
+
+        //when
+        CommentPageResponse response = commentService.getReportedComments(1, 0, 10);
+
+        //then
+        Assertions.assertEquals(1, response.getCount());
+        Assertions.assertEquals(2L, response.getContent().get(0).getCommentId());
     }
 
 

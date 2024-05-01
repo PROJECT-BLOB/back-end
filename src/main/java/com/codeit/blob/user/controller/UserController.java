@@ -101,4 +101,13 @@ public class UserController {
     ) {
         return ResponseEntity.ok(service.findUserBookmark(blobId, pageable));
     }
+
+    @PostMapping("/makeAdmin")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "테스트용 - 관리자 권한 부여 API", description = "유저에게 관리자 권한을 부여합니다.")
+    public ResponseEntity<String> makeAdmin(
+            @AuthenticationPrincipal CustomUsers userDetails
+    ) {
+        return ResponseEntity.ok(userService.makeAdmin(userDetails));
+    }
 }

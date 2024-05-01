@@ -63,6 +63,9 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    private Set<PostReport> reports = new HashSet<>();
+
     @Builder
     public Post(
             String title,
