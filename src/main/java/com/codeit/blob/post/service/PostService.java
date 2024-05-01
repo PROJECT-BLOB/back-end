@@ -33,6 +33,7 @@ public class PostService {
     private final PostImageJpaRepository imageJpaRepository;
     private final BookmarkJpaRepository bookmarkJpaRepository;
     private final PostLikeJpaRepository postLikeJpaRepository;
+    private final PostReportJpaRepository postReportJpaRepository;
     private final CityService cityService;
 
     @Transactional
@@ -86,7 +87,7 @@ public class PostService {
     }
 
     @Transactional
-    public DeletePostResponse deletePost(CustomUsers userDetails, Long postId) {
+    public String deletePost(CustomUsers userDetails, Long postId) {
         Post post = postJpaRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
@@ -96,7 +97,7 @@ public class PostService {
         }
 
         postJpaRepository.deleteById(postId);
-        return new DeletePostResponse(postId);
+        return "게시글 삭제 성공";
     }
 
     @Transactional
@@ -170,5 +171,25 @@ public class PostService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Post> posts = postRepository.getMapSidebar(filters, pageable, sortBy);
         return PostPageResponse.postMapPageResponse(posts);
+    }
+
+    @Transactional
+    public String reportPost(CustomUsers userDetails, Long postId) {
+        Post post = postJpaRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        Users user = userDetails.getUsers();
+
+        if (user.getId().equals(post.getAuthor().getId())){
+            throw new CustomException(ErrorCode.ACTION_ACCESS_DENIED);
+        }
+
+        if (postReportJpaRepository.findByUserIdAndPostId(user.getId(), postId).isPresent()){
+            throw new CustomException(ErrorCode.REPORT_ALREADY_EXISTS);
+        } else {
+            PostReport report = new PostReport(user, post.getAuthor(), post);
+            postReportJpaRepository.save(report);
+        }
+
+        return "게시글 신고 성공";
     }
 }

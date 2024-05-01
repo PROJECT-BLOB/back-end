@@ -2,12 +2,13 @@ package com.codeit.blob.comment.service;
 
 import com.codeit.blob.comment.domain.Comment;
 import com.codeit.blob.comment.domain.CommentLike;
+import com.codeit.blob.comment.domain.CommentReport;
 import com.codeit.blob.comment.repository.CommentJpaRepository;
 import com.codeit.blob.comment.repository.CommentLikeJpaRepository;
+import com.codeit.blob.comment.repository.CommentReportJpaRepository;
 import com.codeit.blob.comment.request.CreateCommentRequest;
 import com.codeit.blob.comment.response.CommentPageResponse;
 import com.codeit.blob.comment.response.CommentResponse;
-import com.codeit.blob.comment.response.DeleteCommentResponse;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.global.exceptions.ErrorCode;
 import com.codeit.blob.oauth.domain.CustomUsers;
@@ -27,6 +28,7 @@ public class CommentService {
 
     private final CommentJpaRepository commentJpaRepository;
     private final CommentLikeJpaRepository likeJpaRepository;
+    private final CommentReportJpaRepository reportJpaRepository;
     private final PostJpaRepository postJpaRepository;
 
     @Transactional
@@ -74,7 +76,7 @@ public class CommentService {
     }
 
     @Transactional
-    public DeleteCommentResponse deleteComment(
+    public String deleteComment(
             CustomUsers userDetails,
             Long commentId
     ) {
@@ -87,7 +89,7 @@ public class CommentService {
         }
 
         commentJpaRepository.deleteById(commentId);
-        return new DeleteCommentResponse(commentId, comment.getPost().getId());
+        return "댓글 삭제 성공";
     }
 
     @Transactional(readOnly = true)
@@ -142,5 +144,25 @@ public class CommentService {
         }
 
         return new CommentResponse(comment, user);
+    }
+
+    @Transactional
+    public String reportComment(CustomUsers userDetails, Long commentId) {
+        Comment comment = commentJpaRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        Users user = userDetails.getUsers();
+
+        if (user.getId().equals(comment.getAuthor().getId())){
+            throw new CustomException(ErrorCode.ACTION_ACCESS_DENIED);
+        }
+
+        if (reportJpaRepository.findByUserIdAndPostId(user.getId(), commentId).isPresent()){
+            throw new CustomException(ErrorCode.REPORT_ALREADY_EXISTS);
+        } else {
+            CommentReport report = new CommentReport(user, comment.getAuthor(), comment);
+            reportJpaRepository.save(report);
+        }
+
+        return "댓글 신고 성공";
     }
 }

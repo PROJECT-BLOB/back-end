@@ -64,7 +64,7 @@ public class PostController {
 
     @DeleteMapping("/{postId}")
     @Operation(summary = "게시글 삭제 API", description = "postId를 받아 유저가 작성자일 경우 게시글을 삭제합니다.")
-    public ResponseEntity<DeletePostResponse> deletePost(
+    public ResponseEntity<String> deletePost(
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long postId
     ) {
@@ -115,5 +115,14 @@ public class PostController {
             @RequestParam(defaultValue = "recent") String sortBy
     ) {
         return ResponseEntity.ok(postService.getMapSidebar(filters, page, size, sortBy));
+    }
+
+    @PostMapping("/report/{postId}")
+    @Operation(summary = "게시글 신고 API", description = "postId를 받아 유저가 이미 신고한 게시글이 아닐 경우 신고합니다.")
+    public ResponseEntity<String> reportPost(
+            @AuthenticationPrincipal CustomUsers userDetails,
+            @PathVariable Long postId
+    ) {
+        return ResponseEntity.ok(postService.reportPost(userDetails, postId));
     }
 }

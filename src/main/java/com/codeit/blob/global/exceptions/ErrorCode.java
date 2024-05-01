@@ -18,17 +18,19 @@ public enum ErrorCode {
     ACTION_ACCESS_DENIED(403, "이 작업을 수행할 수 있는 권한이 없습니다."),
     LOGIN_REQUIRED(403, "이 작업을 수행하려면 로그인하세요."),
 
-
     //404 NOT_FOUND
     USER_NOT_FOUND(404, "유저를 찾을 수 없습니다."),
     POST_NOT_FOUND(404, "게시글을 찾을 수 없습니다."),
-    COMMENT_NOT_FOUND(404, "댓글을 찾을수 없습니다."),
-    COUNTRY_NOT_FOUND(404, "나라를 찾을수 없습니다."),
-    CATEGORY_NOT_FOUND(404, "카테고리를 찾을수 없습니다."),
-    SUBCATEGORY_NOT_FOUND(404, "세부 카테고리를 찾을수 없습니다."),
+    COMMENT_NOT_FOUND(404, "댓글을 찾을 수 없습니다."),
+    COUNTRY_NOT_FOUND(404, "나라를 찾을 수 없습니다."),
+    CATEGORY_NOT_FOUND(404, "카테고리를 찾을 수 없습니다."),
+    SUBCATEGORY_NOT_FOUND(404, "세부 카테고리를 찾을 수 없습니다."),
 
     //405 403으로 수정?
     NEED_MORE_AUTHENTICATE(405, "추가적인 인증이 필요합니다."),
+
+    //409 CONFLICT
+    REPORT_ALREADY_EXISTS(409, "이미 신고한 게시글/댓글입니다."),
 
     //500 INTERNAL SERVER ERROR
     IMG_UPLOAD_FAIL(500, "사진 업로드에 실패하였습니다."),
