@@ -19,6 +19,8 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 @Configuration
 public class SecurityConfig {
 
@@ -37,7 +39,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .requestMatchers(PERMIT_URL).permitAll()
-                .requestMatchers(HttpMethod.GET, "/post/**", "/comment/**").permitAll()
+                .requestMatchers(antMatcher("/admin/**")).hasRole("ADMIN")
                 .anyRequest().authenticated());
 
         http
@@ -66,7 +68,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(PERMIT_URL).permitAll()
-                .requestMatchers(HttpMethod.GET, "/post/**").permitAll()
+                .requestMatchers(antMatcher("/admin/**")).hasRole("ADMIN")
                 .anyRequest().authenticated());
 
         http

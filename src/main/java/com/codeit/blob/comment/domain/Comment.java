@@ -43,6 +43,9 @@ public class Comment extends BaseTimeEntity {
     @OneToMany(mappedBy = "comment", fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<CommentLike> likes = new HashSet<>();
 
+    @OneToMany(mappedBy = "comment", orphanRemoval = true)
+    private Set<CommentReport> reports = new HashSet<>();
+
     @Builder
     public Comment(String content, Users author, Post post, Comment parent){
         this.content = content;

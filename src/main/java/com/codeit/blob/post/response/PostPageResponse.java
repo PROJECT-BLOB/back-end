@@ -36,4 +36,13 @@ public class PostPageResponse {
                 page.hasNext()
         );
     }
+
+    public static PostPageResponse postReportedPageResponse(Page<Post> page){
+        return new PostPageResponse(
+                page.getContent().stream().map(ReportedPostResponse::new).toList(),
+                page.getTotalElements(),
+                page.getNumber(),
+                page.hasNext()
+        );
+    }
 }

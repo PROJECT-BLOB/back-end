@@ -21,6 +21,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.codeit.blob.post.domain.QPost.post;
+import static com.codeit.blob.post.domain.QPostReport.postReport;
 
 @Repository
 @RequiredArgsConstructor
@@ -164,5 +165,25 @@ public class PostRepositoryImpl {
             default: // recent
                 return new OrderSpecifier[]{post.createdDate.desc()};
         }
+    }
+
+    public Page<Post> getReportedPosts(Pageable pageable, int minReport){
+        List<Post> content = jpaQueryFactory.selectFrom(post)
+                .distinct()
+                .leftJoin(post.reports, postReport)
+                .where(post.reports.size().goe(minReport))
+                .orderBy(post.createdDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = jpaQueryFactory.select(post.count()).from(post)
+                .distinct()
+                .leftJoin(post.reports, postReport)
+                .where(post.reports.size().goe(minReport))
+                .fetchOne();
+        total = total == null ? 0 : total;
+
+        return new PageImpl<>(content, pageable, total);
     }
 }
