@@ -183,7 +183,7 @@ public class PostService {
             throw new CustomException(ErrorCode.ACTION_ACCESS_DENIED);
         }
 
-        if (postReportJpaRepository.findByUserIdAndPostId(user.getId(), postId).isPresent()){
+        if (postReportJpaRepository.findByReporterIdAndPostId(user.getId(), postId).isPresent()){
             throw new CustomException(ErrorCode.REPORT_ALREADY_EXISTS);
         } else {
             PostReport report = new PostReport(user, post.getAuthor(), post);

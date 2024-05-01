@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface PostReportJpaRepository extends JpaRepository<PostReport, Long> {
 
-    Optional<PostReport> findByUserIdAndPostId(Long userId, Long postId);
+    Optional<PostReport> findByReporterIdAndPostId(Long userId, Long postId);
 }

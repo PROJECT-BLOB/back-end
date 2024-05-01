@@ -156,7 +156,7 @@ public class CommentService {
             throw new CustomException(ErrorCode.ACTION_ACCESS_DENIED);
         }
 
-        if (reportJpaRepository.findByUserIdAndPostId(user.getId(), commentId).isPresent()){
+        if (reportJpaRepository.findByReporterIdAndCommentId(user.getId(), commentId).isPresent()){
             throw new CustomException(ErrorCode.REPORT_ALREADY_EXISTS);
         } else {
             CommentReport report = new CommentReport(user, comment.getAuthor(), comment);

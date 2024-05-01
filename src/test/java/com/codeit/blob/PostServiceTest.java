@@ -128,7 +128,7 @@ public class PostServiceTest {
         postService.createPost(userDetails[0], request, images);
 
         //when
-        DeletePostResponse response = postService.deletePost(userDetails[0], 1L);
+        String response = postService.deletePost(userDetails[0], 1L);
 
         //then
         Assertions.assertNotNull(response);
@@ -431,5 +431,30 @@ public class PostServiceTest {
         Assertions.assertEquals(2L, response.getContent().get(0).getPostId());
         Assertions.assertEquals(3L, response.getContent().get(1).getPostId());
         Assertions.assertEquals(5L, response.getContent().get(2).getPostId());
+    }
+
+    @Test
+    @DisplayName("게시글 신고 성공")
+    void reportPost() {
+        //given
+        postService.createPost(userDetails[0], request, images);
+
+        //when
+        String response = postService.reportPost(userDetails[1], 1L);
+
+        //then
+        Assertions.assertNotNull(response);
+    }
+
+    @Test
+    @DisplayName("게시글 신고 실패")
+    void reportPostFail() {
+        //given
+        postService.createPost(userDetails[0], request, images);
+        postService.reportPost(userDetails[1], 1L);
+
+        //then
+        Assertions.assertThrows(CustomException.class, () -> postService.reportPost(userDetails[0], 1L));
+        Assertions.assertThrows(CustomException.class, () -> postService.reportPost(userDetails[1], 1L));
     }
 }
