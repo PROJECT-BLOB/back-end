@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -25,6 +27,10 @@ public class UserService {
 
     @Transactional
     public UserResponse validationUser(UserRequest userRequest) {
+        if (existBlobId(userRequest.getBlobId())) {
+            throw new CustomException(ErrorCode.DUPLICATE_BLOB_ID);
+        }
+
         Users users = userRepository.findByOauthId(userRequest.getOauthId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -64,7 +70,6 @@ public class UserService {
         return new UserResponse(users);
     }
 
-
     public UserResponse findByOauthId(String oauthId) {
         Users users = userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -77,6 +82,10 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return new UserResponse(users);
+    }
+
+    public boolean existBlobId(String blobId) {
+        return userRepository.existsByBlobId(blobId);
     }
 
     @Transactional

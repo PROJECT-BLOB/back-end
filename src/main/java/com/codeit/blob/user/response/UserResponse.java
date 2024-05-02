@@ -11,6 +11,7 @@ import lombok.Getter;
 @Getter
 @Schema(name = "유저 조회 응답 데이터")
 public class UserResponse {
+    private final Long userId;
     private final String email;
     private final String blobId;
     private final String nickName;
@@ -31,6 +32,7 @@ public class UserResponse {
     private final UserRole role;
 
     public UserResponse(Users users) {
+        this.userId = users.getId();
         this.email = users.getEmail();
         this.blobId = users.getBlobId();
         this.nickName = users.getNickName();

@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserProfileService {
+public class UserPageService {
 
     private final PostJpaRepository postRepository;
     private final CommentJpaRepository commentRepository;
