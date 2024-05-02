@@ -101,6 +101,13 @@ public class PostRepositoryImpl {
             predicate = predicate.and(post.likes.size().goe(filters.getMinLikes()));
         }
 
+        if (filters.getKeyword() != null) {
+            predicate = predicate.and(
+                    post.title.like("%" + filters.getKeyword() + "%")
+                            .or(post.content.like("%" + filters.getKeyword() + "%"))
+            );
+        }
+
         return predicate;
     }
 
