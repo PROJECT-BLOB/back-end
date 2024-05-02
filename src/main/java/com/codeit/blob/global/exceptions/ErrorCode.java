@@ -10,6 +10,7 @@ public enum ErrorCode {
     UNSUPPORTED_MEDIA_TYPE(400, "잘못된 형식의 파일입니다. (JPG, JPEG, PNG만 가능)"),
     BAD_ENUM_REQUEST(400, "잘못된 형식의 enum 입니다."),
     DUPLICATE_BLOB_ID(400, "중복된 아이디 입니다."),
+    BAD_BIO_LENGTH(400, "BIO 는 최대 50글자 입니다."),
 
     // 401 UNAUTHORIZED
     JWT_EXPIRED(401, "jwt 토큰이 만료되었습니다,"),
