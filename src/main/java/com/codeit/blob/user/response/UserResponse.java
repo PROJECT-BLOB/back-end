@@ -16,6 +16,7 @@ public class UserResponse {
     private final String blobId;
     private final String nickName;
     private final String profileUrl;
+    private final String description;
 
     @Schema(description = "유저 정보 공개 / 비공개 상태")
     private final boolean closeProfile;
@@ -42,5 +43,6 @@ public class UserResponse {
         this.coordinate = users.getCoordinate();
         this.oauthType = users.getOauthType();
         this.role = users.getRole();
+        this.description = users.getDescription();
     }
 }

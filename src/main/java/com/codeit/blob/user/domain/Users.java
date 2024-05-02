@@ -23,6 +23,7 @@ public class Users extends BaseTimeEntity {
     private String nickName;
     private String profileUrl;
     private boolean closeProfile;
+    private String description;
     private String refreshToken;
 
     @Embedded
@@ -39,12 +40,13 @@ public class Users extends BaseTimeEntity {
 
 
     @Builder(toBuilder = true)
-    public Users(String email, String oauthId, String blobId, String nickName, String profileUrl, String refreshToken, boolean closeProfile, Coordinate coordinate, UserAuthenticateState state, OauthType oauthType) {
+    public Users(String email, String oauthId, String blobId, String nickName, String profileUrl, String description, String refreshToken, boolean closeProfile, Coordinate coordinate, UserAuthenticateState state, OauthType oauthType) {
         this.email = email;
         this.oauthId = oauthId;
         this.blobId = blobId;
         this.nickName = nickName;
         this.profileUrl = profileUrl;
+        this.description = description;
         this.refreshToken = refreshToken;
         this.closeProfile = closeProfile;
         this.coordinate = coordinate;

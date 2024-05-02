@@ -62,6 +62,7 @@ public class UserService {
                         .nickName(userRequest.getNickName())
                         .coordinate(new Coordinate(userRequest.getLat(), userRequest.getLng()))
                         .closeProfile(userRequest.isCloseProfile())
+                        .description(userRequest.getDescription())
                         .profileUrl(profileUrl)
                         .build()
         );

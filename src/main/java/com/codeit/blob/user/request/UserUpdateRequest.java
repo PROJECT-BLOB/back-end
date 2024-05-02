@@ -11,6 +11,9 @@ public class UserUpdateRequest {
     @Schema(description = "유저 닉네임", example = "코드코드")
     private final String nickName;
 
+    @Schema(description = "유저 페이지 한줄 설명", example = "나의 페이페이페이지")
+    private final String description;
+
     @Schema(description = "프로필 공개 / 비공개")
     private final boolean closeProfile;
 
@@ -21,8 +24,9 @@ public class UserUpdateRequest {
     private final Double lng;
 
 
-    public UserUpdateRequest(String nickName, boolean closeProfile, Double lat, Double lng) {
+    public UserUpdateRequest(String nickName, String description, boolean closeProfile, Double lat, Double lng) {
         this.nickName = nickName;
+        this.description = description;
         this.closeProfile = closeProfile;
         this.lat = lat;
         this.lng = lng;
