@@ -43,4 +43,6 @@ public class FeedFilter {
 
     private int minLikes = 0;
 
+    private String keyword;
+
 }
