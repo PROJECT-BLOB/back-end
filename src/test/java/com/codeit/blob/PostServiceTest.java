@@ -370,6 +370,33 @@ public class PostServiceTest {
     }
 
     @Test
+    @DisplayName("피드 검색 - 키워드 검색")
+    void getFeed6() {
+        //given
+        CreatePostRequest request2 = new CreatePostRequest("title test", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612, 37.532600, 127.024612);
+        CreatePostRequest request3 = new CreatePostRequest("titletest", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 37.532600, 127.024612, null, null);
+        CreatePostRequest request4 = new CreatePostRequest("title", "content test", "QUESTION", "WEATHER", "대한민국", "서울", null, null, null, null);
+        CreatePostRequest request5 = new CreatePostRequest("title", "contest", "QUESTION", "TRANSPORT", "대한민국", "서울", 37.532600, 127.024612, 37.532600, 127.024612);
+
+        postService.createPost(userDetails[0], request, images);
+        postService.createPost(userDetails[0], request2, images);
+        postService.createPost(userDetails[0], request3, Collections.emptyList());
+        postService.createPost(userDetails[0], request4, Collections.emptyList());
+        postService.createPost(userDetails[0], request5, images);
+
+        FeedFilter filter = new FeedFilter();
+        filter.setCountry("대한민국");
+        filter.setKeyword("test");
+
+        //when
+        PostPageResponse response = postService.getFeed(userDetails[0], filter);
+
+        //then
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(4, response.getCount());
+    }
+
+    @Test
     @DisplayName("지도 조건 검색 - 위치, 카테고리")
     void getMap() {
         //given
