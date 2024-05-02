@@ -71,7 +71,7 @@ public class PostRepositoryImpl {
     private BooleanExpression getFeedFilterPredicate(Country country, City city, FeedFilter filters){
         BooleanExpression predicate = Expressions.TRUE;
 
-        if(filters.getCity() == null){
+        if(filters.getCityLng() == null || filters.getCityLat() == null){
             predicate = predicate.and(post.city.country.eq(country));
         } else {
             predicate = predicate.and(post.city.eq(city));

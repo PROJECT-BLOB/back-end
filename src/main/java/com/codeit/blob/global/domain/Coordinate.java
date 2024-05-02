@@ -1,9 +1,12 @@
 package com.codeit.blob.global.domain;
 
+import com.codeit.blob.post.domain.PostLike;
 import jakarta.persistence.Embeddable;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Objects;
 
 @Embeddable
 @Getter
@@ -31,5 +34,18 @@ public class Coordinate {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return Math.round(earthRadius * c);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Coordinate)) return false;
+        Coordinate coordinate = (Coordinate) o;
+        return lat == coordinate.getLat() && lng == coordinate.getLng();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lat, lng);
     }
 }

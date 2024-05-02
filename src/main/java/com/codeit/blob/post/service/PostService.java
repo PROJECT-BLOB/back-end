@@ -44,9 +44,10 @@ public class PostService {
             List<String> imgPaths
     ) {
         Country country = Country.getInstance(request.getCountry());
-        City city = cityService.findCityByCountryAndName(country, request.getCity());
+        Coordinate cityCoordinates = new Coordinate(request.getCityLat(), request.getCityLng());
+        City city = cityService.findCityByCoordinate(cityCoordinates);
         if (city == null){
-            city = cityService.createCity(country, request.getCity());
+            city = cityService.createCity(country, request.getCity(), cityCoordinates);
         }
 
         Subcategory subcategory = request.getSubcategory() == null ? null : Subcategory.getInstance(request.getSubcategory());
@@ -148,8 +149,9 @@ public class PostService {
     public PostPageResponse getFeed(CustomUsers userDetails, FeedFilter filters) {
         Country country = Country.getInstance(filters.getCountry());
         City city = null;
-        if (filters.getCity() != null){
-            city = cityService.findCityByCountryAndName(country, filters.getCity());
+        if (filters.getCityLat() != null && filters.getCityLng() != null){
+            Coordinate cityCoordinates = new Coordinate(filters.getCityLat(), filters.getCityLng());
+            city = cityService.findCityByCoordinate(cityCoordinates);
             if (city == null){
                 return new PostPageResponse(Collections.emptyList(), 0, 0, false);
             }
