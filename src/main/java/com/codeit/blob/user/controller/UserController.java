@@ -6,7 +6,7 @@ import com.codeit.blob.post.response.PostPageResponse;
 import com.codeit.blob.user.request.UserRequest;
 import com.codeit.blob.user.request.UserUpdateRequest;
 import com.codeit.blob.user.response.UserResponse;
-import com.codeit.blob.user.service.UserProfileService;
+import com.codeit.blob.user.service.UserPageService;
 import com.codeit.blob.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,7 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "User API", description = "유저 관련 API")
 public class UserController {
     private final UserService userService;
-    private final UserProfileService service;
+    private final UserPageService service;
 
     @PostMapping
     @SecurityRequirement(name = "Bearer Authentication")
