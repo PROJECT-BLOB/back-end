@@ -5,6 +5,7 @@ import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.global.exceptions.ErrorCode;
 import com.codeit.blob.global.s3.S3Service;
 import com.codeit.blob.oauth.domain.CustomUsers;
+import com.codeit.blob.post.repository.PostJpaRepository;
 import com.codeit.blob.user.UserAuthenticateState;
 import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.repository.UserRepository;
@@ -39,8 +40,8 @@ public class UserService {
                         .state(UserAuthenticateState.COMPLETE)
                         .build()
         );
-        userRepository.save(users);
 
+        userRepository.save(users);
         return new UserResponse(users);
     }
 

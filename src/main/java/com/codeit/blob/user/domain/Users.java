@@ -3,12 +3,17 @@ package com.codeit.blob.user.domain;
 import com.codeit.blob.global.domain.BaseTimeEntity;
 import com.codeit.blob.global.domain.Coordinate;
 import com.codeit.blob.oauth.OauthType;
+import com.codeit.blob.post.domain.Post;
+import com.codeit.blob.post.domain.PostLike;
 import com.codeit.blob.user.UserAuthenticateState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -39,6 +44,12 @@ public class Users extends BaseTimeEntity {
     private UserRole role;
 
 
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
+    private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<PostLike> postLikes = new ArrayList<>();
+
     @Builder(toBuilder = true)
     public Users(String email, String oauthId, String blobId, String nickName, String profileUrl, String bio, String refreshToken, boolean isPrivate, Coordinate coordinate, UserAuthenticateState state, OauthType oauthType) {
         this.email = email;
@@ -62,11 +73,19 @@ public class Users extends BaseTimeEntity {
         this.nickName = users.getNickName();
         this.profileUrl = users.getProfileUrl();
         this.refreshToken = users.getRefreshToken();
-        this.isPrivate = users.isPrivate;
+        this.isPrivate = users.getIsPrivate();
         this.state = users.getState();
         this.oauthType = users.getOauthType();
         this.coordinate = users.getCoordinate();
-        this.bio = users.bio;
+        this.bio = users.getBio();
+    }
+
+    public Integer getPostCount() {
+        return posts.size();
+    }
+
+    public Integer getLikeCount() {
+        return postLikes.size();
     }
 
     public Users makeAdmin() {

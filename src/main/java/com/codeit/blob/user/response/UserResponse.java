@@ -17,6 +17,8 @@ public class UserResponse {
     private final String nickName;
     private final String profileUrl;
     private final String bio;
+    private final Integer postCount;
+    private final Integer likedCount;
 
     @Schema(description = "유저 정보 공개 / 비공개 상태")
     private final Boolean isPrivate;
@@ -44,5 +46,7 @@ public class UserResponse {
         this.oauthType = users.getOauthType();
         this.role = users.getRole();
         this.bio = users.getBio();
+        this.postCount = users.getPostCount();
+        this.likedCount = users.getLikeCount();
     }
 }
