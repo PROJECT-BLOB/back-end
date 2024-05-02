@@ -2,6 +2,7 @@ package com.codeit.blob.post.response;
 
 import com.codeit.blob.post.domain.Post;
 import com.codeit.blob.post.domain.PostImage;
+import com.codeit.blob.user.domain.UserRole;
 import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.response.UserProfileResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -56,6 +57,6 @@ public class DetailedPostResponse implements PostResponse {
         this.bookmarked = user != null && post.getBookmarks().stream().map(b -> b.getUser().getId()).toList().contains(user.getId());
         this.likeCount = post.getLikes().size();
         this.commentCount = post.getComments().size();
-        this.canDelete = user != null && user.getId().equals(post.getAuthor().getId());
+        this.canDelete = user != null && (user.getId().equals(post.getAuthor().getId()) || user.getRole().equals(UserRole.ROLE_ADMIN));
     }
 }

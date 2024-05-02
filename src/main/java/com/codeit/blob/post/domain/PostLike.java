@@ -1,5 +1,6 @@
 package com.codeit.blob.post.domain;
 
+import com.codeit.blob.global.domain.BaseTimeEntity;
 import com.codeit.blob.user.domain.Users;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,7 +12,7 @@ import java.util.Objects;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostLike {
+public class PostLike extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

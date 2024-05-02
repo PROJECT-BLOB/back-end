@@ -2,17 +2,20 @@ package com.codeit.blob.comment.service;
 
 import com.codeit.blob.comment.domain.Comment;
 import com.codeit.blob.comment.domain.CommentLike;
+import com.codeit.blob.comment.domain.CommentReport;
 import com.codeit.blob.comment.repository.CommentJpaRepository;
 import com.codeit.blob.comment.repository.CommentLikeJpaRepository;
+import com.codeit.blob.comment.repository.CommentReportJpaRepository;
+import com.codeit.blob.comment.repository.CommentRepositoryImpl;
 import com.codeit.blob.comment.request.CreateCommentRequest;
 import com.codeit.blob.comment.response.CommentPageResponse;
-import com.codeit.blob.comment.response.CommentResponse;
-import com.codeit.blob.comment.response.DeleteCommentResponse;
+import com.codeit.blob.comment.response.DetailedCommentResponse;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.global.exceptions.ErrorCode;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.post.domain.Post;
 import com.codeit.blob.post.repository.PostJpaRepository;
+import com.codeit.blob.user.domain.UserRole;
 import com.codeit.blob.user.domain.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,10 +30,12 @@ public class CommentService {
 
     private final CommentJpaRepository commentJpaRepository;
     private final CommentLikeJpaRepository likeJpaRepository;
+    private final CommentReportJpaRepository reportJpaRepository;
+    private final CommentRepositoryImpl commentRepository;
     private final PostJpaRepository postJpaRepository;
 
     @Transactional
-    public CommentResponse createComment(
+    public DetailedCommentResponse createComment(
             CustomUsers userDetails,
             Long postId,
             CreateCommentRequest request
@@ -45,11 +50,11 @@ public class CommentService {
                 .build();
 
         commentJpaRepository.save(comment);
-        return new CommentResponse(comment, userDetails.getUsers());
+        return new DetailedCommentResponse(comment, userDetails.getUsers());
     }
 
     @Transactional
-    public CommentResponse createReply(
+    public DetailedCommentResponse createReply(
             CustomUsers userDetails,
             Long parentId,
             CreateCommentRequest request
@@ -70,24 +75,25 @@ public class CommentService {
                 .build();
 
         commentJpaRepository.save(comment);
-        return new CommentResponse(comment, userDetails.getUsers());
+        return new DetailedCommentResponse(comment, userDetails.getUsers());
     }
 
     @Transactional
-    public DeleteCommentResponse deleteComment(
+    public String deleteComment(
             CustomUsers userDetails,
             Long commentId
     ) {
         Comment comment = commentJpaRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
-        // check if the user deleting the comment is the author of the comment
-        if (!comment.getAuthor().getId().equals(userDetails.getUsers().getId())) {
+        // check if the user deleting the comment is the author of the comment or an admin
+        if (!comment.getAuthor().getId().equals(userDetails.getUsers().getId())
+                || userDetails.getUsers().getRole().equals(UserRole.ROLE_ADMIN)) {
             throw new CustomException(ErrorCode.ACTION_ACCESS_DENIED);
         }
 
         commentJpaRepository.deleteById(commentId);
-        return new DeleteCommentResponse(commentId, comment.getPost().getId());
+        return "댓글 삭제 성공";
     }
 
     @Transactional(readOnly = true)
@@ -104,7 +110,7 @@ public class CommentService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Comment> comments = commentJpaRepository.findByPostAndParentOrderByCreatedDateAsc(post, null, pageable);
 
-        return new CommentPageResponse(comments, user);
+        return CommentPageResponse.commentDetailedPageResponse(comments, user);
     }
 
     @Transactional(readOnly = true)
@@ -121,11 +127,11 @@ public class CommentService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Comment> comments = commentJpaRepository.findByParentIdOrderByCreatedDateAsc(parent.getId(), pageable);
 
-        return new CommentPageResponse(comments, user);
+        return CommentPageResponse.commentDetailedPageResponse(comments, user);
     }
 
     @Transactional
-    public CommentResponse likeComment(CustomUsers userDetails, Long commentId) {
+    public DetailedCommentResponse likeComment(CustomUsers userDetails, Long commentId) {
         Comment comment = commentJpaRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
         Users user = userDetails.getUsers();
@@ -141,6 +147,33 @@ public class CommentService {
             comment.removeLike(like);
         }
 
-        return new CommentResponse(comment, user);
+        return new DetailedCommentResponse(comment, user);
+    }
+
+    @Transactional
+    public String reportComment(CustomUsers userDetails, Long commentId) {
+        Comment comment = commentJpaRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        Users user = userDetails.getUsers();
+
+        if (user.getId().equals(comment.getAuthor().getId())){
+            throw new CustomException(ErrorCode.ACTION_ACCESS_DENIED);
+        }
+
+        if (reportJpaRepository.findByReporterIdAndCommentId(user.getId(), commentId).isPresent()){
+            throw new CustomException(ErrorCode.REPORT_ALREADY_EXISTS);
+        } else {
+            CommentReport report = new CommentReport(user, comment.getAuthor(), comment);
+            reportJpaRepository.save(report);
+        }
+
+        return "댓글 신고 성공";
+    }
+
+    @Transactional(readOnly = true)
+    public CommentPageResponse getReportedComments(int minReport, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Comment> comments = commentRepository.getReportedComments(pageable, minReport);
+        return CommentPageResponse.commentReportedPageResponse(comments);
     }
 }

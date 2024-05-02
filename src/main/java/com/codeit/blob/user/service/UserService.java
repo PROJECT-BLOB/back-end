@@ -77,4 +77,11 @@ public class UserService {
 
         return new UserResponse(users);
     }
+
+    @Transactional
+    public String makeAdmin(CustomUsers userDetail) {
+        Users user = userDetail.getUsers().makeAdmin();
+        userRepository.save(user);
+        return "관리자 권한 부여 성공";
+    }
 }
