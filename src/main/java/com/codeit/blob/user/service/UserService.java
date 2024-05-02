@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -61,8 +59,8 @@ public class UserService {
                 users.toBuilder()
                         .nickName(userRequest.getNickName())
                         .coordinate(new Coordinate(userRequest.getLat(), userRequest.getLng()))
-                        .closeProfile(userRequest.isCloseProfile())
-                        .description(userRequest.getDescription())
+                        .isPrivate(userRequest.getIsPrivate())
+                        .bio(userRequest.getBio())
                         .profileUrl(profileUrl)
                         .build()
         );

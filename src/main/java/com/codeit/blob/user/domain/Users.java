@@ -22,8 +22,8 @@ public class Users extends BaseTimeEntity {
     private String blobId;
     private String nickName;
     private String profileUrl;
-    private boolean closeProfile;
-    private String description;
+    private Boolean isPrivate;
+    private String bio;
     private String refreshToken;
 
     @Embedded
@@ -40,15 +40,15 @@ public class Users extends BaseTimeEntity {
 
 
     @Builder(toBuilder = true)
-    public Users(String email, String oauthId, String blobId, String nickName, String profileUrl, String description, String refreshToken, boolean closeProfile, Coordinate coordinate, UserAuthenticateState state, OauthType oauthType) {
+    public Users(String email, String oauthId, String blobId, String nickName, String profileUrl, String bio, String refreshToken, boolean isPrivate, Coordinate coordinate, UserAuthenticateState state, OauthType oauthType) {
         this.email = email;
         this.oauthId = oauthId;
         this.blobId = blobId;
         this.nickName = nickName;
         this.profileUrl = profileUrl;
-        this.description = description;
+        this.bio = bio;
         this.refreshToken = refreshToken;
-        this.closeProfile = closeProfile;
+        this.isPrivate = isPrivate;
         this.coordinate = coordinate;
         this.state = state;
         this.oauthType = oauthType;
@@ -62,10 +62,11 @@ public class Users extends BaseTimeEntity {
         this.nickName = users.getNickName();
         this.profileUrl = users.getProfileUrl();
         this.refreshToken = users.getRefreshToken();
-        this.closeProfile = users.closeProfile;
+        this.isPrivate = users.isPrivate;
         this.state = users.getState();
         this.oauthType = users.getOauthType();
         this.coordinate = users.getCoordinate();
+        this.bio = users.bio;
     }
 
     public Users makeAdmin() {

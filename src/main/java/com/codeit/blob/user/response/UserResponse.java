@@ -16,10 +16,10 @@ public class UserResponse {
     private final String blobId;
     private final String nickName;
     private final String profileUrl;
-    private final String description;
+    private final String bio;
 
     @Schema(description = "유저 정보 공개 / 비공개 상태")
-    private final boolean closeProfile;
+    private final Boolean isPrivate;
 
     private final Coordinate coordinate;
 
@@ -39,10 +39,10 @@ public class UserResponse {
         this.nickName = users.getNickName();
         this.profileUrl = users.getProfileUrl();
         this.state = users.getState();
-        this.closeProfile = users.isCloseProfile();
+        this.isPrivate = users.getIsPrivate();
         this.coordinate = users.getCoordinate();
         this.oauthType = users.getOauthType();
         this.role = users.getRole();
-        this.description = users.getDescription();
+        this.bio = users.getBio();
     }
 }
