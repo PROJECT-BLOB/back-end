@@ -18,7 +18,6 @@ public interface BookmarkJpaRepository extends JpaRepository<Bookmark, Long> {
 
     List<Bookmark> findByUserIdAndCityId(Long userId, Long cityId);
 
-    @Query("select b from Bookmark b join fetch b.post where b.user.blobId = :blobId")
-    Page<Bookmark> findByUserBlobId(@Param("blobId") String blobId, Pageable pageable);
+    Page<Bookmark> findByUserId(Long userId, Pageable pageable);
 
 }
