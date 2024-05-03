@@ -11,6 +11,7 @@ import lombok.Getter;
 @Getter
 @Schema(name = "유저 조회 응답 데이터")
 public class UserResponse {
+
     private final Long userId;
     private final String email;
     private final String blobId;

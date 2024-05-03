@@ -25,13 +25,12 @@ public class UserService {
     private final S3Service s3Service;
 
     @Transactional
-    public UserResponse validationUser(UserRequest userRequest) {
+    public UserResponse validationUser(CustomUsers userDetails, UserRequest userRequest) {
         if (existBlobId(userRequest.getBlobId())) {
             throw new CustomException(ErrorCode.DUPLICATE_BLOB_ID);
         }
 
-        Users users = userRepository.findByOauthId(userRequest.getOauthId())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Users users = userDetails.getUsers();
 
         users.changeUser(
                 users.toBuilder()
@@ -71,15 +70,8 @@ public class UserService {
         return new UserResponse(users);
     }
 
-    public UserResponse findByOauthId(String oauthId) {
-        Users users = userRepository.findByOauthId(oauthId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-        return new UserResponse(users);
-    }
-
-    public UserResponse findByBlobId(String blobId) {
-        Users users = userRepository.findByBlobId(blobId)
+    public UserResponse findByUserId(Long userId) {
+        Users users = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return new UserResponse(users);

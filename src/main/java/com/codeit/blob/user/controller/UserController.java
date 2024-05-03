@@ -37,9 +37,10 @@ public class UserController {
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "유저 추가 인증 API", description = "blobId, nickName 을 입력 받아 인증합니다.")
     public ResponseEntity<UserResponse> validationUser(
+            @AuthenticationPrincipal CustomUsers userDetails,
             @Valid @RequestBody UserRequest userRequest
     ) {
-        return ResponseEntity.ok(userService.validationUser(userRequest));
+        return ResponseEntity.ok(userService.validationUser(userDetails, userRequest));
     }
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -59,47 +60,39 @@ public class UserController {
         return ResponseEntity.ok(userResponse);
     }
 
-    @GetMapping("/{blobId}/blob")
-    @Operation(summary = "회원 조회 API", description = "Blob Id 를 입력받아 회원을 조회합니다.")
+    @GetMapping("/{userId}")
+    @Operation(summary = "회원 조회 API", description = "User Id 를 입력받아 회원을 조회합니다.")
     public ResponseEntity<UserResponse> findUserByBlobId(
-            @PathVariable("blobId") String blobId
+            @PathVariable("userId") Long userId
     ) {
-        return ResponseEntity.ok(userService.findByBlobId(blobId));
+        return ResponseEntity.ok(userService.findByUserId(userId));
     }
 
-    @GetMapping("/{oauthId}/oauth")
-    @Operation(summary = "회원 조회 API", description = "Oauth Id 를 입력받아 회원을 조회합니다.")
-    public ResponseEntity<UserResponse> findUserByOauthId(
-            @PathVariable("oauthId") String oauthId
-    ) {
-        return ResponseEntity.ok(userService.findByOauthId(oauthId));
-    }
-
-    @GetMapping("/{blobId}/profile")
+    @GetMapping("/{userId}/post")
     @Operation(summary = "유저가 작성한 게시글 조회 API", description = "Page 처리를 통한 게시글 조회")
     public ResponseEntity<PostPageResponse> findPostPage(
-            @PathVariable("blobId") String blobId,
+            @PathVariable("userId") Long userId,
             @ParameterObject Pageable pageable
     ) {
-        return ResponseEntity.ok(service.findUserPosts(blobId, pageable));
+        return ResponseEntity.ok(service.findUserPosts(userId, pageable));
     }
 
-    @GetMapping("/{blobId}/comment")
+    @GetMapping("/{userId}/comment")
     @Operation(summary = "유저가 작성한 댓글 조회 API", description = "Page 처리를 통한 유저가 작성한 댓글 조회")
     public ResponseEntity<CommentPageResponse> findComment(
-            @PathVariable("blobId") String blobId,
+            @PathVariable("userId") Long userId,
             @ParameterObject Pageable pageable
     ) {
-        return ResponseEntity.ok(service.findUserComment(blobId, pageable));
+        return ResponseEntity.ok(service.findUserComment(userId, pageable));
     }
 
-    @GetMapping("/{blobId}/bookmark")
+    @GetMapping("/{userId}/bookmark")
     @Operation(summary = "유저의 북마크 조회 API", description = "Page 처리를 통한 북마크 조회")
     public ResponseEntity<PostPageResponse> findBookmark(
-            @PathVariable("blobId") String blobId,
+            @PathVariable("userId") Long userId,
             @ParameterObject Pageable pageable
     ) {
-        return ResponseEntity.ok(service.findUserBookmark(blobId, pageable));
+        return ResponseEntity.ok(service.findUserBookmark(userId, pageable));
     }
 
     @PostMapping("/makeAdmin")

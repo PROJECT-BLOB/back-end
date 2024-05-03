@@ -8,14 +8,15 @@ import lombok.Getter;
 @Getter
 @Schema(name = "Oauth 로그인 성공 응답 데이터")
 public class OauthResponse {
-    private final String oauthId;
+
+    private final Long userId;
     private final String accessToken;
     private final String refreshToken;
     private final UserAuthenticateState state;
 
     @Builder
-    public OauthResponse(String oauthId, String accessToken, String refreshToken, UserAuthenticateState state) {
-        this.oauthId = oauthId;
+    public OauthResponse(Long userId, String accessToken, String refreshToken, UserAuthenticateState state) {
+        this.userId = userId;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.state = state;
