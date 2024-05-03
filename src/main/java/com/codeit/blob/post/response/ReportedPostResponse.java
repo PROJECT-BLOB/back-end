@@ -2,8 +2,6 @@ package com.codeit.blob.post.response;
 
 import com.codeit.blob.post.domain.Post;
 import com.codeit.blob.post.domain.PostImage;
-import com.codeit.blob.user.domain.UserRole;
-import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.response.UserProfileResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

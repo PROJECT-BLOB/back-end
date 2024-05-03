@@ -1,15 +1,12 @@
 package com.codeit.blob;
 
 import com.codeit.blob.comment.request.CreateCommentRequest;
-import com.codeit.blob.comment.response.CommentPageResponse;
-import com.codeit.blob.comment.response.DetailedCommentResponse;
 import com.codeit.blob.comment.service.CommentService;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.notification.response.NotificationPageResponse;
 import com.codeit.blob.notification.service.NotificationService;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.post.request.CreatePostRequest;
-import com.codeit.blob.post.response.DetailedPostResponse;
 import com.codeit.blob.post.service.PostService;
 import com.codeit.blob.user.UserAuthenticateState;
 import com.codeit.blob.user.domain.Users;
@@ -24,7 +21,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
-import java.util.List;
 
 @SpringBootTest
 @Transactional

@@ -1,12 +1,6 @@
 package com.codeit.blob.notification.response;
 
 import com.codeit.blob.notification.domain.Notification;
-import com.codeit.blob.post.domain.Post;
-import com.codeit.blob.post.response.DetailedPostResponse;
-import com.codeit.blob.post.response.MapPostResponse;
-import com.codeit.blob.post.response.PostResponse;
-import com.codeit.blob.post.response.ReportedPostResponse;
-import com.codeit.blob.user.domain.Users;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
