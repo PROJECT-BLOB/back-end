@@ -6,6 +6,7 @@ import com.codeit.blob.city.service.CityService;
 import com.codeit.blob.global.domain.Coordinate;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.global.exceptions.ErrorCode;
+import com.codeit.blob.notification.service.NotificationService;
 import com.codeit.blob.post.domain.*;
 import com.codeit.blob.post.repository.*;
 import com.codeit.blob.post.request.CreatePostRequest;
@@ -36,6 +37,7 @@ public class PostService {
     private final PostLikeJpaRepository postLikeJpaRepository;
     private final PostReportJpaRepository postReportJpaRepository;
     private final CityService cityService;
+    private final NotificationService notificationService;
 
     @Transactional
     public DetailedPostResponse createPost(
@@ -115,6 +117,7 @@ public class PostService {
             like = new PostLike(user, post);
             postLikeJpaRepository.save(like);
             post.addLike(like);
+            notificationService.createPostLikeNotification(like);
         } else {
             // delete like if post was previously liked
             postLikeJpaRepository.deleteById(like.getId());
