@@ -20,6 +20,7 @@ public class UserResponse {
     private final String bio;
     private final Integer postCount;
     private final Integer likedCount;
+    private final Integer commentCount;
 
     @Schema(description = "유저 정보 공개 / 비공개 상태")
     private final Boolean isPrivate;
@@ -49,5 +50,6 @@ public class UserResponse {
         this.bio = users.getBio();
         this.postCount = users.getPostCount();
         this.likedCount = users.getLikeCount();
+        this.commentCount = users.getCommentCount();
     }
 }
