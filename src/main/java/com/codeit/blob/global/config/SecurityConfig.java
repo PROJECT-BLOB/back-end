@@ -39,6 +39,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .requestMatchers(PERMIT_URL).permitAll()
+                .requestMatchers(HttpMethod.GET, "/post/**").permitAll()
                 .requestMatchers(antMatcher("/admin/**")).hasRole("ADMIN")
                 .anyRequest().authenticated());
 
@@ -68,6 +69,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(PERMIT_URL).permitAll()
+                .requestMatchers(HttpMethod.GET, "/post/**").permitAll()
                 .requestMatchers(antMatcher("/admin/**")).hasRole("ADMIN")
                 .anyRequest().authenticated());
 
