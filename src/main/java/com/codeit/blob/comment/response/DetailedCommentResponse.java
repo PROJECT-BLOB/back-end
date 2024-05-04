@@ -20,6 +20,7 @@ public class DetailedCommentResponse implements CommentResponse {
     private final String createdDate;
     private final boolean liked;
     private final int likeCount;
+    private final int replyCount;
     private final boolean canDelete;
 
     public DetailedCommentResponse(Comment comment, Users user){
@@ -30,6 +31,7 @@ public class DetailedCommentResponse implements CommentResponse {
         this.createdDate = comment.getCreatedDate().truncatedTo(ChronoUnit.SECONDS).toString();
         this.liked = user != null && comment.getLikes().stream().map(l -> l.getUser().getId()).toList().contains(user.getId());
         this.likeCount = comment.getLikes().size();
+        this.replyCount = comment.getReply().size();
         this.canDelete = user != null && (comment.getAuthor().getId().equals(user.getId()) || user.getRole().equals(UserRole.ROLE_ADMIN));
     }
 }
