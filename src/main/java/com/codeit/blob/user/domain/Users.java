@@ -1,5 +1,6 @@
 package com.codeit.blob.user.domain;
 
+import com.codeit.blob.comment.domain.Comment;
 import com.codeit.blob.global.domain.BaseTimeEntity;
 import com.codeit.blob.global.domain.Coordinate;
 import com.codeit.blob.oauth.OauthType;
@@ -50,6 +51,9 @@ public class Users extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<PostLike> postLikes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
+    private List<Comment> comments = new ArrayList<>();
+
     @Builder(toBuilder = true)
     public Users(String email, String oauthId, String blobId, String nickName, String profileUrl, String bio, String refreshToken, boolean isPrivate, Coordinate coordinate, UserAuthenticateState state, OauthType oauthType) {
         this.email = email;
@@ -86,6 +90,10 @@ public class Users extends BaseTimeEntity {
 
     public Integer getLikeCount() {
         return postLikes.size();
+    }
+
+    public Integer getCommentCount() {
+        return comments.size();
     }
 
     public Users makeAdmin() {
