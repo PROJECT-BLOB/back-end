@@ -103,4 +103,13 @@ public class UserController {
     ) {
         return ResponseEntity.ok(userService.makeAdmin(userDetails));
     }
+
+
+    @PostMapping("/{blobId}/check")
+    @Operation(summary = "Blob Id 중복 체크 API", description = "Blob Id 가 중복되는지 확인합니다.")
+    public ResponseEntity<Boolean> checkBlobId(
+            @PathVariable("blobId") String blobId
+    ) {
+        return ResponseEntity.ok(userService.existBlobId(blobId));
+    }
 }
