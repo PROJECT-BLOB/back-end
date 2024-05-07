@@ -25,7 +25,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 public class SecurityConfig {
 
     private static final String[] PERMIT_URL = {
-            "/v3/**", "/swagger-ui/**", "/oauth/**", "/user/**"
+            "/v3/**", "/swagger-ui/**", "/oauth/**", "/user/**", "/post/**", "/comment/**"
     };
 
     @Bean
@@ -39,8 +39,6 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .requestMatchers(PERMIT_URL).permitAll()
-                .requestMatchers(HttpMethod.GET, "/post/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/comment/**").permitAll()
                 .requestMatchers(antMatcher("/admin/**")).hasRole("ADMIN")
                 .anyRequest().authenticated());
 
@@ -70,8 +68,6 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(PERMIT_URL).permitAll()
-                .requestMatchers(HttpMethod.GET, "/post/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/comment/**").permitAll()
                 .requestMatchers(antMatcher("/admin/**")).hasRole("ADMIN")
                 .anyRequest().authenticated());
 

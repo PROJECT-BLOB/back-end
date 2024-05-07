@@ -105,7 +105,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/{blobId}/check")
+    @GetMapping("/{blobId}/check")
     @Operation(summary = "Blob Id 중복 체크 API", description = "Blob Id 가 중복되는지 확인합니다.")
     public ResponseEntity<Boolean> checkBlobId(
             @PathVariable("blobId") String blobId
