@@ -1,11 +1,10 @@
 package com.codeit.blob.post.response;
 
+import com.codeit.blob.global.converter.DateTimeUtils;
 import com.codeit.blob.post.domain.Post;
 import com.codeit.blob.user.response.UserProfileResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-
-import java.time.temporal.ChronoUnit;
 
 @Getter
 @Schema(name = "지도에 표시되는 게시글 응답")
@@ -18,6 +17,7 @@ public class MapPostResponse implements PostResponse {
     private final UserProfileResponse author;
     private final Double lat;
     private final Double lng;
+    @Schema(example = "2024-04-24T12:59:24")
     private final String createdDate;
 
     public MapPostResponse(Post post) {
@@ -28,6 +28,6 @@ public class MapPostResponse implements PostResponse {
         this.author = post.getAuthor() == null ? null : new UserProfileResponse(post.getAuthor());
         this.lat = post.getCoordinate().getLat();
         this.lng = post.getCoordinate().getLng();
-        this.createdDate = post.getCreatedDate().truncatedTo(ChronoUnit.SECONDS).toString();
+        this.createdDate = DateTimeUtils.format(post.getCreatedDate());
     }
 }

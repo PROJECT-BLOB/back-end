@@ -1,6 +1,7 @@
 package com.codeit.blob.comment.response;
 
 import com.codeit.blob.comment.domain.Comment;
+import com.codeit.blob.global.converter.DateTimeUtils;
 import com.codeit.blob.user.domain.UserRole;
 import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.response.UserProfileResponse;
@@ -28,7 +29,7 @@ public class DetailedCommentResponse implements CommentResponse {
         this.postId = comment.getPost().getId();
         this.content = comment.getContent();
         this.author = new UserProfileResponse(comment.getAuthor());
-        this.createdDate = comment.getCreatedDate().truncatedTo(ChronoUnit.SECONDS).toString();
+        this.createdDate = DateTimeUtils.format(comment.getCreatedDate());
         this.liked = user != null && comment.getLikes().stream().map(l -> l.getUser().getId()).toList().contains(user.getId());
         this.likeCount = comment.getLikes().size();
         this.replyCount = comment.getReply().size();

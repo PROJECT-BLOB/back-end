@@ -1,6 +1,7 @@
 package com.codeit.blob.comment.response;
 
 import com.codeit.blob.comment.domain.Comment;
+import com.codeit.blob.global.converter.DateTimeUtils;
 import com.codeit.blob.user.response.UserProfileResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -25,7 +26,7 @@ public class ReportedCommentResponse implements CommentResponse{
         this.postId = comment.getPost().getId();
         this.content = comment.getContent();
         this.author = new UserProfileResponse(comment.getAuthor());
-        this.createdDate = comment.getCreatedDate().truncatedTo(ChronoUnit.SECONDS).toString();
+        this.createdDate = DateTimeUtils.format(comment.getCreatedDate());
         this.likeCount = comment.getLikes().size();
         this.reportCount = comment.getReports().size();
     }
