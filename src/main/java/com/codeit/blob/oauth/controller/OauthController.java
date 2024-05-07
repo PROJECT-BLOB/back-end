@@ -1,6 +1,5 @@
 package com.codeit.blob.oauth.controller;
 
-import com.codeit.blob.jwt.provider.JwtProvider;
 import com.codeit.blob.oauth.OauthType;
 import com.codeit.blob.oauth.response.LoginPageResponse;
 import com.codeit.blob.oauth.response.OauthResponse;
@@ -8,7 +7,6 @@ import com.codeit.blob.oauth.response.TokenResponse;
 import com.codeit.blob.oauth.service.OauthManager;
 import com.codeit.blob.oauth.service.OauthService;
 import com.codeit.blob.oauth.service.TokenService;
-import com.codeit.blob.user.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;

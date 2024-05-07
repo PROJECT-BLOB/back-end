@@ -20,7 +20,7 @@ public class PostLike extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private Users user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Post post;
 
     public PostLike(Users user, Post post) {

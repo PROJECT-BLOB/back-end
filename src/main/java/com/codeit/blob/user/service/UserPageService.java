@@ -23,34 +23,34 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserProfileService {
+public class UserPageService {
 
     private final PostJpaRepository postRepository;
     private final CommentJpaRepository commentRepository;
     private final BookmarkJpaRepository bookmarkRepository;
     private final UserRepository userRepository;
 
-    public PostPageResponse findUserPosts(String blobId, Pageable pageable) {
-        Users users = userRepository.findByBlobId(blobId)
+    public PostPageResponse findUserPosts(Long userId, Pageable pageable) {
+        Users users = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        Page<Post> postPage = postRepository.findPostsByAuthorBlobId(blobId, pageable);
+        Page<Post> postPage = postRepository.findByAuthorId(userId, pageable);
         return PostPageResponse.postDetailPageResponse(postPage, users);
     }
 
-    public CommentPageResponse findUserComment(String blobId, Pageable pageable) {
-        Users users = userRepository.findByBlobId(blobId)
+    public CommentPageResponse findUserComment(Long userId, Pageable pageable) {
+        Users users = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        Page<Comment> byAuthor = commentRepository.findCommentByAuthorBlobId(blobId, pageable);
+        Page<Comment> byAuthor = commentRepository.findByAuthorId(userId, pageable);
         return CommentPageResponse.commentDetailedPageResponse(byAuthor, users);
     }
 
-    public PostPageResponse findUserBookmark(String blobId, Pageable pageable) {
-        Users users = userRepository.findByBlobId(blobId)
+    public PostPageResponse findUserBookmark(Long userId, Pageable pageable) {
+        Users users = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        Page<Bookmark> bookmarkPage = bookmarkRepository.findByUserBlobId(blobId, pageable);
+        Page<Bookmark> bookmarkPage = bookmarkRepository.findByUserId(userId, pageable);
         Page<Post> postPage = bookmarkPage.map(Bookmark::getPost);
         return PostPageResponse.postDetailPageResponse(postPage, users);
     }

@@ -1,14 +1,12 @@
 package com.codeit.blob.post.response;
 
+import com.codeit.blob.global.converter.DateTimeUtils;
 import com.codeit.blob.post.domain.Post;
 import com.codeit.blob.post.domain.PostImage;
-import com.codeit.blob.user.domain.UserRole;
-import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.response.UserProfileResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Getter
@@ -34,7 +32,7 @@ public class ReportedPostResponse implements PostResponse {
         this.content = post.getContent();
         this.author = post.getAuthor() == null ? null : new UserProfileResponse(post.getAuthor());
         this.views = post.getViews();
-        this.createdDate = post.getCreatedDate().truncatedTo(ChronoUnit.SECONDS).toString();
+        this.createdDate = DateTimeUtils.format(post.getCreatedDate());
         this.imageUrl = post.getPostImages().stream().map(PostImage::getUrl).toList();
         this.likeCount = post.getLikes().size();
         this.commentCount = post.getComments().size();

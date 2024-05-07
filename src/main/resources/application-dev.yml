@@ -7,9 +7,9 @@ spring:
       on-profile: dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://blob-dev-mysql-1/blob
-    username: blob
-    password: blob
+    url: ${AWS_RDS_URL}
+    username: ${AWS_RDS_USERNAME}
+    password: ${AWS_RDS_PASSWORD}
   jpa:
     open-in-view: false
     properties:
@@ -19,13 +19,19 @@ spring:
         show_sql: true
         default_batch_fetch_size: 100
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
 
   h2:
     console:
       enabled: false
       settings:
         web-allow-others: false
+
+  servlet:
+    multipart:
+      resolve-lazily: true
+      max-file-size: 5MB
+      max-request-size: 30MB
 
 oauth2:
   google:

@@ -12,6 +12,7 @@ import com.codeit.blob.comment.response.CommentPageResponse;
 import com.codeit.blob.comment.response.DetailedCommentResponse;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.global.exceptions.ErrorCode;
+import com.codeit.blob.notification.service.NotificationService;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.post.domain.Post;
 import com.codeit.blob.post.repository.PostJpaRepository;
@@ -33,6 +34,7 @@ public class CommentService {
     private final CommentReportJpaRepository reportJpaRepository;
     private final CommentRepositoryImpl commentRepository;
     private final PostJpaRepository postJpaRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public DetailedCommentResponse createComment(
@@ -50,6 +52,7 @@ public class CommentService {
                 .build();
 
         commentJpaRepository.save(comment);
+        notificationService.createCommentNotification(comment);
         return new DetailedCommentResponse(comment, userDetails.getUsers());
     }
 
@@ -75,6 +78,7 @@ public class CommentService {
                 .build();
 
         commentJpaRepository.save(comment);
+        notificationService.createCommentNotification(comment);
         return new DetailedCommentResponse(comment, userDetails.getUsers());
     }
 

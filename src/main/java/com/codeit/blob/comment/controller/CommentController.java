@@ -89,6 +89,6 @@ public class CommentController {
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable Long commentId
     ) {
-        return ResponseEntity.ok(commentService.deleteComment(userDetails, commentId));
+        return ResponseEntity.ok(commentService.reportComment(userDetails, commentId));
     }
 }

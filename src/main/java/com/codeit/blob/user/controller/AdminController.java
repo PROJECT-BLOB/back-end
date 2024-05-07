@@ -2,7 +2,6 @@ package com.codeit.blob.user.controller;
 
 import com.codeit.blob.comment.response.CommentPageResponse;
 import com.codeit.blob.comment.service.CommentService;
-import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.post.response.PostPageResponse;
 import com.codeit.blob.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j

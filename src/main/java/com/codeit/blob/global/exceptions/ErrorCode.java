@@ -9,6 +9,8 @@ public enum ErrorCode {
     IMG_TOO_LARGE(400, "사진이 너무 큽니다. (파일 당 최대 5MB)"),
     UNSUPPORTED_MEDIA_TYPE(400, "잘못된 형식의 파일입니다. (JPG, JPEG, PNG만 가능)"),
     BAD_ENUM_REQUEST(400, "잘못된 형식의 enum 입니다."),
+    DUPLICATE_BLOB_ID(400, "중복된 아이디 입니다."),
+    BAD_BIO_LENGTH(400, "BIO 는 최대 50글자 입니다."),
 
     // 401 UNAUTHORIZED
     JWT_EXPIRED(401, "jwt 토큰이 만료되었습니다,"),
@@ -22,6 +24,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(404, "유저를 찾을 수 없습니다."),
     POST_NOT_FOUND(404, "게시글을 찾을 수 없습니다."),
     COMMENT_NOT_FOUND(404, "댓글을 찾을 수 없습니다."),
+    NOTIFICATION_NOT_FOUND(404, "알림을 찾을 수 없습니다."),
     COUNTRY_NOT_FOUND(404, "나라를 찾을 수 없습니다."),
     CATEGORY_NOT_FOUND(404, "카테고리를 찾을 수 없습니다."),
     SUBCATEGORY_NOT_FOUND(404, "세부 카테고리를 찾을 수 없습니다."),

@@ -25,7 +25,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 public class SecurityConfig {
 
     private static final String[] PERMIT_URL = {
-            "/v3/**", "/swagger-ui/**", "/oauth/**", "/user/**"
+            "/v3/**", "/swagger-ui/**", "/oauth/**", "/user/**", "/post/**", "/comment/**"
     };
 
     @Bean

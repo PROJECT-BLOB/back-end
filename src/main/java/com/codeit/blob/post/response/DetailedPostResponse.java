@@ -1,5 +1,6 @@
 package com.codeit.blob.post.response;
 
+import com.codeit.blob.global.converter.DateTimeUtils;
 import com.codeit.blob.post.domain.Post;
 import com.codeit.blob.post.domain.PostImage;
 import com.codeit.blob.user.domain.UserRole;
@@ -8,7 +9,6 @@ import com.codeit.blob.user.response.UserProfileResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Getter
@@ -29,6 +29,7 @@ public class DetailedPostResponse implements PostResponse {
     private final Long views;
     @Schema(example = "2024-04-24T12:59:24")
     private final String createdDate;
+    @Schema(example = "2024-04-24T13:29:24")
     private final String expiresAt;
     private final List<String> imageUrl;
     private final boolean liked;
@@ -50,8 +51,8 @@ public class DetailedPostResponse implements PostResponse {
         this.lng = post.getCoordinate() == null ? null : post.getCoordinate().getLng();
         this.distFromActual = post.getDistFromActual();
         this.views = post.getViews();
-        this.createdDate = post.getCreatedDate().truncatedTo(ChronoUnit.SECONDS).toString();
-        this.expiresAt = post.getExpiresAt().truncatedTo(ChronoUnit.SECONDS).toString();
+        this.createdDate = DateTimeUtils.format(post.getCreatedDate());
+        this.expiresAt = DateTimeUtils.format(post.getExpiresAt());
         this.imageUrl = post.getPostImages().stream().map(PostImage::getUrl).toList();
         this.liked = user != null && post.getLikes().stream().map(l -> l.getUser().getId()).toList().contains(user.getId());
         this.bookmarked = user != null && post.getBookmarks().stream().map(b -> b.getUser().getId()).toList().contains(user.getId());

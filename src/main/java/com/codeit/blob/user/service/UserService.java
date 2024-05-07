@@ -24,19 +24,23 @@ public class UserService {
     private final S3Service s3Service;
 
     @Transactional
-    public UserResponse validationUser(UserRequest userRequest) {
-        Users users = userRepository.findByOauthId(userRequest.getOauthId())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    public UserResponse validationUser(CustomUsers userDetails, UserRequest userRequest) {
+        if (existBlobId(userRequest.getBlobId())) {
+            throw new CustomException(ErrorCode.DUPLICATE_BLOB_ID);
+        }
+
+        Users users = userDetails.getUsers();
 
         users.changeUser(
                 users.toBuilder()
                         .blobId(userRequest.getBlobId())
                         .nickName(userRequest.getNickName())
+                        .bio("안녕하세요. 여행을 좋아하는 블로비라고 합니다. 좋은 정보를 공유합니다. 즐겁게 여행해요")
                         .state(UserAuthenticateState.COMPLETE)
                         .build()
         );
-        userRepository.save(users);
 
+        userRepository.save(users);
         return new UserResponse(users);
     }
 
@@ -55,6 +59,8 @@ public class UserService {
                 users.toBuilder()
                         .nickName(userRequest.getNickName())
                         .coordinate(new Coordinate(userRequest.getLat(), userRequest.getLng()))
+                        .isPrivate(userRequest.getIsPrivate())
+                        .bio(userRequest.getBio())
                         .profileUrl(profileUrl)
                         .build()
         );
@@ -63,19 +69,15 @@ public class UserService {
         return new UserResponse(users);
     }
 
-
-    public UserResponse findByOauthId(String oauthId) {
-        Users users = userRepository.findByOauthId(oauthId)
+    public UserResponse findByUserId(Long userId) {
+        Users users = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return new UserResponse(users);
     }
 
-    public UserResponse findByBlobId(String blobId) {
-        Users users = userRepository.findByBlobId(blobId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-        return new UserResponse(users);
+    public boolean existBlobId(String blobId) {
+        return userRepository.existsByBlobId(blobId);
     }
 
     @Transactional

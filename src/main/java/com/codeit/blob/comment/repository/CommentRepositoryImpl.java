@@ -1,8 +1,6 @@
 package com.codeit.blob.comment.repository;
 
 import com.codeit.blob.comment.domain.Comment;
-import com.codeit.blob.post.domain.Post;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -7,7 +7,6 @@ import com.codeit.blob.comment.service.CommentService;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.post.request.CreatePostRequest;
-import com.codeit.blob.post.response.PostPageResponse;
 import com.codeit.blob.post.service.PostService;
 import com.codeit.blob.user.UserAuthenticateState;
 import com.codeit.blob.user.domain.Users;
