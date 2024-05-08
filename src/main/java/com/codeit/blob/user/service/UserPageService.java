@@ -1,10 +1,10 @@
 package com.codeit.blob.user.service;
 
-import com.codeit.blob.comment.domain.Comment;
 import com.codeit.blob.comment.repository.CommentJpaRepository;
-import com.codeit.blob.comment.response.CommentPageResponse;
+import com.codeit.blob.comment.repository.CommentRepositoryImpl;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.global.exceptions.ErrorCode;
+import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.post.domain.Bookmark;
 import com.codeit.blob.post.domain.Post;
 import com.codeit.blob.post.repository.BookmarkJpaRepository;
@@ -26,29 +26,41 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserPageService {
 
     private final PostJpaRepository postRepository;
-    private final CommentJpaRepository commentRepository;
+    private final CommentRepositoryImpl commentRepository;
     private final BookmarkJpaRepository bookmarkRepository;
     private final UserRepository userRepository;
 
-    public PostPageResponse findUserPosts(Long userId, Pageable pageable) {
+    public PostPageResponse findUserPosts(CustomUsers userDetails, Long userId, Pageable pageable) {
         Users users = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if (users.getIsPrivate() && (userDetails == null || !userDetails.getUsers().getId().equals(userId))){
+            throw new CustomException(ErrorCode.PRIVATE_PROFILE);
+        }
 
         Page<Post> postPage = postRepository.findByAuthorId(userId, pageable);
         return PostPageResponse.postDetailPageResponse(postPage, users);
     }
 
-    public CommentPageResponse findUserComment(Long userId, Pageable pageable) {
+    public PostPageResponse findUserComment(CustomUsers userDetails, Long userId, Pageable pageable) {
         Users users = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        Page<Comment> byAuthor = commentRepository.findByAuthorId(userId, pageable);
-        return CommentPageResponse.commentDetailedPageResponse(byAuthor, users);
+        if (users.getIsPrivate() && (userDetails == null || !userDetails.getUsers().getId().equals(userId))){
+            throw new CustomException(ErrorCode.PRIVATE_PROFILE);
+        }
+
+        Page<Post> postPage = commentRepository.getCommentedPosts(userId, pageable);
+        return PostPageResponse.postDetailPageResponse(postPage, users);
     }
 
-    public PostPageResponse findUserBookmark(Long userId, Pageable pageable) {
+    public PostPageResponse findUserBookmark(CustomUsers userDetails, Long userId, Pageable pageable) {
         Users users = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if (users.getIsPrivate() && (userDetails == null || !userDetails.getUsers().getId().equals(userId))){
+            throw new CustomException(ErrorCode.PRIVATE_PROFILE);
+        }
 
         Page<Bookmark> bookmarkPage = bookmarkRepository.findByUserId(userId, pageable);
         Page<Post> postPage = bookmarkPage.map(Bookmark::getPost);

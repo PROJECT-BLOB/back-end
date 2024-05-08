@@ -18,6 +18,7 @@ public enum ErrorCode {
 
     //403 FORBIDDEN
     ACTION_ACCESS_DENIED(403, "이 작업을 수행할 수 있는 권한이 없습니다."),
+    PRIVATE_PROFILE(403, "비공개 프로필입니다."),
     LOGIN_REQUIRED(403, "이 작업을 수행하려면 로그인하세요."),
 
     //404 NOT_FOUND
