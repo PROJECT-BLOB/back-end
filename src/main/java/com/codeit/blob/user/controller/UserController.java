@@ -42,9 +42,9 @@ public class UserController {
         return ResponseEntity.ok(userService.validationUser(userDetails, userRequest));
     }
 
-    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecurityRequirement(name = "Bearer Authentication")
-    @Operation(summary = "유저 정보 업데이트 API", description = "nickname, profile 을 입력 받아 업데이트합니다.")
+    @Operation(summary = "유저 정보 업데이트 API", description = "nickname, profile, bio, private 을 입력 받아 업데이트합니다.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(encoding = {
             @Encoding(name = "data", contentType = "application/json"),
             @Encoding(name = "file", contentType = "image/jpg, image/png, image/jpeg")
