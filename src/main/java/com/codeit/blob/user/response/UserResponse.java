@@ -2,7 +2,7 @@ package com.codeit.blob.user.response;
 
 import com.codeit.blob.global.domain.Coordinate;
 import com.codeit.blob.oauth.OauthType;
-import com.codeit.blob.user.UserAuthenticateState;
+import com.codeit.blob.user.UserState;
 import com.codeit.blob.user.domain.UserRole;
 import com.codeit.blob.user.domain.Users;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,31 +12,33 @@ import lombok.Getter;
 @Schema(name = "유저 조회 응답 데이터")
 public class UserResponse {
 
-    private final Long userId;
-    private final String email;
-    private final String blobId;
-    private final String nickName;
-    private final String profileUrl;
-    private final String bio;
-    private final Integer postCount;
-    private final Integer likedCount;
-    private final Integer commentCount;
+    private Long userId;
+    private String email;
+    private String blobId;
+    private String nickName;
+    private String profileUrl;
+    private String bio;
+    private Integer postCount;
+    private Integer likedCount;
+    private Integer commentCount;
 
     @Schema(description = "유저 정보 공개 / 비공개 상태")
-    private final Boolean isPrivate;
+    private Boolean isPrivate;
 
-    private final Coordinate coordinate;
+    private Coordinate coordinate;
 
     @Schema(description = "유저 계정 상태")
-    private final UserAuthenticateState state;
+    private UserState state;
 
     @Schema(description = "유저 Oauth 로그인 타입")
-    private final OauthType oauthType;
+    private OauthType oauthType;
 
     @Schema(description = "유저 권한")
-    private final UserRole role;
+    private UserRole role;
 
     public UserResponse(Users users) {
+        if(users.getState().equals(UserState.DELETED)) return;
+
         this.userId = users.getId();
         this.email = users.getEmail();
         this.blobId = users.getBlobId();

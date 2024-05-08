@@ -6,7 +6,7 @@ import com.codeit.blob.global.domain.Coordinate;
 import com.codeit.blob.oauth.OauthType;
 import com.codeit.blob.post.domain.Post;
 import com.codeit.blob.post.domain.PostLike;
-import com.codeit.blob.user.UserAuthenticateState;
+import com.codeit.blob.user.UserState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -36,7 +36,7 @@ public class Users extends BaseTimeEntity {
     private Coordinate coordinate;
 
     @Enumerated(EnumType.STRING)
-    private UserAuthenticateState state;
+    private UserState state;
 
     @Enumerated(EnumType.STRING)
     private OauthType oauthType;
@@ -55,7 +55,7 @@ public class Users extends BaseTimeEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder(toBuilder = true)
-    public Users(String email, String oauthId, String blobId, String nickName, String profileUrl, String bio, String refreshToken, boolean isPrivate, Coordinate coordinate, UserAuthenticateState state, OauthType oauthType) {
+    public Users(String email, String oauthId, String blobId, String nickName, String profileUrl, String bio, String refreshToken, boolean isPrivate, Coordinate coordinate, UserState state, OauthType oauthType) {
         this.email = email;
         this.oauthId = oauthId;
         this.blobId = blobId;
@@ -99,5 +99,17 @@ public class Users extends BaseTimeEntity {
     public Users makeAdmin() {
         this.role = UserRole.ROLE_ADMIN;
         return this;
+    }
+
+    public void deleteUser(){
+        this.email = null;
+        this.oauthId = null;
+        this.blobId = null;
+        this.nickName = null;
+        this.profileUrl = null;
+        this.bio = null;
+        this.refreshToken = null;
+        this.coordinate = null;
+        this.state = UserState.DELETED;
     }
 }

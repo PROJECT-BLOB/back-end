@@ -4,7 +4,7 @@ import com.codeit.blob.oauth.OauthType;
 import com.codeit.blob.jwt.provider.JwtProvider;
 import com.codeit.blob.oauth.provider.NaverProperties;
 import com.codeit.blob.oauth.response.OauthResponse;
-import com.codeit.blob.user.UserAuthenticateState;
+import com.codeit.blob.user.UserState;
 import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.oauth.dto.naver.NaverDto;
 import com.codeit.blob.oauth.dto.naver.NaverUserDto;
@@ -64,7 +64,7 @@ public class NaverService implements OauthService {
                                 .oauthId(userInfo.getId())
                                 .email(userInfo.getEmail())
                                 .profileUrl(userInfo.getProfile())
-                                .state(UserAuthenticateState.INCOMPLETE)
+                                .state(UserState.INCOMPLETE)
                                 .oauthType(properties.getOauthType())
                                 .build()
                 );

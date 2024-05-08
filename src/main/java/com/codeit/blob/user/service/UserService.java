@@ -5,7 +5,7 @@ import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.global.exceptions.ErrorCode;
 import com.codeit.blob.global.s3.S3Service;
 import com.codeit.blob.oauth.domain.CustomUsers;
-import com.codeit.blob.user.UserAuthenticateState;
+import com.codeit.blob.user.UserState;
 import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.repository.UserRepository;
 import com.codeit.blob.user.request.UserRequest;
@@ -36,7 +36,7 @@ public class UserService {
                         .blobId(userRequest.getBlobId())
                         .nickName(userRequest.getNickName())
                         .bio("안녕하세요. 여행을 좋아하는 블로비라고 합니다. 좋은 정보를 공유합니다. 즐겁게 여행해요")
-                        .state(UserAuthenticateState.COMPLETE)
+                        .state(UserState.COMPLETE)
                         .build()
         );
 
@@ -73,6 +73,10 @@ public class UserService {
         Users users = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+        if(users.getState().equals(UserState.DELETED)){
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
+
         return new UserResponse(users);
     }
 
@@ -85,5 +89,13 @@ public class UserService {
         Users user = userDetail.getUsers().makeAdmin();
         userRepository.save(user);
         return "관리자 권한 부여 성공";
+    }
+
+    @Transactional
+    public String deleteUser(CustomUsers userDetails) {
+        Users user = userDetails.getUsers();
+        user.deleteUser();
+        userRepository.save(user);
+        return "계정 탈퇴 성공";
     }
 }
