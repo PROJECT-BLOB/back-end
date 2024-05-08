@@ -44,7 +44,7 @@ public class DetailedPostResponse implements PostResponse {
         this.content = post.getContent();
         this.category = post.getCategory().name();
         this.subcategory = post.getSubcategory() == null ? null : post.getSubcategory().name();
-        this.author = post.getAuthor() == null ? null : new UserProfileResponse(post.getAuthor());
+        this.author = post.getAuthor() == null ? null : UserProfileResponse.of(post.getAuthor());
         this.country = post.getCity().getCountry().getLabel();
         this.city = post.getCity().getName();
         this.lat = post.getCoordinate() == null ? null : post.getCoordinate().getLat();

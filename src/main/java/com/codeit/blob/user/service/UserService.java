@@ -41,7 +41,7 @@ public class UserService {
         );
 
         userRepository.save(users);
-        return new UserResponse(users);
+        return UserResponse.of(users);
     }
 
     @Transactional
@@ -66,7 +66,7 @@ public class UserService {
         );
 
         users = userRepository.save(users);
-        return new UserResponse(users);
+        return UserResponse.of(users);
     }
 
     public UserResponse findByUserId(Long userId) {
@@ -77,7 +77,7 @@ public class UserService {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
 
-        return new UserResponse(users);
+        return UserResponse.of(users);
     }
 
     public boolean existBlobId(String blobId) {

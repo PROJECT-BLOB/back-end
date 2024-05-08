@@ -25,7 +25,7 @@ public class ReportedCommentResponse implements CommentResponse{
         this.commentId = comment.getId();
         this.postId = comment.getPost().getId();
         this.content = comment.getContent();
-        this.author = new UserProfileResponse(comment.getAuthor());
+        this.author = UserProfileResponse.of(comment.getAuthor());
         this.createdDate = DateTimeUtils.format(comment.getCreatedDate());
         this.likeCount = comment.getLikes().size();
         this.reportCount = comment.getReports().size();
