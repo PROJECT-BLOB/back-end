@@ -4,7 +4,9 @@ import com.codeit.blob.global.domain.Coordinate;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.global.exceptions.ErrorCode;
 import com.codeit.blob.global.s3.S3Service;
+import com.codeit.blob.notification.repository.NotificationJpaRepository;
 import com.codeit.blob.oauth.domain.CustomUsers;
+import com.codeit.blob.post.repository.BookmarkJpaRepository;
 import com.codeit.blob.user.UserState;
 import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.repository.UserRepository;
@@ -22,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserService {
     private final UserRepository userRepository;
     private final S3Service s3Service;
+    private final NotificationJpaRepository notificationJpaRepository;
+    private final BookmarkJpaRepository bookmarkJpaRepository;
 
     @Transactional
     public UserResponse validationUser(CustomUsers userDetails, UserRequest userRequest) {
@@ -94,6 +98,9 @@ public class UserService {
     @Transactional
     public String deleteUser(CustomUsers userDetails) {
         Users user = userDetails.getUsers();
+
+        bookmarkJpaRepository.deleteAllByUserId(user.getId());
+        notificationJpaRepository.deleteAllByReceiverId(user.getId());
         user.deleteUser();
         userRepository.save(user);
         return "계정 탈퇴 성공";
