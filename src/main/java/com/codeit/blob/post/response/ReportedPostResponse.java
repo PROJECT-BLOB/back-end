@@ -30,7 +30,7 @@ public class ReportedPostResponse implements PostResponse {
         this.postId = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.author = post.getAuthor() == null ? null : new UserProfileResponse(post.getAuthor());
+        this.author = post.getAuthor() == null ? null : UserProfileResponse.of(post.getAuthor());
         this.views = post.getViews();
         this.createdDate = DateTimeUtils.format(post.getCreatedDate());
         this.imageUrl = post.getPostImages().stream().map(PostImage::getUrl).toList();

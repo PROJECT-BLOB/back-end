@@ -8,7 +8,7 @@ import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.post.request.CreatePostRequest;
 import com.codeit.blob.post.service.PostService;
-import com.codeit.blob.user.UserAuthenticateState;
+import com.codeit.blob.user.UserState;
 import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -49,7 +49,7 @@ public class CommentServiceTest {
             Users user = Users.builder()
                     .blobId("blobId" + i)
                     .nickName("nickname" + i)
-                    .state(UserAuthenticateState.COMPLETE)
+                    .state(UserState.COMPLETE)
                     .build();
             users[i] = user;
             userRepository.save(user);

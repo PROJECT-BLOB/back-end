@@ -6,7 +6,7 @@ import com.codeit.blob.oauth.dto.kakao.KakaoDto;
 import com.codeit.blob.oauth.dto.kakao.KakaoUserDto;
 import com.codeit.blob.oauth.provider.KakaoProperties;
 import com.codeit.blob.oauth.response.OauthResponse;
-import com.codeit.blob.user.UserAuthenticateState;
+import com.codeit.blob.user.UserState;
 import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -62,7 +62,7 @@ public class KakaoService implements OauthService {
                                 .oauthId(userInfo.getId())
                                 .email(userInfo.getEmail())
                                 .profileUrl(userInfo.getProfile())
-                                .state(UserAuthenticateState.INCOMPLETE)
+                                .state(UserState.INCOMPLETE)
                                 .oauthType(properties.getOauthType())
                                 .build()
                 );

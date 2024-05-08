@@ -117,4 +117,13 @@ public class UserController {
     ) {
         return ResponseEntity.ok(userService.existBlobId(blobId));
     }
+
+    @DeleteMapping
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "계정 탈퇴 API", description = "로그인된 계정을 삭제합니다.")
+    public ResponseEntity<String> deleteUser(
+            @AuthenticationPrincipal CustomUsers userDetails
+    ) {
+        return ResponseEntity.ok(userService.deleteUser(userDetails));
+    }
 }

@@ -4,8 +4,10 @@ import com.codeit.blob.global.domain.Coordinate;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.global.exceptions.ErrorCode;
 import com.codeit.blob.global.s3.S3Service;
+import com.codeit.blob.notification.repository.NotificationJpaRepository;
 import com.codeit.blob.oauth.domain.CustomUsers;
-import com.codeit.blob.user.UserAuthenticateState;
+import com.codeit.blob.post.repository.BookmarkJpaRepository;
+import com.codeit.blob.user.UserState;
 import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.repository.UserRepository;
 import com.codeit.blob.user.request.UserRequest;
@@ -22,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserService {
     private final UserRepository userRepository;
     private final S3Service s3Service;
+    private final NotificationJpaRepository notificationJpaRepository;
+    private final BookmarkJpaRepository bookmarkJpaRepository;
 
     @Transactional
     public UserResponse validationUser(CustomUsers userDetails, UserRequest userRequest) {
@@ -36,12 +40,12 @@ public class UserService {
                         .blobId(userRequest.getBlobId())
                         .nickName(userRequest.getNickName())
                         .bio("안녕하세요. 여행을 좋아하는 블로비라고 합니다. 좋은 정보를 공유합니다. 즐겁게 여행해요")
-                        .state(UserAuthenticateState.COMPLETE)
+                        .state(UserState.COMPLETE)
                         .build()
         );
 
         userRepository.save(users);
-        return new UserResponse(users);
+        return UserResponse.of(users);
     }
 
     @Transactional
@@ -66,14 +70,18 @@ public class UserService {
         );
 
         users = userRepository.save(users);
-        return new UserResponse(users);
+        return UserResponse.of(users);
     }
 
     public UserResponse findByUserId(Long userId) {
         Users users = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        return new UserResponse(users);
+        if(users.getState().equals(UserState.DELETED)){
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        return UserResponse.of(users);
     }
 
     public boolean existBlobId(String blobId) {
@@ -85,5 +93,16 @@ public class UserService {
         Users user = userDetail.getUsers().makeAdmin();
         userRepository.save(user);
         return "관리자 권한 부여 성공";
+    }
+
+    @Transactional
+    public String deleteUser(CustomUsers userDetails) {
+        Users user = userDetails.getUsers();
+
+        bookmarkJpaRepository.deleteAllByUserId(user.getId());
+        notificationJpaRepository.deleteAllByReceiverId(user.getId());
+        user.deleteUser();
+        userRepository.save(user);
+        return "계정 탈퇴 성공";
     }
 }
