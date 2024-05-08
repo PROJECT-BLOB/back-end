@@ -1,6 +1,5 @@
 package com.codeit.blob.user.controller;
 
-import com.codeit.blob.comment.response.CommentPageResponse;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.post.response.PostPageResponse;
 import com.codeit.blob.user.request.UserRequest;
@@ -69,30 +68,36 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/post")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "유저가 작성한 게시글 조회 API", description = "Page 처리를 통한 게시글 조회")
     public ResponseEntity<PostPageResponse> findPostPage(
+            @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable("userId") Long userId,
             @ParameterObject Pageable pageable
     ) {
-        return ResponseEntity.ok(service.findUserPosts(userId, pageable));
+        return ResponseEntity.ok(service.findUserPosts(userDetails, userId, pageable));
     }
 
-    @GetMapping("/{userId}/comment")
-    @Operation(summary = "유저가 작성한 댓글 조회 API", description = "Page 처리를 통한 유저가 작성한 댓글 조회")
-    public ResponseEntity<CommentPageResponse> findComment(
+    @GetMapping("/{userId}/commented")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "유저가 작성한 댓글 조회 API", description = "Page 처리를 통한 유저가 댓글 단 글 조회")
+    public ResponseEntity<PostPageResponse> findComment(
+            @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable("userId") Long userId,
             @ParameterObject Pageable pageable
     ) {
-        return ResponseEntity.ok(service.findUserComment(userId, pageable));
+        return ResponseEntity.ok(service.findUserComment(userDetails, userId, pageable));
     }
 
     @GetMapping("/{userId}/bookmark")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "유저의 북마크 조회 API", description = "Page 처리를 통한 북마크 조회")
     public ResponseEntity<PostPageResponse> findBookmark(
+            @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable("userId") Long userId,
             @ParameterObject Pageable pageable
     ) {
-        return ResponseEntity.ok(service.findUserBookmark(userId, pageable));
+        return ResponseEntity.ok(service.findUserBookmark(userDetails, userId, pageable));
     }
 
     @PostMapping("/makeAdmin")
