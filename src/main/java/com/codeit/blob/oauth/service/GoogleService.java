@@ -69,11 +69,7 @@ public class GoogleService implements OauthService {
                                 .build()
                 );
 
-        users.changeUser(
-                users.toBuilder()
-                        .refreshToken(refreshToken)
-                        .build()
-        );
+        users.setRefreshToken(refreshToken);
         users = userRepository.save(users);
 
         return OauthResponse.builder()

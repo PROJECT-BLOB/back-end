@@ -7,6 +7,8 @@ import com.codeit.blob.oauth.OauthType;
 import com.codeit.blob.post.domain.Post;
 import com.codeit.blob.post.domain.PostLike;
 import com.codeit.blob.user.UserState;
+import com.codeit.blob.user.request.UserRequest;
+import com.codeit.blob.user.request.UserUpdateRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -70,18 +72,24 @@ public class Users extends BaseTimeEntity {
         this.role = UserRole.ROLE_USER;
     }
 
-    public void changeUser(Users users) {
-        this.email = users.getEmail();
-        this.oauthId = users.getOauthId();
-        this.blobId = users.getBlobId();
-        this.nickname = users.getNickname();
-        this.profileUrl = users.getProfileUrl();
-        this.refreshToken = users.getRefreshToken();
-        this.isPublic = users.getIsPublic();
-        this.state = users.getState();
-        this.oauthType = users.getOauthType();
-        this.coordinate = users.getCoordinate();
-        this.bio = users.getBio();
+    public void updateUser(UserUpdateRequest request, String profileUrl) {
+        if (request.getNickname() != null) this.nickname = request.getNickname();
+        if (request.getBio() != null) this.bio = request.getBio();
+        if (request.getIsPublic() != null) this.isPublic = request.getIsPublic();
+        if (request.getLat() != null && request.getLng() != null) this.coordinate = new Coordinate(request.getLat(), request.getLng());
+        this.profileUrl = profileUrl;
+    }
+
+    public void validateUser(UserRequest request) {
+        this.blobId = request.getBlobId();
+        this.nickname = request.getNickname();
+        this.state = UserState.COMPLETE;
+        this.bio = "안녕하세요. 여행을 좋아하는 블로비라고 합니다. 좋은 정보를 공유합니다. 즐겁게 여행해요";
+        this.isPublic = true;
+    }
+
+    public void setRefreshToken(String token){
+        this.refreshToken = token;
     }
 
     public Integer getPostCount() {
