@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 @Schema(name = "유저 정보 수정 요청 데이터")
 public class UserUpdateRequest {
-    @NotEmpty(message = "nickName 는 필수 데이터 입니다.")
+
     @Schema(description = "유저 닉네임", example = "코드코드")
     private final String nickname;
 
@@ -27,7 +27,7 @@ public class UserUpdateRequest {
 
 
     public UserUpdateRequest(String nickname, String bio, boolean isPublic, Double lat, Double lng) {
-        if(bio.length() > 50){
+        if(bio != null && bio.length() > 50){
             throw new CustomException(ErrorCode.BAD_ENUM_REQUEST);
         }
 

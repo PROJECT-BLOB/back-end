@@ -1,6 +1,5 @@
 package com.codeit.blob.user.service;
 
-import com.codeit.blob.global.domain.Coordinate;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.global.exceptions.ErrorCode;
 import com.codeit.blob.global.s3.S3Service;
@@ -35,16 +34,7 @@ public class UserService {
 
         Users users = userDetails.getUsers();
 
-        users.changeUser(
-                users.toBuilder()
-                        .blobId(userRequest.getBlobId())
-                        .nickname(userRequest.getNickname())
-                        .bio("안녕하세요. 여행을 좋아하는 블로비라고 합니다. 좋은 정보를 공유합니다. 즐겁게 여행해요")
-                        .state(UserState.COMPLETE)
-                        .isPublic(true)
-                        .build()
-        );
-
+        users.validateUser(userRequest);
         userRepository.save(users);
         return UserResponse.of(users);
     }
@@ -60,16 +50,7 @@ public class UserService {
             s3Service.deleteFile(imageName);
         }
 
-        users.changeUser(
-                users.toBuilder()
-                        .nickname(userRequest.getNickname())
-                        .coordinate(new Coordinate(userRequest.getLat(), userRequest.getLng()))
-                        .isPublic(userRequest.getIsPublic())
-                        .bio(userRequest.getBio())
-                        .profileUrl(profileUrl)
-                        .build()
-        );
-
+        users.updateUser(userRequest, profileUrl);
         users = userRepository.save(users);
         return UserResponse.of(users);
     }

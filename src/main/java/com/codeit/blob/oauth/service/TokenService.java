@@ -47,12 +47,7 @@ public class TokenService {
             Users users = userRepository.findByOauthId(oauthId)
                     .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-            users.changeUser(
-                    users.toBuilder()
-                            .refreshToken("")
-                            .build()
-            );
-
+            users.setRefreshToken("");
             userRepository.save(users);
         }
 
