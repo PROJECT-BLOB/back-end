@@ -38,7 +38,7 @@ public class UserService {
         users.changeUser(
                 users.toBuilder()
                         .blobId(userRequest.getBlobId())
-                        .nickName(userRequest.getNickName())
+                        .nickname(userRequest.getNickname())
                         .bio("안녕하세요. 여행을 좋아하는 블로비라고 합니다. 좋은 정보를 공유합니다. 즐겁게 여행해요")
                         .state(UserState.COMPLETE)
                         .build()
@@ -61,7 +61,7 @@ public class UserService {
 
         users.changeUser(
                 users.toBuilder()
-                        .nickName(userRequest.getNickName())
+                        .nickname(userRequest.getNickname())
                         .coordinate(new Coordinate(userRequest.getLat(), userRequest.getLng()))
                         .isPrivate(userRequest.getIsPrivate())
                         .bio(userRequest.getBio())

@@ -17,7 +17,7 @@ public class UserResponse {
     private final Long userId;
     private final String email;
     private final String blobId;
-    private final String nickName;
+    private final String nickname;
     private final String profileUrl;
     private final String bio;
     private final Integer postCount;
@@ -45,7 +45,7 @@ public class UserResponse {
                 users.getId(),
                 users.getEmail(),
                 users.getBlobId(),
-                users.getNickName(),
+                users.getNickname(),
                 users.getProfileUrl(),
                 users.getBio(),
                 users.getPostCount(),

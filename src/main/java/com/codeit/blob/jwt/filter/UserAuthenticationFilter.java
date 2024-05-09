@@ -34,7 +34,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
         CustomUsers details = (CustomUsers) authentication.getPrincipal();
         Users users = details.getUsers();
-        if (users.getBlobId() == null || users.getNickName() == null) {
+        if (users.getBlobId() == null || users.getNickname() == null) {
             throw new CustomException(ErrorCode.NEED_MORE_AUTHENTICATE);
         }
 

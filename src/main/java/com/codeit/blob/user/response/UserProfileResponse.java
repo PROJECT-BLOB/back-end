@@ -23,7 +23,7 @@ public class UserProfileResponse {
         return new UserProfileResponse(
                 user.getId(),
                 user.getBlobId(),
-                user.getNickName(),
+                user.getNickname(),
                 user.getProfileUrl(),
                 user.getLikeCount()
         );
