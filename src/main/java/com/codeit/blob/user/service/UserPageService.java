@@ -63,7 +63,7 @@ public class UserPageService {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
 
-        if (user.getIsPrivate() && (userDetails == null || !userDetails.getUsers().getId().equals(userId))){
+        if (!user.getIsPublic() && (userDetails == null || !userDetails.getUsers().getId().equals(userId))){
             throw new CustomException(ErrorCode.PRIVATE_PROFILE);
         }
     }

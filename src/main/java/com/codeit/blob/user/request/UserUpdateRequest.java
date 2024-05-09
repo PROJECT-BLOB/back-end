@@ -17,7 +17,7 @@ public class UserUpdateRequest {
     private final String bio;
 
     @Schema(description = "프로필 공개 / 비공개")
-    private final Boolean isPrivate;
+    private final Boolean isPublic;
 
     @Schema(description = "상세 위치 위도", example = "37.532600")
     private final Double lat;
@@ -26,14 +26,14 @@ public class UserUpdateRequest {
     private final Double lng;
 
 
-    public UserUpdateRequest(String nickname, String bio, boolean isPrivate, Double lat, Double lng) {
+    public UserUpdateRequest(String nickname, String bio, boolean isPublic, Double lat, Double lng) {
         if(bio.length() > 50){
             throw new CustomException(ErrorCode.BAD_ENUM_REQUEST);
         }
 
         this.nickname = nickname;
         this.bio = bio;
-        this.isPrivate = isPrivate;
+        this.isPublic = isPublic;
         this.lat = lat;
         this.lng = lng;
     }
