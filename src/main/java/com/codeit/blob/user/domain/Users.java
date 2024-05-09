@@ -26,9 +26,9 @@ public class Users extends BaseTimeEntity {
     private String email;
     private String oauthId;
     private String blobId;
-    private String nickName;
+    private String nickname;
     private String profileUrl;
-    private Boolean isPrivate;
+    private Boolean isPublic;
     private String bio;
     private String refreshToken;
 
@@ -55,15 +55,15 @@ public class Users extends BaseTimeEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder(toBuilder = true)
-    public Users(String email, String oauthId, String blobId, String nickName, String profileUrl, String bio, String refreshToken, boolean isPrivate, Coordinate coordinate, UserState state, OauthType oauthType) {
+    public Users(String email, String oauthId, String blobId, String nickname, String profileUrl, String bio, String refreshToken, boolean isPublic, Coordinate coordinate, UserState state, OauthType oauthType) {
         this.email = email;
         this.oauthId = oauthId;
         this.blobId = blobId;
-        this.nickName = nickName;
+        this.nickname = nickname;
         this.profileUrl = profileUrl;
         this.bio = bio;
         this.refreshToken = refreshToken;
-        this.isPrivate = isPrivate;
+        this.isPublic = isPublic;
         this.coordinate = coordinate;
         this.state = state;
         this.oauthType = oauthType;
@@ -74,10 +74,10 @@ public class Users extends BaseTimeEntity {
         this.email = users.getEmail();
         this.oauthId = users.getOauthId();
         this.blobId = users.getBlobId();
-        this.nickName = users.getNickName();
+        this.nickname = users.getNickname();
         this.profileUrl = users.getProfileUrl();
         this.refreshToken = users.getRefreshToken();
-        this.isPrivate = users.getIsPrivate();
+        this.isPublic = users.getIsPublic();
         this.state = users.getState();
         this.oauthType = users.getOauthType();
         this.coordinate = users.getCoordinate();
@@ -105,7 +105,7 @@ public class Users extends BaseTimeEntity {
         this.email = null;
         this.oauthId = null;
         this.blobId = null;
-        this.nickName = null;
+        this.nickname = null;
         this.profileUrl = null;
         this.bio = null;
         this.refreshToken = null;

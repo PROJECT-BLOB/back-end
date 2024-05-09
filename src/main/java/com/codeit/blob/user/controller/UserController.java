@@ -80,7 +80,7 @@ public class UserController {
 
     @GetMapping("/{userId}/commented")
     @SecurityRequirement(name = "Bearer Authentication")
-    @Operation(summary = "유저가 작성한 댓글 조회 API", description = "Page 처리를 통한 유저가 댓글 단 글 조회")
+    @Operation(summary = "유저가 댓글 단 글 조회 API", description = "Page 처리를 통한 유저가 댓글 단 글 조회")
     public ResponseEntity<PostPageResponse> findComment(
             @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable("userId") Long userId,

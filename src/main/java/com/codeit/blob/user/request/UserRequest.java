@@ -16,6 +16,6 @@ public class UserRequest {
 
     @NotEmpty(message = "nickName 는 필수 데이터 입니다.")
     @Schema(description = "닉네임", example = "코드코드")
-    private final String nickName;
+    private final String nickname;
 
 }

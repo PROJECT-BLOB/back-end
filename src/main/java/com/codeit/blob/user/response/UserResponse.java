@@ -17,7 +17,7 @@ public class UserResponse {
     private final Long userId;
     private final String email;
     private final String blobId;
-    private final String nickName;
+    private final String nickname;
     private final String profileUrl;
     private final String bio;
     private final Integer postCount;
@@ -25,7 +25,7 @@ public class UserResponse {
     private final Integer commentCount;
 
     @Schema(description = "유저 정보 공개 / 비공개 상태")
-    private final Boolean isPrivate;
+    private final Boolean isPublic;
 
     private final Coordinate coordinate;
 
@@ -45,13 +45,13 @@ public class UserResponse {
                 users.getId(),
                 users.getEmail(),
                 users.getBlobId(),
-                users.getNickName(),
+                users.getNickname(),
                 users.getProfileUrl(),
                 users.getBio(),
                 users.getPostCount(),
                 users.getLikeCount(),
                 users.getCommentCount(),
-                users.getIsPrivate(),
+                users.getIsPublic(),
                 users.getCoordinate(),
                 users.getState(),
                 users.getOauthType(),
