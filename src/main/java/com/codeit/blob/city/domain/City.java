@@ -1,6 +1,7 @@
 package com.codeit.blob.city.domain;
 
 import com.codeit.blob.city.domain.Country;
+import com.codeit.blob.global.domain.Coordinate;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,12 +21,17 @@ public class City {
 
     private String name;
 
+    @Embedded
+    private Coordinate coordinate;
+
     @Builder
     public City(
             Country country,
-            String name
+            String name,
+            Coordinate coordinate
     ){
         this.country = country;
         this.name = name;
+        this.coordinate = coordinate;
     }
 }

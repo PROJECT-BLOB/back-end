@@ -25,6 +25,7 @@ public class DetailedPostResponse implements PostResponse {
     private final String city;
     private final Double lat;
     private final Double lng;
+    private final String address;
     private final Long distFromActual;
     private final Long views;
     @Schema(example = "2024-04-24T12:59:24")
@@ -49,6 +50,7 @@ public class DetailedPostResponse implements PostResponse {
         this.city = post.getCity().getName();
         this.lat = post.getCoordinate() == null ? null : post.getCoordinate().getLat();
         this.lng = post.getCoordinate() == null ? null : post.getCoordinate().getLng();
+        this.address = post.getAddress();
         this.distFromActual = post.getDistFromActual();
         this.views = post.getViews();
         this.createdDate = DateTimeUtils.format(post.getCreatedDate());

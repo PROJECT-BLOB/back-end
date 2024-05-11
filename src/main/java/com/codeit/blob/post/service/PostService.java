@@ -46,9 +46,10 @@ public class PostService {
             List<String> imgPaths
     ) {
         Country country = Country.getInstance(request.getCountry());
-        City city = cityService.findCityByCountryAndName(country, request.getCity());
+        Coordinate cityCoordinates = new Coordinate(request.getCityLat(), request.getCityLng());
+        City city = cityService.findCityByCoordinate(cityCoordinates);
         if (city == null){
-            city = cityService.createCity(country, request.getCity());
+            city = cityService.createCity(country, request.getCity(), cityCoordinates);
         }
 
         Subcategory subcategory = request.getSubcategory() == null ? null : Subcategory.getInstance(request.getSubcategory());
@@ -66,6 +67,7 @@ public class PostService {
                 .author(userDetails.getUsers())
                 .city(city)
                 .coordinate(coordinate)
+                .address(request.getAddress())
                 .distFromActual(distFromActual)
                 .build();
 
@@ -149,18 +151,15 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostPageResponse getFeed(CustomUsers userDetails, FeedFilter filters) {
-        Country country = Country.getInstance(filters.getCountry());
-        City city = null;
-        if (filters.getCity() != null){
-            city = cityService.findCityByCountryAndName(country, filters.getCity());
-            if (city == null){
-                return new PostPageResponse(Collections.emptyList(), 0, 0, false);
-            }
+        Coordinate cityCoordinates = new Coordinate(filters.getCityLat(), filters.getCityLng());
+        City city = cityService.findCityByCoordinate(cityCoordinates);
+        if (city == null){
+            return new PostPageResponse(Collections.emptyList(), 0, 0, false);
         }
 
         Users user = userDetails == null ? null : userDetails.getUsers();
         Pageable pageable = PageRequest.of(filters.getPage(), filters.getSize());
-        Page<Post> posts = postRepository.getFeed(country, city, filters, pageable);
+        Page<Post> posts = postRepository.getFeed(city, filters, pageable);
 
         return PostPageResponse.postDetailPageResponse(posts, user);
     }

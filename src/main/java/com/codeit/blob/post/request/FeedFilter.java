@@ -2,6 +2,7 @@ package com.codeit.blob.post.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,9 +20,10 @@ import java.util.List;
 public class FeedFilter {
 
     @NotEmpty
-    private String country;
+    private Double cityLat;
 
-    private String city;
+    @NotEmpty
+    private Double cityLng;
 
     private String sortBy = "recent";
 

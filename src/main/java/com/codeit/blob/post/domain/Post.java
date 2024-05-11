@@ -47,6 +47,9 @@ public class Post extends BaseTimeEntity {
     @Embedded
     private Coordinate coordinate;
 
+    @Column(columnDefinition = "TEXT")
+    private String address;
+
     private Long distFromActual;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, orphanRemoval = true)
@@ -75,6 +78,7 @@ public class Post extends BaseTimeEntity {
             Users author,
             City city,
             Coordinate coordinate,
+            String address,
             Long distFromActual
     ) {
         this.title = title;
@@ -84,6 +88,7 @@ public class Post extends BaseTimeEntity {
         this.author = author;
         this.city = city;
         this.coordinate = coordinate;
+        this.address = address;
         this.distFromActual = distFromActual;
         this.views = 0L;
     }
