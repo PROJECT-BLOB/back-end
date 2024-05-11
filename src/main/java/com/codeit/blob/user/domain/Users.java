@@ -6,7 +6,9 @@ import com.codeit.blob.global.domain.Coordinate;
 import com.codeit.blob.oauth.OauthType;
 import com.codeit.blob.post.domain.Post;
 import com.codeit.blob.post.domain.PostLike;
-import com.codeit.blob.user.UserAuthenticateState;
+import com.codeit.blob.user.UserState;
+import com.codeit.blob.user.request.UserRequest;
+import com.codeit.blob.user.request.UserUpdateRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -26,9 +28,9 @@ public class Users extends BaseTimeEntity {
     private String email;
     private String oauthId;
     private String blobId;
-    private String nickName;
+    private String nickname;
     private String profileUrl;
-    private Boolean isPrivate;
+    private Boolean isPublic;
     private String bio;
     private String refreshToken;
 
@@ -36,7 +38,7 @@ public class Users extends BaseTimeEntity {
     private Coordinate coordinate;
 
     @Enumerated(EnumType.STRING)
-    private UserAuthenticateState state;
+    private UserState state;
 
     @Enumerated(EnumType.STRING)
     private OauthType oauthType;
@@ -55,33 +57,39 @@ public class Users extends BaseTimeEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder(toBuilder = true)
-    public Users(String email, String oauthId, String blobId, String nickName, String profileUrl, String bio, String refreshToken, boolean isPrivate, Coordinate coordinate, UserAuthenticateState state, OauthType oauthType) {
+    public Users(String email, String oauthId, String blobId, String nickname, String profileUrl, String bio, String refreshToken, boolean isPublic, Coordinate coordinate, UserState state, OauthType oauthType) {
         this.email = email;
         this.oauthId = oauthId;
         this.blobId = blobId;
-        this.nickName = nickName;
+        this.nickname = nickname;
         this.profileUrl = profileUrl;
         this.bio = bio;
         this.refreshToken = refreshToken;
-        this.isPrivate = isPrivate;
+        this.isPublic = isPublic;
         this.coordinate = coordinate;
         this.state = state;
         this.oauthType = oauthType;
         this.role = UserRole.ROLE_USER;
     }
 
-    public void changeUser(Users users) {
-        this.email = users.getEmail();
-        this.oauthId = users.getOauthId();
-        this.blobId = users.getBlobId();
-        this.nickName = users.getNickName();
-        this.profileUrl = users.getProfileUrl();
-        this.refreshToken = users.getRefreshToken();
-        this.isPrivate = users.getIsPrivate();
-        this.state = users.getState();
-        this.oauthType = users.getOauthType();
-        this.coordinate = users.getCoordinate();
-        this.bio = users.getBio();
+    public void updateUser(UserUpdateRequest request, String profileUrl) {
+        if (request.getNickname() != null) this.nickname = request.getNickname();
+        if (request.getBio() != null) this.bio = request.getBio();
+        if (request.getIsPublic() != null) this.isPublic = request.getIsPublic();
+        if (request.getLat() != null && request.getLng() != null) this.coordinate = new Coordinate(request.getLat(), request.getLng());
+        this.profileUrl = profileUrl;
+    }
+
+    public void validateUser(UserRequest request) {
+        this.blobId = request.getBlobId();
+        this.nickname = request.getNickname();
+        this.state = UserState.COMPLETE;
+        this.bio = "안녕하세요. 여행을 좋아하는 블로비라고 합니다. 좋은 정보를 공유합니다. 즐겁게 여행해요";
+        this.isPublic = true;
+    }
+
+    public void setRefreshToken(String token){
+        this.refreshToken = token;
     }
 
     public Integer getPostCount() {
@@ -99,5 +107,17 @@ public class Users extends BaseTimeEntity {
     public Users makeAdmin() {
         this.role = UserRole.ROLE_ADMIN;
         return this;
+    }
+
+    public void deleteUser(){
+        this.email = null;
+        this.oauthId = null;
+        this.blobId = null;
+        this.nickname = null;
+        this.profileUrl = null;
+        this.bio = null;
+        this.refreshToken = null;
+        this.coordinate = null;
+        this.state = UserState.DELETED;
     }
 }

@@ -17,7 +17,8 @@ import java.util.Arrays;
 
 public class UserAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String[] EXCLUDE_PATH = {
+    private static final String[] GET_EXCLUDE_PATH = {
+            ".*/user/[^/]+/check"
     };
 
     private static final String[] POST_EXCLUDE_PATH = {
@@ -34,7 +35,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
         CustomUsers details = (CustomUsers) authentication.getPrincipal();
         Users users = details.getUsers();
-        if (users.getBlobId() == null || users.getNickName() == null) {
+        if (users.getBlobId() == null || users.getNickname() == null) {
             throw new CustomException(ErrorCode.NEED_MORE_AUTHENTICATE);
         }
 
@@ -46,7 +47,8 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String method = request.getMethod();
 
-        boolean getExclude = "POST".equals(method) && Arrays.stream(POST_EXCLUDE_PATH).anyMatch(path::startsWith);
-        return Arrays.stream(EXCLUDE_PATH).anyMatch(path::startsWith) || getExclude;
+        boolean postExclude = "POST".equals(method) && Arrays.stream(POST_EXCLUDE_PATH).anyMatch(path::startsWith);
+        boolean getExclude = "GET".equals(method) && Arrays.stream(GET_EXCLUDE_PATH).anyMatch(path::matches);
+        return getExclude || postExclude;
     }
 }

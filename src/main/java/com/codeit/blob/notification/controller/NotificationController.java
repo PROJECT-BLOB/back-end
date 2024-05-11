@@ -4,6 +4,7 @@ import com.codeit.blob.notification.response.NotificationPageResponse;
 import com.codeit.blob.notification.service.NotificationService;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 @RequestMapping("/notification")
 @Tag(name = "알림 API", description = "알림 관련 API")
 public class NotificationController {

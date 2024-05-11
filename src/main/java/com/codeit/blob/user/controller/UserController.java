@@ -1,6 +1,5 @@
 package com.codeit.blob.user.controller;
 
-import com.codeit.blob.comment.response.CommentPageResponse;
 import com.codeit.blob.oauth.domain.CustomUsers;
 import com.codeit.blob.post.response.PostPageResponse;
 import com.codeit.blob.user.request.UserRequest;
@@ -43,9 +42,9 @@ public class UserController {
         return ResponseEntity.ok(userService.validationUser(userDetails, userRequest));
     }
 
-    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecurityRequirement(name = "Bearer Authentication")
-    @Operation(summary = "유저 정보 업데이트 API", description = "nickname, profile 을 입력 받아 업데이트합니다.")
+    @Operation(summary = "유저 정보 업데이트 API", description = "nickname, profile, bio, private 을 입력 받아 업데이트합니다.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(encoding = {
             @Encoding(name = "data", contentType = "application/json"),
             @Encoding(name = "file", contentType = "image/jpg, image/png, image/jpeg")
@@ -69,30 +68,36 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/post")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "유저가 작성한 게시글 조회 API", description = "Page 처리를 통한 게시글 조회")
     public ResponseEntity<PostPageResponse> findPostPage(
+            @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable("userId") Long userId,
             @ParameterObject Pageable pageable
     ) {
-        return ResponseEntity.ok(service.findUserPosts(userId, pageable));
+        return ResponseEntity.ok(service.findUserPosts(userDetails, userId, pageable));
     }
 
-    @GetMapping("/{userId}/comment")
-    @Operation(summary = "유저가 작성한 댓글 조회 API", description = "Page 처리를 통한 유저가 작성한 댓글 조회")
-    public ResponseEntity<CommentPageResponse> findComment(
+    @GetMapping("/{userId}/commented")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "유저가 댓글 단 글 조회 API", description = "Page 처리를 통한 유저가 댓글 단 글 조회")
+    public ResponseEntity<PostPageResponse> findComment(
+            @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable("userId") Long userId,
             @ParameterObject Pageable pageable
     ) {
-        return ResponseEntity.ok(service.findUserComment(userId, pageable));
+        return ResponseEntity.ok(service.findUserComment(userDetails, userId, pageable));
     }
 
     @GetMapping("/{userId}/bookmark")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "유저의 북마크 조회 API", description = "Page 처리를 통한 북마크 조회")
     public ResponseEntity<PostPageResponse> findBookmark(
+            @AuthenticationPrincipal CustomUsers userDetails,
             @PathVariable("userId") Long userId,
             @ParameterObject Pageable pageable
     ) {
-        return ResponseEntity.ok(service.findUserBookmark(userId, pageable));
+        return ResponseEntity.ok(service.findUserBookmark(userDetails, userId, pageable));
     }
 
     @PostMapping("/makeAdmin")
@@ -111,5 +116,14 @@ public class UserController {
             @PathVariable("blobId") String blobId
     ) {
         return ResponseEntity.ok(userService.existBlobId(blobId));
+    }
+
+    @DeleteMapping
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "계정 탈퇴 API", description = "로그인된 계정을 삭제합니다.")
+    public ResponseEntity<String> deleteUser(
+            @AuthenticationPrincipal CustomUsers userDetails
+    ) {
+        return ResponseEntity.ok(userService.deleteUser(userDetails));
     }
 }

@@ -1,6 +1,7 @@
 package com.codeit.blob.comment.repository;
 
 import com.codeit.blob.comment.domain.Comment;
+import com.codeit.blob.post.domain.Post;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -34,6 +35,26 @@ public class CommentRepositoryImpl {
                 .distinct()
                 .leftJoin(comment.reports, commentReport)
                 .where(comment.reports.size().goe(minReport))
+                .fetchOne();
+        total = total == null ? 0 : total;
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    public Page<Post> getCommentedPosts(Long userId, Pageable pageable){
+        List<Post> content = jpaQueryFactory.select(comment.post)
+                .distinct()
+                .from(comment)
+                .where(comment.author.id.eq(userId))
+                .orderBy(comment.post.createdDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = jpaQueryFactory.select(comment.post.count())
+                .distinct()
+                .from(comment)
+                .where(comment.author.id.eq(userId))
                 .fetchOne();
         total = total == null ? 0 : total;
 

@@ -57,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 String oauthId = provider.extractClaim(accessToken, claims -> String.valueOf(claims.get("oauthId")));
                 Users users = userRepository.findByOauthId(oauthId)
-                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                        .orElseThrow(() -> new CustomException(ErrorCode.JWT_VALIDATED_FAIL));
 
                 if (users.getRefreshToken().isEmpty()) {
                     throw new CustomException(ErrorCode.JWT_EXPIRED);

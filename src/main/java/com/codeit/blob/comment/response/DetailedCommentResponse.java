@@ -28,7 +28,7 @@ public class DetailedCommentResponse implements CommentResponse {
         this.commentId = comment.getId();
         this.postId = comment.getPost().getId();
         this.content = comment.getContent();
-        this.author = new UserProfileResponse(comment.getAuthor());
+        this.author = UserProfileResponse.of(comment.getAuthor());
         this.createdDate = DateTimeUtils.format(comment.getCreatedDate());
         this.liked = user != null && comment.getLikes().stream().map(l -> l.getUser().getId()).toList().contains(user.getId());
         this.likeCount = comment.getLikes().size();

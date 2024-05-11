@@ -25,7 +25,7 @@ public class MapPostResponse implements PostResponse {
         this.title = post.getTitle();
         this.category = post.getCategory().name();
         this.subcategory = post.getSubcategory() == null ? null : post.getSubcategory().name();
-        this.author = post.getAuthor() == null ? null : new UserProfileResponse(post.getAuthor());
+        this.author = post.getAuthor() == null ? null : UserProfileResponse.of(post.getAuthor());
         this.lat = post.getCoordinate().getLat();
         this.lng = post.getCoordinate().getLng();
         this.createdDate = DateTimeUtils.format(post.getCreatedDate());

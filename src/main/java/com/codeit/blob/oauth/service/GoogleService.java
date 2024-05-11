@@ -4,7 +4,7 @@ import com.codeit.blob.oauth.OauthType;
 import com.codeit.blob.jwt.provider.JwtProvider;
 import com.codeit.blob.oauth.provider.GoogleProperties;
 import com.codeit.blob.oauth.response.OauthResponse;
-import com.codeit.blob.user.UserAuthenticateState;
+import com.codeit.blob.user.UserState;
 import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.repository.UserRepository;
 import com.codeit.blob.oauth.dto.google.GoogleDto;
@@ -64,16 +64,12 @@ public class GoogleService implements OauthService {
                                 .oauthId(userInfo.getId())
                                 .email(userInfo.getEmail())
                                 .profileUrl(userInfo.getPicture())
-                                .state(UserAuthenticateState.INCOMPLETE)
+                                .state(UserState.INCOMPLETE)
                                 .oauthType(properties.getOauthType())
                                 .build()
                 );
 
-        users.changeUser(
-                users.toBuilder()
-                        .refreshToken(refreshToken)
-                        .build()
-        );
+        users.setRefreshToken(refreshToken);
         users = userRepository.save(users);
 
         return OauthResponse.builder()
