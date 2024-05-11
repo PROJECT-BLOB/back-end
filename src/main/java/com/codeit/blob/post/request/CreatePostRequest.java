@@ -52,6 +52,9 @@ public class CreatePostRequest {
     @Schema(description = "상세 위치 경도", example = "127.024612")
     private Double lng;
 
+    @Schema(description = "상세 위치 주소", example = "서울특별시 영등포구 의사당대로 1")
+    private String address;
+
     @Schema(description = "유저의 실제 위치 위도", example = "37.532600")
     private Double actualLat;
 

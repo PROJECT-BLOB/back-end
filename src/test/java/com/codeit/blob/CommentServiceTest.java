@@ -48,7 +48,7 @@ public class CommentServiceTest {
         for (int i = 0; i < 2; i++) {
             Users user = Users.builder()
                     .blobId("blobId" + i)
-                    .nickName("nickname" + i)
+                    .nickname("nickname" + i)
                     .state(UserState.COMPLETE)
                     .build();
             users[i] = user;
@@ -56,7 +56,7 @@ public class CommentServiceTest {
             userDetails[i] = new CustomUsers(user);
         }
 
-        CreatePostRequest postRequest = new CreatePostRequest("title", "content", "HELP", "WEATHER", "대한민국", "서울", 37.532600, 127.024612, 37.532600, 127.024612, 37.532600, 127.024612);
+        CreatePostRequest postRequest = new CreatePostRequest("title", "content", "HELP", "WEATHER", "대한민국", "서울", 37.532600, 127.024612, 37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1",37.532600, 127.024612);
         postService.createPost(userDetails[0], postRequest, List.of("image.com"));
 
         request = new CreateCommentRequest("content");

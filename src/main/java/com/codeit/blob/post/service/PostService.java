@@ -67,6 +67,7 @@ public class PostService {
                 .author(userDetails.getUsers())
                 .city(city)
                 .coordinate(coordinate)
+                .address(request.getAddress())
                 .distFromActual(distFromActual)
                 .build();
 
@@ -150,19 +151,15 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostPageResponse getFeed(CustomUsers userDetails, FeedFilter filters) {
-        Country country = Country.getInstance(filters.getCountry());
-        City city = null;
-        if (filters.getCityLat() != null && filters.getCityLng() != null){
-            Coordinate cityCoordinates = new Coordinate(filters.getCityLat(), filters.getCityLng());
-            city = cityService.findCityByCoordinate(cityCoordinates);
-            if (city == null){
-                return new PostPageResponse(Collections.emptyList(), 0, 0, false);
-            }
+        Coordinate cityCoordinates = new Coordinate(filters.getCityLat(), filters.getCityLng());
+        City city = cityService.findCityByCoordinate(cityCoordinates);
+        if (city == null){
+            return new PostPageResponse(Collections.emptyList(), 0, 0, false);
         }
 
         Users user = userDetails == null ? null : userDetails.getUsers();
         Pageable pageable = PageRequest.of(filters.getPage(), filters.getSize());
-        Page<Post> posts = postRepository.getFeed(country, city, filters, pageable);
+        Page<Post> posts = postRepository.getFeed(city, filters, pageable);
 
         return PostPageResponse.postDetailPageResponse(posts, user);
     }

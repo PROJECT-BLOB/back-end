@@ -52,7 +52,7 @@ public class NotificationServiceTest {
         for (int i = 0; i < 2; i++) {
             Users user = Users.builder()
                     .blobId("blobId" + i)
-                    .nickName("nickname" + i)
+                    .nickname("nickname" + i)
                     .state(UserState.COMPLETE)
                     .build();
             users[i] = user;
@@ -60,7 +60,7 @@ public class NotificationServiceTest {
             userDetails[i] = new CustomUsers(user);
         }
 
-        postRequest = new CreatePostRequest("title", "content", "HELP", "WEATHER", "대한민국", "서울", 37.532600, 127.024612, 37.532600, 127.024612);
+        postRequest = new CreatePostRequest("title", "content", "HELP", "WEATHER", "대한민국", "서울", 37.532600, 127.024612, 37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1",37.532600, 127.024612);
         commentRequest = new CreateCommentRequest("content");
     }
 

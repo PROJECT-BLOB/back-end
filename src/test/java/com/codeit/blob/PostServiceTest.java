@@ -47,7 +47,7 @@ public class PostServiceTest {
         for (int i = 0; i < 3; i++) {
             Users user = Users.builder()
                     .blobId("blobId" + i)
-                    .nickName("nickname" + i)
+                    .nickname("nickname" + i)
                     .state(UserState.COMPLETE)
                     .build();
             users[i] = user;
@@ -55,7 +55,7 @@ public class PostServiceTest {
             userDetails[i] = new CustomUsers(user);
         }
 
-        request = new CreatePostRequest("title", "content", "HELP", "WEATHER", "대한민국", "서울", 37.532600, 127.024612, 37.532600, 127.024612, 37.532600, 127.024612);
+        request = new CreatePostRequest("title", "content", "HELP", "WEATHER", "대한민국", "서울", 37.532600, 127.024612, 37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1", 37.532600, 127.024612);
         images = List.of("image.com");
     }
 
@@ -196,13 +196,13 @@ public class PostServiceTest {
     }
 
     @Test
-    @DisplayName("피드 조건 검색 - 나라, 조회순, 카테고리, 날짜")
+    @DisplayName("피드 조건 검색 - 조회순, 카테고리, 날짜")
     void getFeed1() {
         //given
-        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, 37.532600, 127.024612);
-        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 38.532600, 128.024612,37.532600, 127.024612, null, null);
-        CreatePostRequest request4 = new CreatePostRequest("title", "content", "QUESTION", "WEATHER", "대한민국", "서울", 37.532600, 127.024612,null, null, null, null);
-        CreatePostRequest request5 = new CreatePostRequest("title", "content", "QUESTION", "TRANSPORT", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, 37.532600, 127.024612);
+        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1",37.532600, 127.024612);
+        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 38.532600, 128.024612,37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1",null, null);
+        CreatePostRequest request4 = new CreatePostRequest("title", "content", "QUESTION", "WEATHER", "대한민국", "서울", 37.532600, 127.024612,null, null, null, null, null);
+        CreatePostRequest request5 = new CreatePostRequest("title", "content", "QUESTION", "TRANSPORT", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1",37.532600, 127.024612);
 
         postService.createPost(userDetails[0], request, images);
         postService.createPost(userDetails[0], request2, images);
@@ -215,7 +215,8 @@ public class PostServiceTest {
         postService.viewPost(userDetails[0], 5L);
 
         FeedFilter filter = new FeedFilter();
-        filter.setCountry("대한민국");
+        filter.setCityLat(37.532600);
+        filter.setCityLng(127.024612);
         filter.setSortBy("views");
         filter.setCategories(List.of("HELP", "NOT_RECOMMENDED", "QUESTION:TRANSPORT"));
         filter.setStartDate(LocalDate.of(2024, 1, 1));
@@ -236,10 +237,10 @@ public class PostServiceTest {
     @DisplayName("피드 조건 검색 - 도시, 좋아요순, 최소 좋아요")
     void getFeed2() {
         //given
-        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, 37.532600, 127.024612);
-        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 38.532600, 128.024612,37.532600, 127.024612, null, null);
-        CreatePostRequest request4 = new CreatePostRequest("title", "content", "QUESTION", "WEATHER", "대한민국", "서울", 37.532600, 127.024612,null, null, null, null);
-        CreatePostRequest request5 = new CreatePostRequest("title", "content", "QUESTION", "TRANSPORT", "대한민국", "부산", 36.532600, 126.024612,37.532600, 127.024612, 37.532600, 127.024612);
+        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612,"서울특별시 영등포구 의사당대로 1", 37.532600, 127.024612);
+        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 38.532600, 128.024612,37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1",null, null);
+        CreatePostRequest request4 = new CreatePostRequest("title", "content", "QUESTION", "WEATHER", "대한민국", "서울", 37.532600, 127.024612,null, null, null, null, null);
+        CreatePostRequest request5 = new CreatePostRequest("title", "content", "QUESTION", "TRANSPORT", "대한민국", "부산", 36.532600, 126.024612,37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1",37.532600, 127.024612);
 
         postService.createPost(userDetails[0], request, images);
         postService.createPost(userDetails[0], request2, images);
@@ -253,7 +254,6 @@ public class PostServiceTest {
         postService.likePost(userDetails[0], 3L);
 
         FeedFilter filter = new FeedFilter();
-        filter.setCountry("대한민국");
         filter.setCityLat(37.532600);
         filter.setCityLng(127.024612);
         filter.setSortBy("likes");
@@ -273,10 +273,10 @@ public class PostServiceTest {
     @DisplayName("피드 조건 검색 - 나라, 인기순, 카테고리, 이미지 첨부 여부")
     void getFeed3() {
         //given
-        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, 37.532600, 127.024612);
-        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 38.532600, 128.024612,37.532600, 127.024612, null, null);
-        CreatePostRequest request4 = new CreatePostRequest("title", "content", "QUESTION", "WEATHER", "대한민국", "서울", 37.532600, 127.024612,null, null, null, null);
-        CreatePostRequest request5 = new CreatePostRequest("title", "content", "QUESTION", "TRANSPORT", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, 37.532600, 127.024612);
+        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1",37.532600, 127.024612);
+        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1",null, null);
+        CreatePostRequest request4 = new CreatePostRequest("title", "content", "QUESTION", "WEATHER", "대한민국", "서울", 37.532600, 127.024612,null, null, null ,null, null);
+        CreatePostRequest request5 = new CreatePostRequest("title", "content", "QUESTION", "TRANSPORT", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1",37.532600, 127.024612);
 
         postService.createPost(userDetails[0], request, images);
         postService.createPost(userDetails[0], request2, images);
@@ -290,7 +290,8 @@ public class PostServiceTest {
 
 
         FeedFilter filter = new FeedFilter();
-        filter.setCountry("대한민국");
+        filter.setCityLat(37.532600);
+        filter.setCityLng(127.024612);
         filter.setCategories(List.of("HELP", "RECOMMENDED", "QUESTION:TRANSPORT", "QUESTION:ATM"));
         filter.setSortBy("hot");
         filter.setHasImage(true);
@@ -310,10 +311,10 @@ public class PostServiceTest {
     @DisplayName("피드 조건 검색 - 도시, 최신순, 카테고리, 상세위치 여부")
     void getFeed4() {
         //given
-        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, 37.532600, 127.024612);
-        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 38.532600, 128.024612,37.532600, 127.024612, null, null);
-        CreatePostRequest request4 = new CreatePostRequest("title", "content", "QUESTION", "WEATHER", "대한민국", "서울", 37.532600, 127.024612,null, null, null, null);
-        CreatePostRequest request5 = new CreatePostRequest("title", "content", "HELP", "TRANSPORT", "대한민국", "서울", 37.532600, 127.024612,null, null, null, null);
+        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1",37.532600, 127.024612);
+        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 38.532600, 128.024612,37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1",null, null);
+        CreatePostRequest request4 = new CreatePostRequest("title", "content", "QUESTION", "WEATHER", "대한민국", "서울", 37.532600, 127.024612,null, null, null, null, null);
+        CreatePostRequest request5 = new CreatePostRequest("title", "content", "HELP", "TRANSPORT", "대한민국", "서울", 37.532600, 127.024612,null, null, null, null, null);
 
         postService.createPost(userDetails[0], request, images);
         postService.createPost(userDetails[0], request5, images);
@@ -329,7 +330,6 @@ public class PostServiceTest {
         postService.viewPost(userDetails[0], 5L);
 
         FeedFilter filter = new FeedFilter();
-        filter.setCountry("대한민국");
         filter.setCityLat(37.532600);
         filter.setCityLng(127.024612);
         filter.setCategories(List.of("HELP"));
@@ -349,15 +349,14 @@ public class PostServiceTest {
     @DisplayName("피드 조건 검색 - 없는 도시")
     void getFeed5() {
         //given
-        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, 37.532600, 127.024612);
-        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 38.532600, 128.024612,37.532600, 127.024612, null, null);
+        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1",37.532600, 127.024612);
+        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 38.532600, 128.024612,37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1",null, null);
         
         postService.createPost(userDetails[0], request, images);
         postService.createPost(userDetails[0], request2, images);
         postService.createPost(userDetails[0], request3, Collections.emptyList());
 
         FeedFilter filter = new FeedFilter();
-        filter.setCountry("대한민국");
         filter.setCityLat(1.0);
         filter.setCityLng(1.0);
 
@@ -373,10 +372,10 @@ public class PostServiceTest {
     @DisplayName("피드 검색 - 키워드 검색")
     void getFeed6() {
         //given
-        CreatePostRequest request2 = new CreatePostRequest("title test", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, 37.532600, 127.024612);
-        CreatePostRequest request3 = new CreatePostRequest("titletest", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 38.532600, 128.024612,37.532600, 127.024612, null, null);
-        CreatePostRequest request4 = new CreatePostRequest("title", "content test", "QUESTION", "WEATHER", "대한민국", "서울", 37.532600, 127.024612,null, null, null, null);
-        CreatePostRequest request5 = new CreatePostRequest("title", "contest", "QUESTION", "TRANSPORT", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, 37.532600, 127.024612);
+        CreatePostRequest request2 = new CreatePostRequest("title test", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1",37.532600, 127.024612);
+        CreatePostRequest request3 = new CreatePostRequest("titletest", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, null, null, null);
+        CreatePostRequest request4 = new CreatePostRequest("title", "content test", "QUESTION", "WEATHER", "대한민국", "서울", 37.532600, 127.024612,null, null, null,null, null);
+        CreatePostRequest request5 = new CreatePostRequest("title", "contest", "QUESTION", "TRANSPORT", "대한민국", "서울", 37.532600, 127.024612,37.532600, 127.024612, "서울특별시 영등포구 의사당대로 1",37.532600, 127.024612);
 
         postService.createPost(userDetails[0], request, images);
         postService.createPost(userDetails[0], request2, images);
@@ -385,7 +384,8 @@ public class PostServiceTest {
         postService.createPost(userDetails[0], request5, images);
 
         FeedFilter filter = new FeedFilter();
-        filter.setCountry("대한민국");
+        filter.setCityLat(37.532600);
+        filter.setCityLng(127.024612);
         filter.setKeyword("test");
 
         //when
@@ -400,10 +400,10 @@ public class PostServiceTest {
     @DisplayName("지도 조건 검색 - 위치, 카테고리")
     void getMap() {
         //given
-        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612,150.0, 150.0, null, null);
-        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 38.532600, 128.024612,120.0, 120.0, null, null);
-        CreatePostRequest request4 = new CreatePostRequest("title", "content", "HELP", "WEATHER", "대한민국", "서울", 37.532600, 127.024612,null, null, null, null);
-        CreatePostRequest request5 = new CreatePostRequest("title", "content", "HELP", null, "대한민국", "서울", 37.532600, 127.024612,130.0, 130.0, null, null);
+        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612,150.0, 150.0, "서울특별시 영등포구 의사당대로 1",null, null);
+        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 38.532600, 128.024612,120.0, 120.0, "서울특별시 영등포구 의사당대로 1",null, null);
+        CreatePostRequest request4 = new CreatePostRequest("title", "content", "HELP", "WEATHER", "대한민국", "서울", 37.532600, 127.024612,null, null, null, null, null);
+        CreatePostRequest request5 = new CreatePostRequest("title", "content", "HELP", null, "대한민국", "서울", 37.532600, 127.024612,130.0, 130.0, "서울특별시 영등포구 의사당대로 1",null, null);
 
         postService.createPost(userDetails[0], request, images);
         postService.createPost(userDetails[0], request2, images);
@@ -430,10 +430,10 @@ public class PostServiceTest {
     @DisplayName("지도 사이드바 조건 검색 - 위치, 인기순, 카테고리")
     void getMapSidebar() {
         //given
-        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612,150.0, 150.0, null, null);
-        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 38.532600, 128.024612,120.0, 120.0, null, null);
-        CreatePostRequest request4 = new CreatePostRequest("title", "content", "HELP", "WEATHER", "대한민국", "서울", 37.532600, 127.024612,null, null, null, null);
-        CreatePostRequest request5 = new CreatePostRequest("title", "content", "HELP", null, "대한민국", "서울", 37.532600, 127.024612,130.0, 130.0, null, null);
+        CreatePostRequest request2 = new CreatePostRequest("title", "content", "HELP", "ATM", "대한민국", "서울", 37.532600, 127.024612,150.0, 150.0, "서울특별시 영등포구 의사당대로 1",null, null);
+        CreatePostRequest request3 = new CreatePostRequest("title", "content", "RECOMMENDED", "HOSPITAL", "대한민국", "전주", 38.532600, 128.024612,120.0, 120.0, "서울특별시 영등포구 의사당대로 1",null, null);
+        CreatePostRequest request4 = new CreatePostRequest("title", "content", "HELP", "WEATHER", "대한민국", "서울", 37.532600, 127.024612,null, null, null, null, null);
+        CreatePostRequest request5 = new CreatePostRequest("title", "content", "HELP", null, "대한민국", "서울", 37.532600, 127.024612,130.0, 130.0, "서울특별시 영등포구 의사당대로 1",null, null);
 
         postService.createPost(userDetails[0], request, images);
         postService.createPost(userDetails[0], request2, images);

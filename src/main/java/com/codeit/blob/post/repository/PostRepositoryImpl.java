@@ -29,8 +29,8 @@ public class PostRepositoryImpl {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Page<Post> getFeed(Country country, City city, FeedFilter filters, Pageable pageable){
-        BooleanExpression predicate = getFeedFilterPredicate(country, city, filters);
+    public Page<Post> getFeed(City city, FeedFilter filters, Pageable pageable){
+        BooleanExpression predicate = getFeedFilterPredicate(city, filters);
         List<Post> content = jpaQueryFactory.selectFrom(post)
                 .where(predicate)
                 .orderBy(getOrderBy(filters.getSortBy()))
@@ -68,14 +68,8 @@ public class PostRepositoryImpl {
         return new PageImpl<>(content, pageable, total);
     }
 
-    private BooleanExpression getFeedFilterPredicate(Country country, City city, FeedFilter filters){
-        BooleanExpression predicate = Expressions.TRUE;
-
-        if(filters.getCityLng() == null || filters.getCityLat() == null){
-            predicate = predicate.and(post.city.country.eq(country));
-        } else {
-            predicate = predicate.and(post.city.eq(city));
-        }
+    private BooleanExpression getFeedFilterPredicate(City city, FeedFilter filters){
+        BooleanExpression predicate = post.city.eq(city);
 
         if (filters.getCategories() != null && !filters.getCategories().isEmpty()) {
             predicate = predicate.and(getCategoryFilterPredicate(filters.getCategories()));

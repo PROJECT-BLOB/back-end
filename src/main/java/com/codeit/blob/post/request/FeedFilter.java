@@ -20,10 +20,9 @@ import java.util.List;
 public class FeedFilter {
 
     @NotEmpty
-    private String country;
-
     private Double cityLat;
 
+    @NotEmpty
     private Double cityLng;
 
     private String sortBy = "recent";
