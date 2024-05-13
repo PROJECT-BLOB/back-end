@@ -120,4 +120,8 @@ public class Users extends BaseTimeEntity {
         this.coordinate = null;
         this.state = UserState.DELETED;
     }
+
+    public void deleteProfileUrl(){
+        this.profileUrl = null;
+    }
 }

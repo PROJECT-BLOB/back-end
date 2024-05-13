@@ -80,10 +80,28 @@ public class UserService {
     public String deleteUser(CustomUsers userDetails) {
         Users user = userDetails.getUsers();
 
+        if (user.getProfileUrl() != null) {
+            s3Service.deleteFile(user.getProfileUrl());
+        }
+
         bookmarkJpaRepository.deleteAllByUserId(user.getId());
         notificationJpaRepository.deleteAllByReceiverId(user.getId());
         user.deleteUser();
         userRepository.save(user);
         return "계정 탈퇴 성공";
     }
+
+    @Transactional
+    public UserResponse deleteProfileImage(CustomUsers userDetails) {
+        Users user = userDetails.getUsers();
+        
+        if (user.getProfileUrl() != null) {
+            s3Service.deleteFile(user.getProfileUrl());
+        }
+
+        user.deleteProfileUrl();
+        return UserResponse.of(userRepository.save(user));
+    }
+
+
 }
