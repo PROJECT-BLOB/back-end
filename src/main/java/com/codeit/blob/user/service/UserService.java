@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserService {
+
     private final UserRepository userRepository;
     private final S3Service s3Service;
     private final NotificationJpaRepository notificationJpaRepository;
@@ -45,9 +46,7 @@ public class UserService {
         String profileUrl = file == null ? users.getProfileUrl() : s3Service.uploadFile(file);
 
         if (file != null) {
-            int i = users.getProfileUrl().lastIndexOf("/");
-            String imageName = users.getProfileUrl().substring(i + 1);
-            s3Service.deleteFile(imageName);
+            s3Service.deleteFile(users.getProfileUrl());
         }
 
         users.updateUser(userRequest, profileUrl);

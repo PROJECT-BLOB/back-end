@@ -77,8 +77,10 @@ public class S3Service {
         return extension;
     }
 
-    public void deleteFile(String fileName) {
+    public void deleteFile(String fileUrl) {
         try {
+            int i = fileUrl.lastIndexOf("/");
+            String fileName = fileUrl.substring(i + 1);
             amazonS3.deleteObject(bucket + "/image", fileName);
         } catch (Exception e) {
             throw new CustomException(ErrorCode.IMG_DELETE_FAIL);
