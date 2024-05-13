@@ -73,7 +73,7 @@ public class NaverService implements OauthService {
         users = userRepository.save(users);
 
         return OauthResponse.builder()
-                .userId(users.getId())
+                .user(users)
                 .state(users.getState())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
