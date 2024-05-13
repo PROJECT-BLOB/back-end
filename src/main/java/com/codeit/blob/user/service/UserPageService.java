@@ -30,24 +30,24 @@ public class UserPageService {
     private final BookmarkJpaRepository bookmarkRepository;
     private final UserRepository userRepository;
 
-    public PostPageResponse findUserPosts(CustomUsers userDetails, Long userId, Pageable pageable) {
-        checkProfileUser(userId, userDetails);
+    public PostPageResponse findUserPosts(CustomUsers userDetails, String blobId, Pageable pageable) {
+        Long userId = checkProfileUser(blobId, userDetails);
 
         Page<Post> postPage = postRepository.findByAuthorId(userId, pageable);
         Users user = userDetails == null ? null : userDetails.getUsers();
         return PostPageResponse.postDetailPageResponse(postPage, user);
     }
 
-    public PostPageResponse findUserComment(CustomUsers userDetails, Long userId, Pageable pageable) {
-        checkProfileUser(userId, userDetails);
+    public PostPageResponse findUserComment(CustomUsers userDetails, String blobId, Pageable pageable) {
+        Long userId = checkProfileUser(blobId, userDetails);
 
         Page<Post> postPage = commentRepository.getCommentedPosts(userId, pageable);
         Users user = userDetails == null ? null : userDetails.getUsers();
         return PostPageResponse.postDetailPageResponse(postPage, user);
     }
 
-    public PostPageResponse findUserBookmark(CustomUsers userDetails, Long userId, Pageable pageable) {
-        checkProfileUser(userId, userDetails);
+    public PostPageResponse findUserBookmark(CustomUsers userDetails, String blobId, Pageable pageable) {
+        Long userId = checkProfileUser(blobId, userDetails);
 
         Page<Bookmark> bookmarkPage = bookmarkRepository.findByUserId(userId, pageable);
         Page<Post> postPage = bookmarkPage.map(Bookmark::getPost);
@@ -55,16 +55,18 @@ public class UserPageService {
         return PostPageResponse.postDetailPageResponse(postPage, user);
     }
 
-    private void checkProfileUser(Long userId, CustomUsers userDetails){
-        Users user = userRepository.findById(userId)
+    private Long checkProfileUser(String blobId, CustomUsers userDetails){
+        Users user = userRepository.findByBlobId(blobId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if(user.getState().equals(UserState.DELETED)){
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
 
-        if (!user.getIsPublic() && (userDetails == null || !userDetails.getUsers().getId().equals(userId))){
+        if (!user.getIsPublic() && (userDetails == null || !userDetails.getUsers().getId().equals(user.getId()))){
             throw new CustomException(ErrorCode.PRIVATE_PROFILE);
         }
+
+        return user.getId();
     }
 }

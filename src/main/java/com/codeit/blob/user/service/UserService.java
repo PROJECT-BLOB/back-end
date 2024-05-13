@@ -58,22 +58,18 @@ public class UserService {
         Users users = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        if(users.getState().equals(UserState.DELETED)){
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        }
+        return UserResponse.of(users);
+    }
+
+    public UserResponse findByBlobId(String blobId) {
+        Users users = userRepository.findByBlobId(blobId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return UserResponse.of(users);
     }
 
     public boolean existBlobId(String blobId) {
         return userRepository.existsByBlobId(blobId);
-    }
-
-    @Transactional
-    public String makeAdmin(CustomUsers userDetail) {
-        Users user = userDetail.getUsers().makeAdmin();
-        userRepository.save(user);
-        return "관리자 권한 부여 성공";
     }
 
     @Transactional

@@ -59,45 +59,45 @@ public class UserController {
         return ResponseEntity.ok(userResponse);
     }
 
-    @GetMapping("/{userId}")
-    @Operation(summary = "회원 조회 API", description = "User Id 를 입력받아 회원을 조회합니다.")
+    @GetMapping("/{blobId}")
+    @Operation(summary = "회원 조회 API", description = "Blob Id 를 입력받아 회원을 조회합니다.")
     public ResponseEntity<UserResponse> findUserByBlobId(
-            @PathVariable("userId") Long userId
+            @PathVariable("blobId") String blobId
     ) {
-        return ResponseEntity.ok(userService.findByUserId(userId));
+        return ResponseEntity.ok(userService.findByBlobId(blobId));
     }
 
-    @GetMapping("/{userId}/post")
+    @GetMapping("/{blobId}/post")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "유저가 작성한 게시글 조회 API", description = "Page 처리를 통한 게시글 조회")
     public ResponseEntity<PostPageResponse> findPostPage(
             @AuthenticationPrincipal CustomUsers userDetails,
-            @PathVariable("userId") Long userId,
+            @PathVariable("blobId") String blobId,
             @ParameterObject Pageable pageable
     ) {
-        return ResponseEntity.ok(service.findUserPosts(userDetails, userId, pageable));
+        return ResponseEntity.ok(service.findUserPosts(userDetails, blobId, pageable));
     }
 
-    @GetMapping("/{userId}/commented")
+    @GetMapping("/{blobId}/commented")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "유저가 댓글 단 글 조회 API", description = "Page 처리를 통한 유저가 댓글 단 글 조회")
     public ResponseEntity<PostPageResponse> findComment(
             @AuthenticationPrincipal CustomUsers userDetails,
-            @PathVariable("userId") Long userId,
+            @PathVariable("blobId") String blobId,
             @ParameterObject Pageable pageable
     ) {
-        return ResponseEntity.ok(service.findUserComment(userDetails, userId, pageable));
+        return ResponseEntity.ok(service.findUserComment(userDetails, blobId, pageable));
     }
 
-    @GetMapping("/{userId}/bookmark")
+    @GetMapping("/{blobId}/bookmark")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "유저의 북마크 조회 API", description = "Page 처리를 통한 북마크 조회")
     public ResponseEntity<PostPageResponse> findBookmark(
             @AuthenticationPrincipal CustomUsers userDetails,
-            @PathVariable("userId") Long userId,
+            @PathVariable("blobId") String blobId,
             @ParameterObject Pageable pageable
     ) {
-        return ResponseEntity.ok(service.findUserBookmark(userDetails, userId, pageable));
+        return ResponseEntity.ok(service.findUserBookmark(userDetails, blobId, pageable));
     }
 
     @GetMapping("/{blobId}/check")
