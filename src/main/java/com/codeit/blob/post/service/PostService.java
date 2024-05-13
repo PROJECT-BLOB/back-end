@@ -6,6 +6,7 @@ import com.codeit.blob.city.service.CityService;
 import com.codeit.blob.global.domain.Coordinate;
 import com.codeit.blob.global.exceptions.CustomException;
 import com.codeit.blob.global.exceptions.ErrorCode;
+import com.codeit.blob.global.s3.S3Service;
 import com.codeit.blob.notification.service.NotificationService;
 import com.codeit.blob.post.domain.*;
 import com.codeit.blob.post.repository.*;
@@ -38,6 +39,7 @@ public class PostService {
     private final PostReportJpaRepository postReportJpaRepository;
     private final CityService cityService;
     private final NotificationService notificationService;
+    private final S3Service s3Service;
 
     @Transactional
     public DetailedPostResponse createPost(
@@ -102,6 +104,7 @@ public class PostService {
             throw new CustomException(ErrorCode.ACTION_ACCESS_DENIED);
         }
 
+        post.getPostImages().forEach(i -> s3Service.deleteFile(i.getUrl()));
         postJpaRepository.deleteById(postId);
         return "게시글 삭제 성공";
     }
