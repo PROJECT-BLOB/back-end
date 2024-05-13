@@ -116,4 +116,13 @@ public class UserController {
     ) {
         return ResponseEntity.ok(userService.deleteUser(userDetails));
     }
+
+    @DeleteMapping("/profilePic")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "프로필 사진 삭제 API", description = "로그인된 계정의 프로필 사진을 삭제합니다.")
+    public ResponseEntity<UserResponse> deleteProfileImage(
+            @AuthenticationPrincipal CustomUsers userDetails
+    ) {
+        return ResponseEntity.ok(userService.deleteProfileImage(userDetails));
+    }
 }
