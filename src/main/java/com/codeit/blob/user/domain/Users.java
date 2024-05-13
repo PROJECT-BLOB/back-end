@@ -104,11 +104,6 @@ public class Users extends BaseTimeEntity {
         return comments.size();
     }
 
-    public Users makeAdmin() {
-        this.role = UserRole.ROLE_ADMIN;
-        return this;
-    }
-
     public void deleteUser(){
         this.email = null;
         this.oauthId = null;
