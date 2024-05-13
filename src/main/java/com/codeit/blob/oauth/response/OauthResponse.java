@@ -1,6 +1,7 @@
 package com.codeit.blob.oauth.response;
 
 import com.codeit.blob.user.UserState;
+import com.codeit.blob.user.domain.Users;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,13 +11,15 @@ import lombok.Getter;
 public class OauthResponse {
 
     private final Long userId;
+    private final String blobId;
     private final String accessToken;
     private final String refreshToken;
     private final UserState state;
 
     @Builder
-    public OauthResponse(Long userId, String accessToken, String refreshToken, UserState state) {
-        this.userId = userId;
+    public OauthResponse(Users user, String accessToken, String refreshToken, UserState state) {
+        this.userId = user.getId();
+        this.blobId = user.getBlobId();
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.state = state;
