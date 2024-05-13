@@ -44,11 +44,11 @@ public class Notification extends BaseTimeEntity {
         if (comment.getParent() == null){
             this.receiver = comment.getPost().getAuthor();
             this.type = NotificationType.NEW_COMMENT;
-            this.message = comment.getAuthor().getNickname() + "님이 댓글을 남겼습니다.: " + comment.getContent();
+            this.message = comment.getAuthor().getNickname() + "님이 댓글을 남겼습니다: " + comment.getContent();
         } else {
             this.receiver = comment.getParent().getAuthor();
             this.type = NotificationType.NEW_REPLY;
-            this.message = comment.getAuthor().getNickname() + "님이 답글을 남겼습니다.: " + comment.getContent();
+            this.message = comment.getAuthor().getNickname() + "님이 답글을 남겼습니다: " + comment.getContent();
         }
         this.post = comment.getPost();
         this.comment = comment;
