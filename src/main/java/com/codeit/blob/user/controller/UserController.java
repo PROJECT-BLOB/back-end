@@ -100,16 +100,6 @@ public class UserController {
         return ResponseEntity.ok(service.findUserBookmark(userDetails, userId, pageable));
     }
 
-    @PostMapping("/makeAdmin")
-    @SecurityRequirement(name = "Bearer Authentication")
-    @Operation(summary = "테스트용 - 관리자 권한 부여 API", description = "유저에게 관리자 권한을 부여합니다.")
-    public ResponseEntity<String> makeAdmin(
-            @AuthenticationPrincipal CustomUsers userDetails
-    ) {
-        return ResponseEntity.ok(userService.makeAdmin(userDetails));
-    }
-
-
     @GetMapping("/{blobId}/check")
     @Operation(summary = "Blob Id 중복 체크 API", description = "Blob Id 가 중복되는지 확인합니다.")
     public ResponseEntity<Boolean> checkBlobId(
