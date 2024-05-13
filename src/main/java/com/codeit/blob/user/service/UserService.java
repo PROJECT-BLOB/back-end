@@ -45,7 +45,7 @@ public class UserService {
         Users users = userDetails.getUsers();
         String profileUrl = file == null ? users.getProfileUrl() : s3Service.uploadFile(file);
 
-        if (file != null) {
+        if (file != null && users.getProfileUrl() != null) {
             s3Service.deleteFile(users.getProfileUrl());
         }
 
