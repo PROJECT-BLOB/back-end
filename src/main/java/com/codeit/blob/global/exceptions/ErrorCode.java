@@ -38,7 +38,8 @@ public enum ErrorCode {
 
     //500 INTERNAL SERVER ERROR
     IMG_UPLOAD_FAIL(500, "사진 업로드에 실패하였습니다."),
-    IMG_DELETE_FAIL(500, "사진 삭제에 실패하였습니다.");
+    IMG_DELETE_FAIL(500, "사진 삭제에 실패하였습니다."),
+    REFRESH_FAIL(500, "Access Token 재발급에 실패하였습니다.");
 
     private final int status;
     private final String message;
