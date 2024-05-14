@@ -6,6 +6,8 @@ import com.codeit.blob.jwt.provider.JwtProvider;
 import com.codeit.blob.oauth.response.TokenResponse;
 import com.codeit.blob.user.domain.Users;
 import com.codeit.blob.user.repository.UserRepository;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,32 +25,44 @@ public class TokenService {
 
     @Transactional
     public TokenResponse createAccessToken(String token) {
-        String refreshToken = token.substring(JwtProvider.JWT_PREFIX.length());
+        try {
+            String refreshToken = token.substring(JwtProvider.JWT_PREFIX.length());
+            if (!jwtProvider.isTokenExpired(refreshToken)) {
+                Users users = userRepository.findByRefreshToken(refreshToken)
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        if (!jwtProvider.isTokenExpired(refreshToken)) {
-            Users users = userRepository.findByRefreshToken(refreshToken)
-                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-            if (jwtProvider.isTokenValid(refreshToken, users)) {
-                Map<String, Object> extractClaims = new HashMap<>();
-                extractClaims.put("oauthId", users.getOauthId());
-                return new TokenResponse(jwtProvider.generateAccessToken(extractClaims));
+                if (jwtProvider.isTokenValid(refreshToken, users)) {
+                    Map<String, Object> extractClaims = new HashMap<>();
+                    extractClaims.put("oauthId", users.getOauthId());
+                    return new TokenResponse(jwtProvider.generateAccessToken(extractClaims));
+                }
             }
+
+        } catch (ExpiredJwtException e) {
+            throw new CustomException(ErrorCode.JWT_EXPIRED);
+        } catch (SignatureException e) {
+            throw new CustomException(ErrorCode.JWT_VALIDATED_FAIL);
         }
 
-        throw new IllegalArgumentException("Access Token 재발급 실패");
+        throw new CustomException(ErrorCode.REFRESH_FAIL);
     }
 
     @Transactional
     public String deleteRefreshToken(String token) {
-        String accessToken = token.substring(JwtProvider.JWT_PREFIX.length());
-        if (!jwtProvider.isTokenExpired(accessToken)) {
-            String oauthId = jwtProvider.extractClaim(accessToken, claims -> claims.get("oauthId", String.class));
-            Users users = userRepository.findByOauthId(oauthId)
-                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        try {
+            String accessToken = token.substring(JwtProvider.JWT_PREFIX.length());
+            if (!jwtProvider.isTokenExpired(accessToken)) {
+                String oauthId = jwtProvider.extractClaim(accessToken, claims -> claims.get("oauthId", String.class));
+                Users users = userRepository.findByOauthId(oauthId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-            users.setRefreshToken("");
-            userRepository.save(users);
+                users.setRefreshToken("");
+                userRepository.save(users);
+            }
+        } catch (ExpiredJwtException e) {
+            throw new CustomException(ErrorCode.JWT_EXPIRED);
+        } catch (SignatureException e) {
+            throw new CustomException(ErrorCode.JWT_VALIDATED_FAIL);
         }
 
         return "로그아웃 성공";
