@@ -58,7 +58,7 @@ public class DetailedPostResponse implements PostResponse {
         this.imageUrl = post.getPostImages().stream().map(PostImage::getUrl).toList();
         this.liked = user != null && post.getLikes().stream().map(l -> l.getUser().getId()).toList().contains(user.getId());
         this.bookmarked = user != null && post.getBookmarks().stream().map(b -> b.getUser().getId()).toList().contains(user.getId());
-        this.likeCount = postId%2 == 0 ? 100 + postId.intValue() : post.getLikes().size();
+        this.likeCount = post.getLikes().size();
         this.commentCount = post.getComments().size();
         this.canDelete = user != null && (user.getId().equals(post.getAuthor().getId()) || user.getRole().equals(UserRole.ROLE_ADMIN));
     }
