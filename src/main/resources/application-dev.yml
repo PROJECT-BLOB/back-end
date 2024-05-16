@@ -21,14 +21,9 @@ spring:
     hibernate:
       ddl-auto: update
 
-  h2:
-    console:
-      enabled: false
-      settings:
-        web-allow-others: false
-
   servlet:
     multipart:
+      enabled: true
       resolve-lazily: true
       max-file-size: 5MB
       max-request-size: 30MB
