@@ -21,7 +21,7 @@ public class JwtProvider {
     @Value("${oauth2.jwt.secret-key}")
     private String secretKey;
     private static final long ACCESS_EXPIRE_DATE = 1000L * 60 * 30;
-    private static final long REFRESH_EXPIRE_DATE = 1000L * 60 * 60 * 24;
+    private static final long REFRESH_EXPIRE_DATE = 1000L * 60 * 60 * 24 * 7;
 
     public String generateAccessToken(Map<String, Object> extractClaims) {
         return Jwts.builder()
