@@ -13,7 +13,7 @@ public enum ErrorCode {
     BAD_BIO_LENGTH(400, "BIO 는 최대 50글자 입니다."),
 
     // 401 UNAUTHORIZED
-    JWT_EXPIRED(401, "jwt 토큰이 만료되었습니다,"),
+    JWT_EXPIRED(401, "jwt 토큰이 만료되었습니다."),
     JWT_VALIDATED_FAIL(401, "유효하지 않은 토큰입니다."),
 
     //403 FORBIDDEN

@@ -4,6 +4,7 @@ import com.codeit.blob.city.domain.City;
 import com.codeit.blob.comment.domain.Comment;
 import com.codeit.blob.global.domain.BaseTimeEntity;
 import com.codeit.blob.global.domain.Coordinate;
+import com.codeit.blob.notification.domain.Notification;
 import com.codeit.blob.user.domain.Users;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -68,6 +69,9 @@ public class Post extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     private Set<PostReport> reports = new HashSet<>();
+
+    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    private Set<Notification> notifications = new HashSet<>();
 
     @Builder
     public Post(
