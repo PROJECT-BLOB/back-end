@@ -113,7 +113,7 @@ public class PostRepositoryImpl {
                 .and(post.coordinate.lng.goe(filters.getMinLng()));
 
         NumberExpression<Long> minutesToShow = post.likes.size().longValue()
-                .multiply(10).add(30);
+                .multiply(30).add(60 * 24);
         NumberExpression<Long> timeDifference = Expressions.numberTemplate(Long.class,
                 "timestampdiff(SECOND, {0}, now())", post.createdDate).divide(60);
         predicate = predicate.and(timeDifference.loe(minutesToShow));
