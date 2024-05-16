@@ -24,9 +24,6 @@ public class Notification extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private Post post;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Comment comment;
-
     @Enumerated(EnumType.STRING)
     private NotificationType type;
 
@@ -51,6 +48,5 @@ public class Notification extends BaseTimeEntity {
             this.message = comment.getAuthor().getNickname() + "님이 답글을 남겼습니다: " + comment.getContent();
         }
         this.post = comment.getPost();
-        this.comment = comment;
     }
 }
