@@ -18,16 +18,14 @@ Data
 
 * MySQL
 * Spring JPA + Query DSL
-* AWS RDS (PROD)
-* Redis
+* AWS RDS
 
 Deploy
 
 * Github Action
-* Docker (DEV, PROD)
+* Docker
 * AWS EC2
 
 Test
 
 * JUnit
-* Mockito
