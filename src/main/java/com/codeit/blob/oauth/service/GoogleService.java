@@ -47,6 +47,16 @@ public class GoogleService implements OauthService {
     }
 
     @Override
+    public String createLocalLoginUrl(String redirectUri) {
+        return UriComponentsBuilder.fromHttpUrl(properties.getAuthUrl())
+                .queryParam("client_id", properties.getClientId())
+                .queryParam("redirect_uri", redirectUri)
+                .queryParam("scope", properties.getScope())
+                .queryParam("response_type", "code")
+                .toUriString();
+    }
+
+    @Override
     @Transactional
     public OauthResponse createToken(String code) {
         GoogleDto oauthToken = getOauthToken(code);
