@@ -16,6 +16,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Locale;
+
 @RestController
 @RequestMapping("/oauth")
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ public class OauthController {
 
     private final OauthManager manager;
     private final TokenService tokenService;
+    private final String URL = "http://localhost:3000/oauth/";
 
     @GetMapping("/{type}")
     @Operation(summary = "Oauth Redirect Url API", description = "type 에 해당하는 redirect url 주소를 리턴합니다.")
@@ -33,6 +36,16 @@ public class OauthController {
         OauthType type = OauthType.toOauthType(oauthType);
         OauthService oauthService = manager.getService(type);
         return ResponseEntity.ok(new LoginPageResponse(oauthService.createLoginUrl()));
+    }
+
+    @GetMapping("/local/{type}")
+    @Operation(summary = "Localhost Oauth Redirect Url API", description = "type 에 해당하는 로컬호스트용 redirect url 주소를 리턴합니다.")
+    public ResponseEntity<LoginPageResponse> getLocalLogin(
+            @PathVariable("type") String oauthType
+    ) {
+        OauthType type = OauthType.toOauthType(oauthType);
+        OauthService oauthService = manager.getService(type);
+        return ResponseEntity.ok(new LoginPageResponse(oauthService.createLocalLoginUrl(URL + oauthType.toLowerCase())));
     }
 
     @GetMapping("/{type}/callback")

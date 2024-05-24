@@ -48,6 +48,16 @@ public class NaverService implements OauthService {
     }
 
     @Override
+    public String createLocalLoginUrl(String redirectUri) {
+        return UriComponentsBuilder.fromHttpUrl(properties.getAuthUrl())
+                .queryParam("client_id", properties.getClientId())
+                .queryParam("redirect_uri", redirectUri)
+                .queryParam("scope", properties.getScope())
+                .queryParam("response_type", "code")
+                .toUriString();
+    }
+
+    @Override
     public OauthResponse createToken(String code) {
         NaverDto oauthToken = getOauthToken(code);
         NaverUserDto userInfo = getUserInfo(oauthToken.getAccessToken());

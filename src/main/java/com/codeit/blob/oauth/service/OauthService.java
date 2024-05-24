@@ -9,6 +9,8 @@ public interface OauthService {
 
     String createLoginUrl();
 
+    String createLocalLoginUrl(String redirectUri);
+
     OauthResponse createToken(String code);
 
     Object getOauthToken(String code);
