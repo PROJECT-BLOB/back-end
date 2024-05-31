@@ -29,6 +29,7 @@ public class KakaoService implements OauthService {
     private final KakaoProperties properties;
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
+    private final String localUrl = URL + "kakao";
 
     @Override
     public OauthType getOauthType() {
@@ -46,18 +47,18 @@ public class KakaoService implements OauthService {
     }
 
     @Override
-    public String createLocalLoginUrl(String redirectUri) {
+    public String createLocalLoginUrl() {
         return UriComponentsBuilder.fromHttpUrl(properties.getAuthUrl())
                 .queryParam("client_id", properties.getClientId())
-                .queryParam("redirect_uri", redirectUri)
+                .queryParam("redirect_uri", localUrl)
                 .queryParam("scope", properties.getScope())
                 .queryParam("response_type", "code")
                 .toUriString();
     }
 
     @Override
-    public OauthResponse createToken(String code) {
-        KakaoDto oauthToken = getOauthToken(code);
+    public OauthResponse createToken(String code, boolean isLocal) {
+        KakaoDto oauthToken = getOauthToken(code, isLocal);
         KakaoUserDto userInfo = getUserInfo(oauthToken.getAccessToken());
 
         Map<String, Object> extractClaims = new HashMap<>();
@@ -89,11 +90,12 @@ public class KakaoService implements OauthService {
     }
 
     @Override
-    public KakaoDto getOauthToken(String code) {
+    public KakaoDto getOauthToken(String code, boolean isLocal) {
+        String redirectUri = isLocal ? localUrl : properties.getRedirectUrl();
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
         params.add("code", code);
         params.add("client_id", properties.getClientId());
-        params.add("redirect_uri", properties.getRedirectUrl());
+        params.add("redirect_uri", redirectUri);
         params.add("grant_type", "authorization_code");
 
 

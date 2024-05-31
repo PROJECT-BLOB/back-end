@@ -26,7 +26,7 @@ public class OauthController {
 
     private final OauthManager manager;
     private final TokenService tokenService;
-    private final String URL = "http://localhost:3000/oauth/";
+
 
     @GetMapping("/{type}")
     @Operation(summary = "Oauth Redirect Url API", description = "type 에 해당하는 redirect url 주소를 리턴합니다.")
@@ -45,7 +45,7 @@ public class OauthController {
     ) {
         OauthType type = OauthType.toOauthType(oauthType);
         OauthService oauthService = manager.getService(type);
-        return ResponseEntity.ok(new LoginPageResponse(oauthService.createLocalLoginUrl(URL + oauthType.toLowerCase())));
+        return ResponseEntity.ok(new LoginPageResponse(oauthService.createLocalLoginUrl()));
     }
 
     @GetMapping("/{type}/callback")
@@ -56,7 +56,21 @@ public class OauthController {
     ) {
         OauthType type = OauthType.toOauthType(oauthType);
         OauthService oauthService = manager.getService(type);
-        OauthResponse tokenResponse = oauthService.createToken(code);
+        OauthResponse tokenResponse = oauthService.createToken(code, false);
+
+        return ResponseEntity.ok()
+                .body(tokenResponse);
+    }
+
+    @GetMapping("/local/{type}/callback")
+    @Operation(summary = "엑세스, 리프레시 토큰 발급 + 회원가입 API", description = "type 에 해당하는 토큰과 Oauth 유저 정보로 회원가입 합니다.")
+    public ResponseEntity<OauthResponse> callbackLocal(
+            @PathVariable(name = "type") String oauthType,
+            @RequestParam(name = "code") String code
+    ) {
+        OauthType type = OauthType.toOauthType(oauthType);
+        OauthService oauthService = manager.getService(type);
+        OauthResponse tokenResponse = oauthService.createToken(code, true);
 
         return ResponseEntity.ok()
                 .body(tokenResponse);
