@@ -31,6 +31,7 @@ public class NaverService implements OauthService {
     private final NaverProperties properties;
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
+    private final String localUrl = URL + "naver";
 
     @Override
     public OauthType getOauthType() {
@@ -48,18 +49,18 @@ public class NaverService implements OauthService {
     }
 
     @Override
-    public String createLocalLoginUrl(String redirectUri) {
+    public String createLocalLoginUrl() {
         return UriComponentsBuilder.fromHttpUrl(properties.getAuthUrl())
                 .queryParam("client_id", properties.getClientId())
-                .queryParam("redirect_uri", redirectUri)
+                .queryParam("redirect_uri", localUrl)
                 .queryParam("scope", properties.getScope())
                 .queryParam("response_type", "code")
                 .toUriString();
     }
 
     @Override
-    public OauthResponse createToken(String code) {
-        NaverDto oauthToken = getOauthToken(code);
+    public OauthResponse createToken(String code, boolean isLocal) {
+        NaverDto oauthToken = getOauthToken(code, isLocal);
         NaverUserDto userInfo = getUserInfo(oauthToken.getAccessToken());
 
         Map<String, Object> extractClaims = new HashMap<>();
@@ -91,12 +92,13 @@ public class NaverService implements OauthService {
     }
 
     @Override
-    public NaverDto getOauthToken(String code) {
+    public NaverDto getOauthToken(String code, boolean isLocal) {
+        String redirectUri = isLocal ? localUrl : properties.getRedirectUrl();
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
         params.add("code", code);
         params.add("client_id", properties.getClientId());
         params.add("client_secret", properties.getSecretKey());
-        params.add("redirect_uri", properties.getRedirectUrl());
+        params.add("redirect_uri", redirectUri);
         params.add("grant_type", "authorization_code");
         params.add("state", URLEncoder.encode("blob", StandardCharsets.UTF_8));
 
