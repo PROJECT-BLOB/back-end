@@ -1,6 +1,5 @@
 package com.codeit.blob.global.domain;
 
-import com.codeit.blob.post.domain.PostLike;
 import jakarta.persistence.Embeddable;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,14 +25,18 @@ public class Coordinate {
         // Haversine formula
         double earthRadius = 6371000;
 
-        double dLat = lat2 - this.getLat();
-        double dLon = lon2 - this.getLng();
+        double dLat = toRad(lat2 - this.getLat());
+        double dLon =  toRad(lon2 - this.getLng());
 
         double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(this.getLat()) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return Math.round(earthRadius * c);
+    }
+
+    public Double toRad(Double value) {
+        return value * Math.PI / 180;
     }
 
     @Override
