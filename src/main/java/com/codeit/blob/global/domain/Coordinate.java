@@ -29,7 +29,7 @@ public class Coordinate {
         double dLon =  toRad(lon2 - this.getLng());
 
         double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(this.getLat()) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                Math.cos(toRad(this.getLat())) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return Math.round(earthRadius * c);
